@@ -5,15 +5,29 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./screens/HomeScreen";
 import EventsScreen from "./screens/EventsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    Poppins_Regular: Poppins_400Regular,
+    Poppins_SemiBold: Poppins_600SemiBold,
+    Poppins_Bold: Poppins_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  
+  
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: "#4CAF50",
+          tabBarLabelStyle: { fontFamily: 'Poppins_SemiBold' },
         }}
       >
         <Tab.Screen
@@ -23,6 +37,7 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="home-outline" color={color} size={size} />
             ),
+            headerShown: false
           }}
         />
         <Tab.Screen
