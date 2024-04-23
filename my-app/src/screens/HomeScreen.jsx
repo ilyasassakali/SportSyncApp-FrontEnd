@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 const HomeScreen = () => {
 
   const [buttonColor, setButtonColor] = useState("#4CAF50");
+  const [fabColor, setFabColor] = useState("#4CAF50");
 
 
   return(
@@ -36,7 +37,16 @@ const HomeScreen = () => {
             sports activities.
           </Text>
         </View>
-      </View>
+    </View>
+    {/* Floating Action Button */}
+    <TouchableOpacity
+        style={[styles.fab, { backgroundColor: fabColor }]}
+        onPressIn={() => setFabColor("#449D48")}
+        onPressOut={() => setFabColor("#4CAF50")}
+        activeOpacity={1}
+      >
+        <Ionicons name="create-outline" size={30} color="#FFFFFF" />
+    </TouchableOpacity>
   </View>
   );
 };
@@ -99,6 +109,24 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_Regular',
     fontSize: 14,
     color: '#A9A9A9' 
+  },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
   }
 });
 
