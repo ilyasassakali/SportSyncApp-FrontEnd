@@ -47,6 +47,7 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="calendar-outline" color={color} size={size} />
             ),
+            headerShown: false
           }}
         />
         <Tab.Screen
@@ -56,6 +57,7 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="person-outline" color={color} size={size} />
             ),
+            headerShown: false
           }}
         />
       </Tab.Navigator>

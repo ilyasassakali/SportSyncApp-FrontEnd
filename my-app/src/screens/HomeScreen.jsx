@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
-
   const [buttonColor, setButtonColor] = useState("#4CAF50");
   const [fabColor, setFabColor] = useState("#4CAF50");
 
