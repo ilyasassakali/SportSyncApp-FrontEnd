@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontFamily: 'Poppins_Bold',
-    fontSize: 24,
+    fontSize: 28,
     marginBottom: 10, 
   },
   subHeader: {
