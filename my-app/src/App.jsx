@@ -1,13 +1,59 @@
 import React from "react";
+import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "./screens/HomeScreen";
-import EventsScreen from "./screens/EventsScreen";
-import ProfileScreen from "./screens/ProfileScreen";
+import HomeScreen from "./screens/HomeScreens/HomeScreen";
+import EventsScreen from "./screens/EventsScreens/EventsScreen";
+import ProfileScreen from "./screens/ProfileScreens/ProfileScreen";
+import CreateEventScreen from "./screens/EventsScreens/CreateEventScreen"; 
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator(); 
+
+function Tabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: "#4CAF50",
+        tabBarLabelStyle: { fontFamily: 'Poppins_SemiBold' },
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" color={color} size={size} />
+          ),
+          headerShown: false
+        }}
+      />
+      <Tab.Screen
+        name="Events"
+        component={EventsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar-outline" color={color} size={size} />
+          ),
+          headerShown: false
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" color={color} size={size} />
+          ),
+          headerShown: false
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -20,47 +66,12 @@ export default function App() {
     return null;
   }
 
-  
-  
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: "#4CAF50",
-          tabBarLabelStyle: { fontFamily: 'Poppins_SemiBold' },
-        }}
-      >
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home-outline" color={color} size={size} />
-            ),
-            headerShown: false
-          }}
-        />
-        <Tab.Screen
-          name="Events"
-          component={EventsScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="calendar-outline" color={color} size={size} />
-            ),
-            headerShown: false
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person-outline" color={color} size={size} />
-            ),
-            headerShown: false
-          }}
-        />
-      </Tab.Navigator>
+      <Stack.Navigator>
+        <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{ headerShown: false }}/>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

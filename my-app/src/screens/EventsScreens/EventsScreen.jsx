@@ -83,7 +83,7 @@ const EventCard = ({ event }) => (
 );
 
 
-const EventsScreen = () => {
+const EventsScreen = ({ navigation }) => {
   const [fabColor, setFabColor] = useState("#4CAF50");
 
   return (
@@ -99,6 +99,7 @@ const EventsScreen = () => {
         style={[styles.fab, { backgroundColor: fabColor }]}
         onPressIn={() => setFabColor("#449D48")}
         onPressOut={() => setFabColor("#4CAF50")}
+        onPress={() => navigation.navigate('CreateEvent')}
         activeOpacity={1}
       >
         <Ionicons name="create-outline" size={30} color="#FFFFFF" />
