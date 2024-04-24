@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { TextInput } from 'react-native-paper';
+
 
 const CreateEventScreen = ({ navigation }) => {
+  const [eventName, setEventName] = useState('');
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -25,9 +28,17 @@ const CreateEventScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="close" size={30} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Plan Event</Text>
+        <Text style={styles.headerTitle}>Plan a Sport Event</Text>
       </View>
-      <TextInput style={styles.input} placeholder="Event Title" />
+      <TextInput activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Event Name" style={styles.input}  value={eventName} onChangeText={setEventName}/>
+      {/* Event name presets */}
+      <Text style={styles.presetLabel}>Quick Presets:</Text>
+      <View style={styles.presetContainer}>
+        <EventPresetButton name="Indoor Soccer ⚽" setEventName={setEventName} />
+        <EventPresetButton name="Street Basketball 4V4 🏀" setEventName={setEventName} />
+        <EventPresetButton name="Tennis 2V2 🎾" setEventName={setEventName} />
+        <EventPresetButton name="Running Race 🏃" setEventName={setEventName} />
+      </View>
       <View style={styles.dateTimeContainer}>
         <TouchableOpacity style={styles.dateTimeInput} onPress={() => showMode('date')}>
           <Text style={styles.dateTimeText}>{date.toDateString()}</Text>
@@ -46,17 +57,26 @@ const CreateEventScreen = ({ navigation }) => {
           onChange={onChange}
         />
       )}
-      <TextInput style={styles.input} placeholder="Location" />
-      <TextInput style={styles.input} placeholder="Hosted By" />
-      <TextInput style={styles.input} placeholder="Number of Players" keyboardType="number-pad" />
-      <TextInput style={styles.input} placeholder="Price per Person (optional)" keyboardType="numeric" />
-      <TextInput style={styles.input} placeholder="Team Distribution (optional)" />
+      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Location" />
+      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Hosted By" />
+      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Number of Players" keyboardType="number-pad" />
+      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Price per Person (optional)" keyboardType="numeric" />
+      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Team Distribution (optional)" />
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Next: Preview</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const EventPresetButton = ({ name, setEventName }) => (
+    <TouchableOpacity
+      style={styles.presetButton}
+      onPress={() => setEventName(name)}
+    >
+      <Text style={styles.presetButtonText}>{name}</Text>
+    </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -73,16 +93,40 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_SemiBold',
     flexGrow: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: 5
   },
-  input: {
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  input: {  
+    marginBottom: 10,
+    backgroundColor: "#fff"
+  },
+  presetContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     marginBottom: 20,
-    padding: 10
+    justifyContent: 'flex-start'
+  },
+  presetButton: {
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginRight: 5,
+    marginBottom: 5,
+    borderWidth: 1,
+    borderColor: "#e0e0e0"
+  },
+  presetLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 5,
+    fontFamily: 'Poppins_Regular'
+  },
+  presetButtonText: {
+    color: "#666",
+    fontSize: 12,
+    fontFamily: 'Poppins_Regular'
   },
   dateTimeContainer: {
     flexDirection: 'row',
