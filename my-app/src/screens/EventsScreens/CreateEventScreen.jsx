@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Button} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Calendar } from 'react-native-calendars';
 import { TextInput } from 'react-native-paper';
@@ -76,6 +76,8 @@ const CreateEventScreen = ({ navigation }) => {
         <Text style={styles.headerTitle}>Plan a Sport Event</Text>
       </View>
 
+    <ScrollView>
+        
       <Text style={styles.label}>Event Name</Text>
       <TextInput activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Event Name" style={styles.input}  value={eventName} onChangeText={setEventName}/>
       <Text style={styles.presetLabel}>Quick Presets:</Text>
@@ -87,8 +89,7 @@ const CreateEventScreen = ({ navigation }) => {
       </View>
 
 
-      <Text style={styles.label}>Event Date</Text>  
-      
+      <Text style={styles.label}>Timing and Date</Text>   
       <View style={styles.timeContainer}>
         <View style={styles.timeWrapper}>
             <Text style={styles.sublabel}>Start</Text>
@@ -110,7 +111,6 @@ const CreateEventScreen = ({ navigation }) => {
         onCancel={hideTimePicker}
         is24Hour={true}
       />
-
       <Calendar   
         onDayPress={onDayPress}
         markedDates={markedDates}
@@ -136,11 +136,9 @@ const CreateEventScreen = ({ navigation }) => {
           
       />
 
+      <Text style={styles.label}>Location</Text>  
       
-
-
-
-
+      
 
 
       {/*
@@ -151,6 +149,7 @@ const CreateEventScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Next: Preview</Text>
       </TouchableOpacity>*/ }
+      </ScrollView>
     </View>
   );
 };
@@ -186,8 +185,7 @@ const styles = StyleSheet.create({
   },
   dateTimeContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20
+    justifyContent: 'space-between'
   },
   input: {
     marginBottom: 10,
@@ -196,7 +194,7 @@ const styles = StyleSheet.create({
   presetContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 30,
+    marginBottom: 20,
     justifyContent: 'flex-start'
   },
   presetButton: {
@@ -222,7 +220,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 18,
     fontFamily: 'Poppins_SemiBold',
-    color: '#000'
+    color: '#000',
   },
   sublabel:{
     fontSize: 16,
@@ -232,7 +230,6 @@ const styles = StyleSheet.create({
   timeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between', 
-    
   },
   timeWrapper: {
     flex: 1, 
@@ -247,6 +244,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: '#333',
     fontFamily: 'Poppins_Regular'
+  },
+  calendar: {
+    marginBottom: 30
   },
   button: {
     backgroundColor: "#4CAF50",
