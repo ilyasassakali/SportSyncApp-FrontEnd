@@ -1,15 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Button} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Calendar } from 'react-native-calendars';
 import { TextInput } from 'react-native-paper';
-
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const CreateEventScreen = ({ navigation }) => {
   const [eventName, setEventName] = useState('');
-  /*
   const [selectedDate, setSelectedDate] = useState('');
   const [markedDates, setMarkedDates] = useState({});
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [timePickerMode, setTimePickerMode] = useState('start');
+
+  const showTimePicker = (mode) => {
+    setTimePickerMode(mode);
+    setTimePickerVisibility(true);
+  };
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+  const handleConfirm = (selectedTime) => {
+    if (timePickerMode === 'start') {
+      setStartTime(selectedTime);
+    } else {
+      setEndTime(selectedTime);
+    }
+    hideTimePicker();
+  };
+  const formatTime = (time) => {
+    return `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     const today = new Date();
@@ -17,7 +39,7 @@ const CreateEventScreen = ({ navigation }) => {
     setSelectedDate(todayString);  
     generateMarkedDates(todayString);  
   }, []);
-  
+
   const generateMarkedDates = (selectedDateString) => {
     let dates = {};
     const today = new Date();
@@ -37,18 +59,13 @@ const CreateEventScreen = ({ navigation }) => {
   
   const onDayPress = (day) => {
     const updatedMarkedDates = { ...markedDates };
-
-    // Retirer la sélection précédente
     if (selectedDate) {
       updatedMarkedDates[selectedDate] = { ...updatedMarkedDates[selectedDate], selected: false, selectedColor: undefined };
     }
-
-    // Marquer la nouvelle date sélectionnée
     updatedMarkedDates[day.dateString] = { ...updatedMarkedDates[day.dateString], selected: true, selectedColor: '#4CAF50' };
-
     setMarkedDates(updatedMarkedDates);
     setSelectedDate(day.dateString);
-  };*/
+  };
 
   return (
     <View style={styles.container}>
@@ -70,10 +87,31 @@ const CreateEventScreen = ({ navigation }) => {
       </View>
 
 
-      <Text style={styles.label}>Event Date</Text>
-      {/*
-      <Calendar
-        
+      <Text style={styles.label}>Event Date</Text>  
+      
+      <View style={styles.timeContainer}>
+        <View style={styles.timeWrapper}>
+            <Text style={styles.sublabel}>Start</Text>
+            <TouchableOpacity onPress={() => showTimePicker('start')} style={styles.timeDisplay}>
+            <Text style={styles.timeText}>{formatTime(startTime)}</Text>
+            </TouchableOpacity>
+        </View>
+        <View style={styles.timeWrapper}>
+            <Text style={styles.sublabel}>End</Text>
+            <TouchableOpacity onPress={() => showTimePicker('end')} style={styles.timeDisplay}>
+            <Text style={styles.timeText}>{formatTime(endTime)}</Text>
+            </TouchableOpacity>
+        </View>
+      </View>
+      <DateTimePickerModal
+        isVisible={isTimePickerVisible}
+        mode="time"
+        onConfirm={handleConfirm}
+        onCancel={hideTimePicker}
+        is24Hour={true}
+      />
+
+      <Calendar   
         onDayPress={onDayPress}
         markedDates={markedDates}
         style={styles.calendar}
@@ -96,7 +134,7 @@ const CreateEventScreen = ({ navigation }) => {
             textDayHeaderFontSize: 16,
           }}
           
-      />*/}
+      />
 
       
 
@@ -109,10 +147,10 @@ const CreateEventScreen = ({ navigation }) => {
       <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Location" />
       <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Number of Players" keyboardType="number-pad" />
       <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Price per Person (optional)" keyboardType="numeric" />
-      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Team Distribution (optional)" />*/ }
+      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Team Distribution (optional)" />
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Next: Preview</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>*/ }
     </View>
   );
 };
@@ -141,7 +179,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 22,
-    fontFamily: 'Poppins_SemiBold',
+    fontFamily: 'Poppins_Bold',
     flexGrow: 1,
     textAlign: 'center',
     marginTop: 5
@@ -182,16 +220,39 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_Regular'
   },
   label: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Poppins_SemiBold',
     color: '#000'
+  },
+  sublabel:{
+    fontSize: 16,
+    fontFamily: 'Poppins_Regular',
+    color: '#333'
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', 
+    
+  },
+  timeWrapper: {
+    flex: 1, 
+    alignItems: 'center'
+  },
+  timeDisplay: {
+    backgroundColor: "#fff",
+    width: '100%',  
+    alignItems: 'center'
+  },
+  timeText: {
+    fontSize: 22,
+    color: '#333',
+    fontFamily: 'Poppins_Regular'
   },
   button: {
     backgroundColor: "#4CAF50",
     padding: 15,
     alignItems: 'center',
     borderRadius: 10,
-    marginTop: 20
   },
   buttonText: {
     color: "#fff",
