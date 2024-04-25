@@ -1,26 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Calendar } from 'react-native-calendars';
 import { TextInput } from 'react-native-paper';
 
 
 const CreateEventScreen = ({ navigation }) => {
   const [eventName, setEventName] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  /*
+  const [selectedDate, setSelectedDate] = useState('');
+  const [markedDates, setMarkedDates] = useState({});
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
+  useEffect(() => {
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    setSelectedDate(todayString);  
+    generateMarkedDates(todayString);  
+  }, []);
+  
+  const generateMarkedDates = (selectedDateString) => {
+    let dates = {};
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() + i);
+      const dateString = date.toISOString().split('T')[0];
+      dates[dateString] = {
+        marked: true,
+        dotColor: '#4CAF50',
+        selected: dateString === selectedDateString,
+        selectedColor: '#4CAF50'
+      };
+    }
+    setMarkedDates(dates);
   };
+  
+  const onDayPress = (day) => {
+    const updatedMarkedDates = { ...markedDates };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
+    // Retirer la sélection précédente
+    if (selectedDate) {
+      updatedMarkedDates[selectedDate] = { ...updatedMarkedDates[selectedDate], selected: false, selectedColor: undefined };
+    }
+
+    // Marquer la nouvelle date sélectionnée
+    updatedMarkedDates[day.dateString] = { ...updatedMarkedDates[day.dateString], selected: true, selectedColor: '#4CAF50' };
+
+    setMarkedDates(updatedMarkedDates);
+    setSelectedDate(day.dateString);
+  };*/
 
   return (
     <View style={styles.container}>
@@ -30,8 +58,9 @@ const CreateEventScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Plan a Sport Event</Text>
       </View>
+
+      <Text style={styles.label}>Event Name</Text>
       <TextInput activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Event Name" style={styles.input}  value={eventName} onChangeText={setEventName}/>
-      {/* Event name presets */}
       <Text style={styles.presetLabel}>Quick Presets:</Text>
       <View style={styles.presetContainer}>
         <EventPresetButton name="Indoor Soccer ⚽" setEventName={setEventName} />
@@ -39,29 +68,48 @@ const CreateEventScreen = ({ navigation }) => {
         <EventPresetButton name="Tennis 2V2 🎾" setEventName={setEventName} />
         <EventPresetButton name="Running Race 🏃" setEventName={setEventName} />
       </View>
-      <View style={styles.dateTimeContainer}>
-        <TouchableOpacity style={styles.dateTimeInput} onPress={() => showMode('date')}>
-          <Text style={styles.dateTimeText}>{date.toDateString()}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.dateTimeInput} onPress={() => showMode('time')}>
-          <Text style={styles.dateTimeText}>{date.toTimeString().slice(0, 5)}</Text>
-        </TouchableOpacity>
-      </View>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
+
+
+      <Text style={styles.label}>Event Date</Text>
+      {/*
+      <Calendar
+        
+        onDayPress={onDayPress}
+        markedDates={markedDates}
+        style={styles.calendar}
+        theme={{
+            backgroundColor: '#ffffff',
+            calendarBackground: '#ffffff',
+            textSectionTitleColor: '#b6c1cd',
+            todayTextColor: '#4CAF50',
+            todayBackgroundColor: 'transparent',
+            selectedDayBackgroundColor: 'transparent',  
+            selectedDayTextColor: '#ffffff',
+            dayTextColor: '#2d4150',
+            arrowColor: '#2d4150',
+            monthTextColor: '#2d4150',
+            textDayFontFamily: 'Poppins_Regular',
+            textMonthFontFamily: 'Poppins_Regular',
+            textDayHeaderFontFamily: 'Poppins_Regular',
+            textDayFontSize: 17,
+            textMonthFontSize: 18,
+            textDayHeaderFontSize: 16,
+          }}
+          
+      />*/}
+
+      
+
+
+
+
+
+
+      {/*
       <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Location" />
-      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Hosted By" />
       <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Number of Players" keyboardType="number-pad" />
       <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Price per Person (optional)" keyboardType="numeric" />
-      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Team Distribution (optional)" />
+      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Team Distribution (optional)" />*/ }
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Next: Preview</Text>
       </TouchableOpacity>
@@ -98,14 +146,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5
   },
-  input: {  
+  dateTimeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20
+  },
+  input: {
     marginBottom: 10,
     backgroundColor: "#fff"
   },
   presetContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 20,
+    marginBottom: 30,
     justifyContent: 'flex-start'
   },
   presetButton: {
@@ -128,18 +181,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Poppins_Regular'
   },
-  dateTimeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20
-  },
-  dateTimeInput: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    padding: 10
-  },
-  dateTimeText: {
-    fontSize: 18
+  label: {
+    fontSize: 16,
+    fontFamily: 'Poppins_SemiBold',
+    color: '#000'
   },
   button: {
     backgroundColor: "#4CAF50",
