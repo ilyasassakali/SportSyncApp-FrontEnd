@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
           style={[styles.button, { backgroundColor: buttonColor }]}
           onPressIn={() => setButtonColor("#449D48")} 
           onPressOut={() => setButtonColor("#4CAF50")} 
-          onPress={() => navigation.navigate('CreateEvent')}
+          onPress={() => navigation.navigate('EventName')}
           activeOpacity={1}
         >
           <Text style={styles.buttonText}>Plan a Sport Event</Text>
@@ -43,7 +43,7 @@ const HomeScreen = ({ navigation }) => {
         style={[styles.fab, { backgroundColor: fabColor }]}
         onPressIn={() => setFabColor("#449D48")}
         onPressOut={() => setFabColor("#4CAF50")}
-        onPress={() => navigation.navigate('CreateEvent')}
+        onPress={() => navigation.navigate('EventName')}
         activeOpacity={1}
       >
         <Ionicons name="create-outline" size={30} color="#FFFFFF" />

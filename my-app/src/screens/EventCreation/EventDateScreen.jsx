@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, Text, View, TouchableOpacity, Button} from "react-native";
 import { Calendar } from 'react-native-calendars';
-import { TextInput } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Ionicons } from "@expo/vector-icons";
 
-const CreateEventScreen = ({ navigation }) => {
-  const [eventName, setEventName] = useState('');
+
+const EventDateScreen = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [markedDates, setMarkedDates] = useState({});
   const [startTime, setStartTime] = useState(new Date());
@@ -69,36 +68,25 @@ const CreateEventScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="close" size={30} color="#000" />
+          <Ionicons name="chevron-back" size={30} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Plan a Sport Event</Text>
-      </View>
-
-    <ScrollView>
-        
-      <Text style={styles.label}>Event Name</Text>
-      <TextInput activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Event Name" style={styles.input}  value={eventName} onChangeText={setEventName}/>
-      <Text style={styles.presetLabel}>Quick Presets:</Text>
-      <View style={styles.presetContainer}>
-        <EventPresetButton name="Indoor Soccer ⚽" setEventName={setEventName} />
-        <EventPresetButton name="Street Basketball 4V4 🏀" setEventName={setEventName} />
-        <EventPresetButton name="Tennis 2V2 🎾" setEventName={setEventName} />
-        <EventPresetButton name="Running Race 🏃" setEventName={setEventName} />
+        <Text style={styles.headerTitle}>When?</Text>
       </View>
 
 
       <Text style={styles.label}>Timing and Date</Text>   
       <View style={styles.timeContainer}>
         <View style={styles.timeWrapper}>
-            <Text style={styles.sublabel}>Start</Text>
+            <Text style={styles.sublabel}>Start <Ionicons name="time-outline" size={15}  color="#333" /></Text>
             <TouchableOpacity onPress={() => showTimePicker('start')} style={styles.timeDisplay}>
             <Text style={styles.timeText}>{formatTime(startTime)}</Text>
             </TouchableOpacity>
         </View>
         <View style={styles.timeWrapper}>
-            <Text style={styles.sublabel}>End</Text>
+            <Text style={styles.sublabel}>End <Ionicons name="time-outline" size={15}  color="#333" /></Text>
             <TouchableOpacity onPress={() => showTimePicker('end')} style={styles.timeDisplay}>
             <Text style={styles.timeText}>{formatTime(endTime)}</Text>
             </TouchableOpacity>
@@ -134,34 +122,21 @@ const CreateEventScreen = ({ navigation }) => {
             textDayHeaderFontSize: 16,
           }}
           
-      />
+      /> 
 
-      <Text style={styles.label}>Location</Text>  
+        <TouchableOpacity
+            onPress={() => navigation.navigate('EventDate')}
+            style={styles.button}
+            activeOpacity={0.9}
+            >
+            <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
       
-      
-
-
-      {/*
-      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Location" />
-      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Number of Players" keyboardType="number-pad" />
-      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Price per Person (optional)" keyboardType="numeric" />
-      <TextInput style={styles.input} activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Team Distribution (optional)" />
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Next: Preview</Text>
-      </TouchableOpacity>*/ }
-      </ScrollView>
+    
     </View>
   );
 };
 
-const EventPresetButton = ({ name, setEventName }) => (
-    <TouchableOpacity
-      style={styles.presetButton}
-      onPress={() => setEventName(name)}
-    >
-      <Text style={styles.presetButtonText}>{name}</Text>
-    </TouchableOpacity>
-);
 
 const styles = StyleSheet.create({
   container: {
@@ -191,32 +166,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#fff"
   },
-  presetContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 20,
-    justifyContent: 'flex-start'
-  },
-  presetButton: {
-    borderRadius: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    marginRight: 5,
-    marginBottom: 5,
-    borderWidth: 1,
-    borderColor: "#e0e0e0"
-  },
-  presetLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 5,
-    fontFamily: 'Poppins_Regular'
-  },
-  presetButtonText: {
-    color: "#666",
-    fontSize: 12,
-    fontFamily: 'Poppins_Regular'
-  },
   label: {
     fontSize: 18,
     fontFamily: 'Poppins_SemiBold',
@@ -230,6 +179,7 @@ const styles = StyleSheet.create({
   timeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between', 
+    marginTop: 30
   },
   timeWrapper: {
     flex: 1, 
@@ -246,19 +196,29 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_Regular'
   },
   calendar: {
-    marginBottom: 30
+    marginTop: 30
   },
   button: {
-    backgroundColor: "#4CAF50",
-    padding: 15,
-    alignItems: 'center',
-    borderRadius: 10,
+    position: "absolute",
+    backgroundColor: "#4CAF50", 
+    padding: 12, 
+    alignItems: 'center', 
+    borderRadius: 5, 
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 20,
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84, 
+    elevation: 5 
   },
   buttonText: {
     color: "#fff",
-    fontSize: 18,
-    fontWeight: 'bold'
+    fontSize: 18, 
+    fontFamily: 'Poppins_SemiBold' 
   }
 });
 
-export default CreateEventScreen;
+export default EventDateScreen;

@@ -7,8 +7,10 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./screens/HomeScreens/HomeScreen";
 import EventsScreen from "./screens/EventsScreens/EventsScreen";
 import ProfileScreen from "./screens/ProfileScreens/ProfileScreen";
-import CreateEventScreen from "./screens/EventsScreens/CreateEventScreen"; 
+import EventNameScreen from "./screens/EventCreation/EventNameScreen";
+import EventDateScreen from "./screens/EventCreation/EventDateScreen";
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator(); 
@@ -70,7 +72,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="EventName" component={EventNameScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
