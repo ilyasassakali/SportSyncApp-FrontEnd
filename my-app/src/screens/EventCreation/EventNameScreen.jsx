@@ -11,7 +11,7 @@ function EventNameScreen({ navigation }) {
     <View style={styles.container}>
 
     <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={30} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>What's the plan?</Text>
@@ -65,14 +65,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20
+    marginBottom: 20,
+   
   },
   headerTitle: {
     fontSize: 22,
     fontFamily: 'Poppins_Bold',
     flexGrow: 1,
     textAlign: 'center',
-    marginTop: 5
+    marginTop: 5,
+  },
+  backButton: {
+    marginLeft: -10,
   },
   input: {
     marginBottom: 10,

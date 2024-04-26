@@ -2,7 +2,7 @@ import React from "react";
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./screens/HomeScreens/HomeScreen";
 import EventsScreen from "./screens/EventsScreens/EventsScreen";
@@ -73,7 +73,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
         <Stack.Screen name="EventName" component={EventNameScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -70,7 +70,7 @@ const EventDateScreen = ({ navigation }) => {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={30} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>When?</Text>
@@ -157,6 +157,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     textAlign: 'center',
     marginTop: 5
+  },
+  backButton: {
+    marginLeft: -10,
   },
   dateTimeContainer: {
     flexDirection: 'row',
