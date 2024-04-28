@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
-
+import * as Location from 'expo-location';
 
 
 const EventLocationScreen = ({ navigation }) => {
     const [location, setLocation] = useState('');
     const [region, setRegion] = useState({
-      latitude: 48.8566,
-      longitude: 2.3522,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      latitude: 50.8503,
+      longitude: 4.3517,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
     });
   
     const handleLocationSearch = async () => {
@@ -21,41 +21,67 @@ const EventLocationScreen = ({ navigation }) => {
         setRegion({
           latitude: parseFloat(data[0].lat),
           longitude: parseFloat(data[0].lon),
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         });
       }
     };
+
+    useEffect(() => {
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Permission to access location was denied');
+            return;
+          }
   
-  return (
-    <View style={styles.container}>
-
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={30} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Where?</Text>
-      </View>
-      <Text style={styles.label}>Location</Text>
-      <TextInput placeholder="Enter Event Location" style={styles.input} value={location} onChangeText={setLocation} onSubmitEditing={handleLocationSearch}/>   
-      <MapView
-        style={styles.map}
-        region={region}
-      >
-        <Marker coordinate={region} />
-      </MapView>
-    
-      <TouchableOpacity
-            onPress={() => navigation.navigate('EventDate')}
-            style={styles.button}
-            activeOpacity={0.9}
+          let loc = await Location.getCurrentPositionAsync({});
+          setRegion({
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          });
+        })();
+    }, []);
+  
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={30} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Where?</Text>
+        </View>
+        <Text style={styles.label}>Location</Text>
+        <View style={styles.searchArea}>
+          <TextInput
+            placeholder="Enter Event Location"
+            style={styles.input}
+            value={location}
+            onChangeText={setLocation}
+          />
+          <TouchableOpacity onPress={handleLocationSearch} style={styles.searchButton}>
+            <Ionicons name="search-outline" size={20} color="#fff" />
+          </TouchableOpacity>  
+        </View>
+        <MapView
+          style={styles.map}
+          region={region}
         >
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
+          <Marker coordinate={region} pinColor="#4caf50" />
+        </MapView>
+      
+        <TouchableOpacity
+          onPress={() => navigation.navigate('EventDate')}
+          style={styles.button}
+          activeOpacity={0.9}
+        >
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
 const styles = StyleSheet.create({
   container: {
@@ -65,8 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   map: {
-    height: 400,
-    marginVertical: 20,
+    height: "70%",
   },
   header: {
     flexDirection: 'row',
@@ -84,24 +109,30 @@ const styles = StyleSheet.create({
   backButton: {
     marginLeft: -10,
   },
-  input: {
+  searchArea: {
+    flexDirection: 'row',
     marginBottom: 10,
+  },
+  input: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#e0e0e0',
     padding: 10,
-    borderRadius: 10
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  searchButton: {
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   label: {
     fontSize: 18,
     fontFamily: 'Poppins_SemiBold',
     color: '#000',
   },
-  sublabel:{
-    fontSize: 16,
-    fontFamily: 'Poppins_Regular',
-    color: '#333'
-  },
-  
   button: {
     position: "absolute",
     backgroundColor: "#4CAF50", 
@@ -126,3 +157,4 @@ const styles = StyleSheet.create({
 });
 
 export default EventLocationScreen;
+
