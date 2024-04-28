@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Button} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity} from "react-native";
 import { Calendar } from 'react-native-calendars';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -125,7 +125,7 @@ const EventDateScreen = ({ navigation }) => {
       /> 
 
         <TouchableOpacity
-            onPress={() => navigation.navigate('EventDate')}
+            onPress={() => navigation.navigate('EventLocation')}
             style={styles.button}
             activeOpacity={0.9}
             >
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50", 
     padding: 12, 
     alignItems: 'center', 
-    borderRadius: 5, 
+    borderRadius: 10, 
     bottom: 0,
     left: 0,
     right: 0,

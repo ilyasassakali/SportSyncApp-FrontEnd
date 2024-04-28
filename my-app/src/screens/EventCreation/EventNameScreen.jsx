@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 
@@ -18,7 +17,7 @@ function EventNameScreen({ navigation }) {
       </View>
 
       <Text style={styles.label}>Event Name</Text>
-      <TextInput activeOutlineColor="#6fbf72" outlineColor="#e0e0e0" mode="outlined" label="Event Name" style={styles.input}  value={eventName} onChangeText={setEventName}/>
+      <TextInput placeholder="Enter Event Name" style={styles.input}  value={eventName} onChangeText={setEventName}/>
       <Text style={styles.presetLabel}>Quick Presets:</Text>
       <View style={styles.presetContainer}>
         <EventPresetButton name="Indoor Soccer ⚽" setEventName={setEventName} />
@@ -80,7 +79,10 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 10,
-    backgroundColor: "#fff"
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    padding: 10,
+    borderRadius: 10
   },
   presetContainer: {
     flexDirection: 'row',
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50", 
     padding: 12, 
     alignItems: 'center', 
-    borderRadius: 5, 
+    borderRadius: 10, 
     bottom: 0,
     left: 0,
     right: 0,
