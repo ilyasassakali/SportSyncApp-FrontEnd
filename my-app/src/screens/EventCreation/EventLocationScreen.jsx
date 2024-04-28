@@ -16,17 +16,27 @@ const EventLocationScreen = ({ navigation }) => {
     const [marker, setMarker] = useState(null);
   
     const handleLocationSearch = async () => {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}&addressdetails=1`);
         const data = await response.json();
         if (data && data.length > 0) {
-          const newRegion = {
-            latitude: parseFloat(data[0].lat),
-            longitude: parseFloat(data[0].lon),
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          };
-          setRegion(newRegion);
-          setMarker(newRegion);  
+            const item = data[0];
+            if (item.address) {
+                const formattedAddress = formatAddress(item.address);
+                setLocation(formattedAddress);
+                const newRegion = {
+                latitude: parseFloat(item.lat),
+                longitude: parseFloat(item.lon),
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+                };
+                setRegion(newRegion);
+                setMarker(newRegion);
+            } else {
+                // Gérer le cas où l'adresse n'est pas disponible
+                alert('Address details are not available for this location.');
+            }
+        } else {
+            alert('No results found');
         }
     };
 
@@ -47,6 +57,18 @@ const EventLocationScreen = ({ navigation }) => {
           });
         })();
     }, []);
+
+    const formatAddress = (address) => {
+        if (!address) return ''; 
+
+    const parts = [];
+    if (address.road) parts.push(address.road);
+    if (address.house_number) parts.push(address.house_number);
+    if (address.city || address.town) parts.push(address.city || address.town);
+    if (address.postcode) parts.push(address.postcode);
+    if (address.country) parts.push(address.country);
+    return parts.join(", ");
+    };
   
     return (
       <View style={styles.container}>
@@ -90,27 +112,27 @@ const EventLocationScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "transparent" // Assurez-vous que le conteneur est transparent
+    backgroundColor: "transparent" 
   },
   map: {
-    position: 'absolute', // La carte couvre tout l'écran
+    position: 'absolute', 
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
   },
   header: {
-    position: 'absolute', // Garde le positionnement absolu
-    top: 0, // Démarre tout en haut de la vue
+    position: 'absolute', 
+    top: 0, 
     left: 0,
     right: 0,
-    height: 100, // Hauteur spécifique pour le header
+    height: 100, 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    backgroundColor: '#fff', // Fond blanc pour le header
-    zIndex: 1, // Assurez-vous qu'il est au-dessus de la carte
+    backgroundColor: '#fff', 
+    zIndex: 1, 
     paddingTop: 45
   },
   headerTitle: {
@@ -125,8 +147,8 @@ const styles = StyleSheet.create({
     marginLeft: -10,
   },
   searchArea: {
-    position: 'absolute', // Positionnement absolu
-    top: 120, // Ajustez cette valeur en fonction de la position du header
+    position: 'absolute', 
+    top: 120, 
     left: 20,
     right: 20,
     flexDirection: 'row',
