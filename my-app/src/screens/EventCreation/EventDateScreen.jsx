@@ -80,13 +80,13 @@ const EventDateScreen = ({ navigation }) => {
       <Text style={styles.label}>Timing and Date</Text>   
       <View style={styles.timeContainer}>
         <View style={styles.timeWrapper}>
-            <Text style={styles.sublabel}>Start <Ionicons name="time-outline" size={15}  color="#333" /></Text>
+            <Text style={styles.sublabel}>Start Time<Ionicons name="time-outline" size={15}  color="#333" /></Text>
             <TouchableOpacity onPress={() => showTimePicker('start')} style={styles.timeDisplay}>
             <Text style={styles.timeText}>{formatTime(startTime)}</Text>
             </TouchableOpacity>
         </View>
         <View style={styles.timeWrapper}>
-            <Text style={styles.sublabel}>End <Ionicons name="time-outline" size={15}  color="#333" /></Text>
+            <Text style={styles.sublabel}>End Time<Ionicons name="time-outline" size={15}  color="#333" /></Text>
             <TouchableOpacity onPress={() => showTimePicker('end')} style={styles.timeDisplay}>
             <Text style={styles.timeText}>{formatTime(endTime)}</Text>
             </TouchableOpacity>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   dateTimeContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   input: {
     marginBottom: 10,
@@ -182,7 +182,10 @@ const styles = StyleSheet.create({
   timeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between', 
-    marginTop: 30
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    padding: 10,
+    borderRadius: 10
   },
   timeWrapper: {
     flex: 1, 
@@ -199,7 +202,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_Regular'
   },
   calendar: {
-    marginTop: 30
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 10,
+    paddingBottom: 20
   },
   button: {
     position: "absolute",

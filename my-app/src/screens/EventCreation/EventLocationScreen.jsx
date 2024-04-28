@@ -16,7 +16,7 @@ const EventLocationScreen = ({ navigation }) => {
     const [marker, setMarker] = useState(null);
   
     const handleLocationSearch = async () => {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}&addressdetails=1`);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}&addressdetails=1&accept-language=en`);
         const data = await response.json();
         if (data && data.length > 0) {
             const item = data[0];
