@@ -13,18 +13,21 @@ const EventLocationScreen = ({ navigation }) => {
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
     });
+    const [marker, setMarker] = useState(null);
   
     const handleLocationSearch = async () => {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`);
-      const data = await response.json();
-      if (data && data.length > 0) {
-        setRegion({
-          latitude: parseFloat(data[0].lat),
-          longitude: parseFloat(data[0].lon),
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
-      }
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`);
+        const data = await response.json();
+        if (data && data.length > 0) {
+          const newRegion = {
+            latitude: parseFloat(data[0].lat),
+            longitude: parseFloat(data[0].lon),
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          };
+          setRegion(newRegion);
+          setMarker(newRegion);  
+        }
     };
 
     useEffect(() => {
@@ -53,7 +56,6 @@ const EventLocationScreen = ({ navigation }) => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Where?</Text>
         </View>
-        <Text style={styles.label}>Location</Text>
         <View style={styles.searchArea}>
           <TextInput
             placeholder="Enter Event Location"
@@ -68,8 +70,10 @@ const EventLocationScreen = ({ navigation }) => {
         <MapView
           style={styles.map}
           region={region}
+          showsMyLocationButton={true}
+          showsUserLocation={true}
         >
-          <Marker coordinate={region} pinColor="#4caf50" />
+          {marker && <Marker coordinate={marker} pinColor="#4caf50" />}
         </MapView>
       
         <TouchableOpacity
@@ -81,37 +85,53 @@ const EventLocationScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     );
-  };
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    paddingTop: 50,
-    backgroundColor: "#fff"
+    backgroundColor: "transparent" // Assurez-vous que le conteneur est transparent
   },
   map: {
-    height: "70%",
+    position: 'absolute', // La carte couvre tout l'écran
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   header: {
+    position: 'absolute', // Garde le positionnement absolu
+    top: 0, // Démarre tout en haut de la vue
+    left: 0,
+    right: 0,
+    height: 100, // Hauteur spécifique pour le header
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20
+    paddingHorizontal: 20,
+    backgroundColor: '#fff', // Fond blanc pour le header
+    zIndex: 1, // Assurez-vous qu'il est au-dessus de la carte
+    paddingTop: 45
   },
   headerTitle: {
     fontSize: 22,
     fontFamily: 'Poppins_Bold',
     flexGrow: 1,
     textAlign: 'center',
-    marginTop: 5
+    marginTop: 5,
+    
   },
   backButton: {
     marginLeft: -10,
   },
   searchArea: {
+    position: 'absolute', // Positionnement absolu
+    top: 120, // Ajustez cette valeur en fonction de la position du header
+    left: 20,
+    right: 20,
     flexDirection: 'row',
-    marginBottom: 10,
+    zIndex: 1,
+    
   },
   input: {
     flex: 1,
@@ -120,6 +140,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginRight: 10,
+    backgroundColor: '#fff'
   },
   searchButton: {
     backgroundColor: "#4CAF50",
@@ -127,11 +148,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  label: {
-    fontSize: 18,
-    fontFamily: 'Poppins_SemiBold',
-    color: '#000',
   },
   button: {
     position: "absolute",
