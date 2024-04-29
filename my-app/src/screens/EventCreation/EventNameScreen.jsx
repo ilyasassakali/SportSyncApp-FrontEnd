@@ -27,8 +27,8 @@ function EventNameScreen({ navigation }) {
       </View>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('EventDate')}
-        style={styles.button}
+        onPress={() => eventName.trim() && navigation.navigate('EventDate')}
+        style={eventName.trim() ? styles.button : styles.buttonDisabled}
         activeOpacity={0.9}
         >
         <Text style={styles.buttonText}>Continue</Text>
@@ -140,5 +140,21 @@ const styles = StyleSheet.create({
     color: "#fff", 
     fontSize: 18, 
     fontFamily: 'Poppins_SemiBold' 
-  }
+  },
+  buttonDisabled: {
+    position: "absolute",
+    backgroundColor: "#cccccc", 
+    padding: 12,
+    alignItems: 'center',
+    borderRadius: 10,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
 });
