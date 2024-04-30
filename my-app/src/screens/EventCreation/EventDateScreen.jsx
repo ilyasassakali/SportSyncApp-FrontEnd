@@ -77,7 +77,7 @@ const EventDateScreen = ({ navigation }) => {
       </View>
 
 
-      <Text style={styles.label}>Timing and Date</Text>   
+      <Text style={styles.label}>Time & Date</Text>   
       <View style={styles.timeContainer}>
         <View style={styles.timeWrapper}>
             <Text style={styles.sublabel}>Start Time<Ionicons name="time-outline" size={15}  color="#333" /></Text>

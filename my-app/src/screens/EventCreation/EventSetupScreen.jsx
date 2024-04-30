@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-nativ
 import { Ionicons } from "@expo/vector-icons";
 
 function EventSetupScreen({ navigation }) {
-  const [numberOfPlayers, setNumberOfPlayers] = useState(1);
-  const [teamOne, setTeamOne] = useState('');
-  const [teamTwo, setTeamTwo] = useState('');
+  const [numberOfPlayers, setNumberOfPlayers] = useState(10);
+  const [teamOne, setTeamOne] = useState('5');
+  const [teamTwo, setTeamTwo] = useState('5');
   const [teamOneColor, setTeamOneColor] = useState('#4CAF50');
   const [teamTwoColor, setTeamTwoColor] = useState('#ff4500');
-  const colors = ['#4CAF50', '#ff4500', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#000000', '#ffffff']; 
+  const colors = ['#4CAF50', 'red', '#0080ff', '#ffe200', 'purple', 'orange', 'black', '#ffffff']; 
+  const [price, setPrice] = useState('0');
+
 
   const handleIncrease = () => {
     setNumberOfPlayers(prev => prev + 1);
@@ -19,6 +21,10 @@ function EventSetupScreen({ navigation }) {
       setNumberOfPlayers(prev => prev - 1);
     }
   };
+
+  function isValidPrice(value) {
+    return /^\d+(\,\d{0,2})?$/.test(value);
+  }
 
   return (
     <View style={styles.container}>
@@ -35,7 +41,7 @@ function EventSetupScreen({ navigation }) {
           <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
         <TextInput 
-          placeholder="Enter Number of Players" 
+          placeholder="10" 
           style={styles.numberInput} 
           value={numberOfPlayers.toString()} 
           keyboardType="numeric"
@@ -48,7 +54,7 @@ function EventSetupScreen({ navigation }) {
 
       <Text style={styles.label}>Team Distribution</Text>
       <View style={styles.teamDistributionContainer}>
-        <Ionicons name="shirt-outline" size={40} style={[styles.shirtIcon, {
+        <Ionicons name="shirt" size={40} style={[styles.shirtIcon, {
             color: teamOneColor,
             backgroundColor: teamOneColor === '#ffffff' ? '#4CAF50' : 'transparent', 
             padding: teamOneColor === '#ffffff' ? 1 : 0 
@@ -68,7 +74,7 @@ function EventSetupScreen({ navigation }) {
           onChangeText={setTeamTwo}
           keyboardType='numeric'
         />
-        <Ionicons name="shirt-outline" size={40} style={[styles.shirtIcon, {
+        <Ionicons name="shirt" size={40} style={[styles.shirtIcon, {
             color: teamTwoColor,
             backgroundColor: teamTwoColor === '#ffffff' ? '#4CAF50' : 'transparent', 
             padding: teamTwoColor === '#ffffff' ? 1 : 0 
@@ -118,14 +124,38 @@ function EventSetupScreen({ navigation }) {
         </View>
        </View>
 
+       <Text style={styles.label}>Price per Person</Text>
+       <View style={styles.priceContainer}>
+        <Ionicons name="logo-euro" size={35} color="#4CAF50" style={{ marginRight: 10 }} />
+        <TextInput
+            placeholder="1"
+            style={styles.priceInput}
+            value={price}
+            onChangeText={setPrice}
+            keyboardType="decimal-pad"
+        />
+        </View>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate('EventSetup')}
-        style={styles.button}
-        activeOpacity={0.9}
-      >
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
+
+        <TouchableOpacity
+            onPress={() => {
+                if (teamOne && teamTwo && numberOfPlayers > 0 && isValidPrice(price) 
+                    && (parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers)
+                    && teamOneColor !== teamTwoColor) { 
+                    navigation.navigate('EventSetup');
+                }
+            }}
+            style={teamOne && teamTwo && numberOfPlayers > 0 && isValidPrice(price) 
+                && (parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers) 
+                && teamOneColor !== teamTwoColor 
+                    ? styles.button : styles.buttonDisabled}
+            activeOpacity={0.9}
+            disabled={!teamOne || !teamTwo || numberOfPlayers <= 0 || !isValidPrice(price) 
+                || (parseInt(teamOne) + parseInt(teamTwo) !== numberOfPlayers) || teamOneColor === teamTwoColor} 
+            >
+            <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+
     </View>
   );
 }
@@ -159,16 +189,19 @@ const styles = StyleSheet.create({
   numberInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 20
   },
   numberInput: {
-    flex: 1,
-    borderWidth: 1,
+    borderBottomWidth:1,
+    borderTopWidth: 1,
     borderColor: '#e0e0e0',
     padding: 10,
     borderRadius: 10,
     textAlign: 'center',
-    marginHorizontal: 20
+    marginHorizontal: -10,
+    fontSize: 16,
+    fontFamily: 'Poppins_Regular',
+    width: 100
   },
   changeNumberButton: {
     padding: 10,
@@ -193,7 +226,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     textAlign: 'center',
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    fontSize: 16,
+    fontFamily: 'Poppins_Regular'
   },
   vsText: {
     marginHorizontal: 10,
@@ -204,6 +239,8 @@ const styles = StyleSheet.create({
   colorPickerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 20
+
   },
   colorPickerContainerLeft: {
     width: '50%', 
@@ -227,10 +264,25 @@ const styles = StyleSheet.create({
   colorOption: {
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: 10,
     margin: 5,
-    borderWidth: 0.25, 
-    borderColor: '#000' 
+    borderWidth: 1.25, 
+    borderColor: '#e0e0e0' 
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20
+  },
+  priceInput: {
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 16,
+    fontFamily: 'Poppins_Regular',
+    width: 100,
+    textAlign: 'center',
   },
   button: {
     position: "absolute",
@@ -252,5 +304,21 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontFamily: 'Poppins_SemiBold'
-  }
+  },
+  buttonDisabled: {
+    position: "absolute",
+    backgroundColor: "#cccccc", 
+    padding: 12,
+    alignItems: 'center',
+    borderRadius: 10,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
 });
