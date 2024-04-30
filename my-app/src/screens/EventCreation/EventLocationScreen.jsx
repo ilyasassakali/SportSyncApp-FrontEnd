@@ -101,7 +101,7 @@ const EventLocationScreen = ({ navigation }) => {
         <TouchableOpacity
             onPress={() => {
                 if (location && marker) {
-                navigation.navigate('EventLocation');
+                navigation.navigate('EventSetup');
                 }
             }}
             style={(location && marker) ? styles.button : styles.buttonDisabled}
