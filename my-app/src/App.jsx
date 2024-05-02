@@ -11,6 +11,7 @@ import EventNameScreen from "./screens/EventCreation/EventNameScreen";
 import EventDateScreen from "./screens/EventCreation/EventDateScreen";
 import EventLocationScreen from "./screens/EventCreation/EventLocationScreen";
 import EventSetupScreen from "./screens/EventCreation/EventSetupScreen";
+import EventOverviewScreen from "./screens/EventOverviewScreens/EventOverviewScreen"
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 
@@ -78,6 +79,8 @@ export default function App() {
         <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
         <Stack.Screen name="EventLocation" component={EventLocationScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
         <Stack.Screen name="EventSetup" component={EventSetupScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
+
+        <Stack.Screen name="EventOverview" component={EventOverviewScreen} options={{ headerShown: false}}/>
 
       </Stack.Navigator>
     </NavigationContainer>

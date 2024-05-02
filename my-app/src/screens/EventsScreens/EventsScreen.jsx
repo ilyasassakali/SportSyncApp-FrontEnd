@@ -8,25 +8,31 @@ const events = [
     id: 1,
     day: "16",
     month: "Dec",
-    title: "Indoor Soccer 5v5",
+    title: "Indoor Soccer 5v5 ⚽",
     time: "18:00 - 19:30",
-    location: "Leuzesteenweg 241, 9600 Ronse"
+    location: "Leuzesteenweg 241, 9600 Ronse",
+    hoste: "Abdeslam Boutaarrourt",
+    date: "Wednesday 16 Decembre"
   },
   {
     id: 2,
     day: "20",
     month: "Dec",
-    title: "Street Basketball",
+    title: "Street Basketball 🏀",
     time: "10:00 - 12:00",
-    location: "Ruslandstraat 2, 1000 Brussel"
+    location: "Ruslandstraat 2, 1000 Brussel",
+    hoste: "Mohammed El Amritesafd",
+    date: "Wednesday 16 Decembre"
   },
   {
     id: 3,
     day: "26",
     month: "Dec",
-    title: "Indoor Soccer 5v5",
+    title: "Indoor Minivoetbal 5vs5 ⚽ Jacky Leroy zaal",
     time: "18:00 - 19:30",
-    location: "Leuzesteenweg 241, 9600 Ronse"
+    location: "Leuzesteenweg van DerBroekcaed 241, 9600 Ronse, Belgium ",
+    hoste: "Ismail Assakali",
+    date: "Wednesday 16 Decembre"
   },
   {
     id: 4,
@@ -34,7 +40,9 @@ const events = [
     month: "Jan",
     title: "Street Basketball",
     time: "10:00 - 12:00",
-    location: "Ruslandstraat 2, 1000 Brussel"
+    location: "Ruslandstraat 2, 1000 Brussel",
+    hoste: "Yarno De Hedebouer",
+    date: "Wednesday 16 Decembre"
   },
   {
     id: 5,
@@ -42,7 +50,9 @@ const events = [
     month: "Jan",
     title: "Indoor Soccer 5v5",
     time: "18:00 - 19:30",
-    location: "Leuzesteenweg 241, 9600 Ronse"
+    location: "Leuzesteenweg 241, 9600 Ronse",
+    hoste: "Ilyas Assakali",
+    date: "Wednesday 16 Decembre"
   },
   {
     id: 6,
@@ -50,7 +60,9 @@ const events = [
     month: "Feb",
     title: "Street Basketball",
     time: "10:00 - 12:00",
-    location: "Ruslandstraat 2, 1000 Brussel"
+    location: "Ruslandstraat 2, 1000 Brussel",
+    hoste: "Mohammed El Amrites",
+    date: "Wednesday 16 Decembre"
   },
   {
     id: 7,
@@ -58,12 +70,14 @@ const events = [
     month: "Feb",
     title: "Indoor Soccer 5v5",
     time: "18:00 - 19:30",
-    location: "Leuzesteenweg 241, 9600 Ronse"
+    location: "Leuzesteenweg 241, 9600 Ronse",
+    hoste: "Ilyas Assakali",
+    date: "Wednesday 16 Decembre"
   },
 ];
 
-const EventCard = ({ event }) => (
-  <View style={styles.cardContainer}>
+const EventCard = ({ event, onPress }) => (
+  <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
     <View style={styles.dateContainer}>
       <Text style={styles.dateDay}>{event.day}</Text>
       <Text style={styles.dateMonth}>{event.month}</Text>
@@ -79,7 +93,7 @@ const EventCard = ({ event }) => (
         <Text style={styles.eventDetailsText}>{event.location}</Text>
       </View>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
 
@@ -91,7 +105,7 @@ const EventsScreen = ({ navigation }) => {
       <Text style={styles.header}>Upcoming Events</Text>
       <ScrollView style={styles.scrollView}>
         {events.map(event => (
-          <EventCard key={event.id} event={event} />
+          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })}/>
         ))}
       </ScrollView>
       {/* Floating Action Button */}

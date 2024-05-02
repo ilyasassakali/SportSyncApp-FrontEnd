@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-nativ
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { customMapStyle } from '../../components/MapStyles';
+
 
 
 const EventLocationScreen = ({ navigation }) => {
@@ -32,7 +34,6 @@ const EventLocationScreen = ({ navigation }) => {
                 setRegion(newRegion);
                 setMarker(newRegion);
             } else {
-                // Gérer le cas où l'adresse n'est pas disponible
                 alert('Address details are not available for this location.');
             }
         } else {
@@ -94,6 +95,7 @@ const EventLocationScreen = ({ navigation }) => {
           region={region}
           showsMyLocationButton={true}
           showsUserLocation={true}
+          customMapStyle={customMapStyle}
         >
           {marker && <Marker coordinate={marker} pinColor="#4caf50" />}
         </MapView>
