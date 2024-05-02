@@ -55,6 +55,31 @@ function EventOverviewScreen({route, navigation }) {
         </View>
       </View>
 
+
+      <View style={styles.statisticsContainer}>
+        <View style={styles.statItem}>
+            <View style={styles.distributionContainer}>
+                <Text style={styles.distributionText}>5 vs 5</Text>
+            </View>
+            <Text style={styles.statNumber}>10</Text>
+            <Text style={styles.statLabel}>Players</Text>
+        </View>
+        <View style={styles.statItem}>
+            <Text style={styles.statNumber}>
+              2<Text style={styles.smallUnit}>h</Text><Text style={styles.smallerUnit}>30</Text>
+            </Text>
+            <Text style={styles.statLabel}>Duration</Text>
+        </View>
+        <View style={styles.statItem}>
+            <Text style={styles.statNumber}>
+            <Text style={styles.smallUnit}>€</Text>2.5
+            </Text>
+            <Text style={styles.statLabel}>Price</Text>
+        </View>
+      </View>
+
+
+
       
     </View>
   );
@@ -125,5 +150,48 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 20,
+  },
+  statisticsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  statItem: {
+    alignItems: 'center',
+    position: 'relative', 
+  },
+  statNumber: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 40,
+    color: "#333",
+  },
+  statLabel: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 14,
+    color: "#4CAF50",
+    marginTop: -20
+  },
+  distributionContainer: {
+    position: 'absolute',
+    top: 8, 
+    left: '90%', 
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  distributionText: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 16,
+    color: "#333",
+  },
+  smallUnit: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 18,  
+  },
+  smallerUnit: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 24, 
   }
+
 });
