@@ -103,7 +103,7 @@ const EventsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Upcoming Events</Text>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {events.map(event => (
           <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })}/>
         ))}

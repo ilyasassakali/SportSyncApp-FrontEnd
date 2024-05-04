@@ -17,7 +17,8 @@ function EventOverviewScreen({route, navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.outerContainer}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.checkButton}>
@@ -85,100 +86,125 @@ function EventOverviewScreen({route, navigation }) {
             <Text style={styles.guestsNumber}>7 going</Text>
         </View>
         
-        <View style={styles.profileHeader}>
-                <View style={styles.initialsContainer}>
-                <Text style={styles.initialsText}>IA</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                <Text style={styles.nameText}>Ilyas Assakali</Text>
-                    <View style={styles.payStatusContainer}>
-                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                    <Text style={styles.payText}>Paid</Text>
-                    </View>     
-                </View>
-        </View>
-        <View style={styles.profileHeader}>
-                <View style={styles.initialsContainer}>
-                <Text style={styles.initialsText}>MA</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                <Text style={styles.nameText}>Mamadou Aebettatatbej</Text>             
-                    <View style={styles.payStatusContainer}>
-                    <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
-                    <Text style={styles.payText}>Pay Cash</Text>
-                    </View>
-                </View>
-        </View>
-        <View style={styles.profileHeader}>
-                <View style={styles.initialsContainer}>
-                <Text style={styles.initialsText}>MM</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                <Text style={styles.nameText}>Mohamed Martilal</Text>
-                    <View style={styles.payStatusContainer}>
-                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                    <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-        </View>
-        <View style={styles.profileHeader}>
-                <View style={styles.initialsContainer}>
-                <Text style={styles.initialsText}>MM</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                <Text style={styles.nameText}>Mohamed Martilal</Text>
-                    <View style={styles.payStatusContainer}>
-                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                    <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-        </View>
-        <View style={styles.profileHeader}>
-                <View style={styles.initialsContainer}>
-                <Text style={styles.initialsText}>MM</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                <Text style={styles.nameText}>Mohamed Martilal</Text>
-                    <View style={styles.payStatusContainer}>
-                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                    <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-        </View>
-        <View style={styles.profileHeader}>
-                <View style={styles.initialsContainer}>
-                <Text style={styles.initialsText}>MM</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                <Text style={styles.nameText}>Mohamed Martilal</Text>
-                    <View style={styles.payStatusContainer}>
-                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                    <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-        </View>
-        <View style={styles.profileHeader}>
-                <View style={styles.initialsContainer}>
-                <Text style={styles.initialsText}>MM</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                <Text style={styles.nameText}>Mohamed pokeaa</Text>
-                    <View style={styles.payStatusContainer}>
-                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                    <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-        </View>
         
-        
+
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>IA</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>Ilyas Assakali</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+            </View>
+            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
+        </View>
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>ME</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>Mohamed El Asharfil</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+            </View>
+            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
+        </View>
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>AB</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>Abdellah  Bakalioussama</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Pay Cash</Text>
+                    </View>
+                </View>
+            </View>
+            <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
+        </View>
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>YH</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>Yarno De Hedebouer</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+            </View>
+            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
+        </View>
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>OB</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>Oussama Ben KhafirKabir</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+            </View>
+            <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
+        </View>
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>IA</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>Ismail Assakali</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Pay Cash</Text>
+                    </View>
+                </View>
+            </View>
+            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
+        </View>
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>AA</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>Amine Assakali</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Pay Cash</Text>
+                    </View>
+                </View>
+            </View>
+            <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
+        </View>
       </View>
 
-
-
-
-
-      
     </ScrollView>
+    <TouchableOpacity
+        style={styles.button}
+        activeOpacity={0.9}
+        onPress={() => console.log("Share Link Pressed")}
+      >
+        <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
+        <Text style={styles.buttonText}>Share Invite Link</Text>
+    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -186,12 +212,14 @@ export default EventOverviewScreen;
 
 
 const styles = StyleSheet.create({
-  container: {
+  outerContainer: {
     flex: 1,
     padding: 20,
     paddingTop: 50,
     backgroundColor: "#fff",
-    paddingBottom: 50,
+  },
+  container: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -295,9 +323,8 @@ const styles = StyleSheet.create({
     fontSize: 24, 
   },
   guestsContainer: {
-  paddingBottom: 150,
+  paddingBottom: 60,
 },
-
 goingHeader: {
   flexDirection: 'row',
   alignItems: 'center',
@@ -306,8 +333,15 @@ goingHeader: {
 profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    justifyContent: 'space-between',
 },
+profileContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1, 
+}
+,
 initialsContainer: {
   width: 50,
   height: 50,
@@ -346,8 +380,37 @@ payStatusContainer: {
   iconStyle: {
     marginTop: -2, 
   },
+  shirtIcon: {
+    alignSelf: 'center',  
+  },
   
-
+  button: {
+    position: "absolute",
+    backgroundColor: "#4CAF50", 
+    padding: 12, 
+    alignItems: 'center', 
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderRadius: 10, 
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 20,
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84, 
+    elevation: 5 
+  },
+  buttonText: {
+    color: "#fff", 
+    fontSize: 18, 
+    fontFamily: 'Poppins_SemiBold' 
+  },
+  linkIcon: {
+    marginRight: 5,
+    transform: [{ rotate: '45deg' }] 
+  },
   
   
 
