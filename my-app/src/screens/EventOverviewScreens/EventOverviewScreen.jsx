@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
@@ -17,7 +17,7 @@ function EventOverviewScreen({route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.checkButton}>
@@ -66,7 +66,7 @@ function EventOverviewScreen({route, navigation }) {
         </View>
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>
-              2<Text style={styles.smallUnit}>h</Text><Text style={styles.smallerUnit}>30</Text>
+              1<Text style={styles.smallUnit}>h</Text><Text style={styles.smallerUnit}>30</Text>
             </Text>
             <Text style={styles.statLabel}>Duration</Text>
         </View>
@@ -79,9 +79,106 @@ function EventOverviewScreen({route, navigation }) {
       </View>
 
 
+      <View style={styles.guestsContainer}>
+        <View style={styles.goingHeader}>
+            <Ionicons name="radio-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+            <Text style={styles.guestsNumber}>7 going</Text>
+        </View>
+        
+        <View style={styles.profileHeader}>
+                <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>IA</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                <Text style={styles.nameText}>Ilyas Assakali</Text>
+                    <View style={styles.payStatusContainer}>
+                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                    <Text style={styles.payText}>Paid</Text>
+                    </View>     
+                </View>
+        </View>
+        <View style={styles.profileHeader}>
+                <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>MA</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                <Text style={styles.nameText}>Mamadou Aebettatatbej</Text>             
+                    <View style={styles.payStatusContainer}>
+                    <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
+                    <Text style={styles.payText}>Pay Cash</Text>
+                    </View>
+                </View>
+        </View>
+        <View style={styles.profileHeader}>
+                <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>MM</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                <Text style={styles.nameText}>Mohamed Martilal</Text>
+                    <View style={styles.payStatusContainer}>
+                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                    <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+        </View>
+        <View style={styles.profileHeader}>
+                <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>MM</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                <Text style={styles.nameText}>Mohamed Martilal</Text>
+                    <View style={styles.payStatusContainer}>
+                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                    <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+        </View>
+        <View style={styles.profileHeader}>
+                <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>MM</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                <Text style={styles.nameText}>Mohamed Martilal</Text>
+                    <View style={styles.payStatusContainer}>
+                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                    <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+        </View>
+        <View style={styles.profileHeader}>
+                <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>MM</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                <Text style={styles.nameText}>Mohamed Martilal</Text>
+                    <View style={styles.payStatusContainer}>
+                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                    <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+        </View>
+        <View style={styles.profileHeader}>
+                <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>MM</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                <Text style={styles.nameText}>Mohamed pokeaa</Text>
+                    <View style={styles.payStatusContainer}>
+                    <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                    <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+        </View>
+        
+        
+      </View>
+
+
+
+
 
       
-    </View>
+    </ScrollView>
   );
 }
 
@@ -94,7 +191,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 50,
     backgroundColor: "#fff",
-    paddingBottom: 50
+    paddingBottom: 50,
   },
   header: {
     flexDirection: 'row',
@@ -154,8 +251,12 @@ const styles = StyleSheet.create({
   statisticsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    marginBottom: 10,
+    paddingHorizontal: 5,
+    paddingBottom: 10,
+    backgroundColor: '#fff',
+    borderBottomWidth: 0.5, 
+    borderBottomColor: '#ccc', 
   },
   statItem: {
     alignItems: 'center',
@@ -164,7 +265,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontFamily: 'Poppins_Regular',
     fontSize: 40,
-    color: "#333",
+    color: "#666",
   },
   statLabel: {
     fontFamily: 'Poppins_Regular',
@@ -183,7 +284,7 @@ const styles = StyleSheet.create({
   distributionText: {
     fontFamily: 'Poppins_Regular',
     fontSize: 16,
-    color: "#333",
+    color: "#666",
   },
   smallUnit: {
     fontFamily: 'Poppins_Regular',
@@ -192,6 +293,62 @@ const styles = StyleSheet.create({
   smallerUnit: {
     fontFamily: 'Poppins_Regular',
     fontSize: 24, 
-  }
+  },
+  guestsContainer: {
+  paddingBottom: 150,
+},
+
+goingHeader: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 10, 
+},
+profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10
+},
+initialsContainer: {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+  backgroundColor: '#D7F5D8',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: 15,
+},
+initialsText: {
+  color: '#4CAF50',
+  fontSize: 20,
+  fontFamily: 'Poppins_SemiBold',
+},
+profileInfo: {
+    flexDirection: 'column',
+    justifyContent: 'center'
+},
+guestsNumber: {
+  fontFamily: 'Poppins_SemiBold',
+  fontSize: 18,
+  color: "#666",
+  marginLeft: 10,
+},
+payStatusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  payText: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 16,
+    marginLeft: 5,
+    color: '#666',
+  },
+  iconStyle: {
+    marginTop: -2, 
+  },
+  
+
+  
+  
 
 });
