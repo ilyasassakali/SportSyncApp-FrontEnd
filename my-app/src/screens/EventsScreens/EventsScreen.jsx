@@ -83,14 +83,9 @@ const EventCard = ({ event, onPress }) => (
       <Text style={styles.dateMonth}>{event.month}</Text>
     </View>
     <View style={styles.detailContainer}>
-      <Text style={styles.eventTitle}>{event.title}</Text>
+      <Text style={styles.eventTitle} numberOfLines={1} ellipsizeMode="tail">{event.title}</Text>
       <View style={styles.eventDetailItem}>
-        <Ionicons name="time-outline" size={16} color="#333" style={styles.eventDetailsIcon} />
         <Text style={styles.eventDetailsText}>{event.time}</Text>
-      </View>
-      <View style={styles.eventDetailItem}>
-        <Ionicons name="location-outline" size={16} color="#333" style={styles.eventDetailsIcon} />
-        <Text style={styles.eventDetailsText}>{event.location}</Text>
       </View>
     </View>
   </TouchableOpacity>
@@ -102,7 +97,7 @@ const EventsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Upcoming Events</Text>
+      <Text style={styles.header}>Events</Text>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {events.map(event => (
           <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })}/>
@@ -141,28 +136,26 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flexDirection: 'row',
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    borderColor: "#E0E0E0", 
-    borderWidth: 1,
+    padding: 10,  
+    borderBottomWidth: 0.5, 
+    borderBottomColor: '#ccc',   
   },
   dateContainer: {
-    marginRight: 20,
+    marginRight: 30,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   dateDay: {
     fontFamily: 'Poppins_SemiBold',
-    fontSize: 32,
+    fontSize: 22,
     color: "#333",
-    marginBottom: -15,
+    marginBottom: -11,
+    color: "#4CAF50"
   },
   dateMonth: {
     fontFamily: 'Poppins_Regular',
     fontSize: 18,
-    color: "#333",
+    color: "#4CAF50",
     marginBottom: 0,
   },
   detailContainer: {
@@ -171,9 +164,9 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     fontFamily: 'Poppins_SemiBold',
-    fontSize: 20,
+    fontSize: 18,
     color: "#333",
-    marginBottom: 4
+    marginBottom: -1,
   },
   eventDetails: {
     fontFamily: 'Poppins_Regular',
@@ -185,14 +178,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',  
     
   },
-  eventDetailsIcon: {
-    marginRight: 5,  
-    marginBottom: 5
-  },
   eventDetailsText: {
     fontFamily: 'Poppins_Regular',
     fontSize: 14,
-    color: "#666",
+    color: "#4CAF50",
+    color:"#333"
   },
   fab: {
     position: 'absolute',
