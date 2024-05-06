@@ -41,15 +41,13 @@ function PastEventsScreen({navigation}) {
   );
 }
 
-const EventsScreen = () => {
+const EventsScreen = ({ navigation }) => {
   const [fabColor, setFabColor] = useState("#4CAF50");
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Events</Text>
 
-
-      <NavigationContainer independent={true}>
         <Tab.Navigator
         screenOptions={{
           tabBarStyle: { backgroundColor: 'white' },
@@ -62,7 +60,6 @@ const EventsScreen = () => {
           <Tab.Screen name="Up Next" component={UpNextEventsScreen} />
           <Tab.Screen name="Past" component={PastEventsScreen} />
         </Tab.Navigator>
-      </NavigationContainer>
 
 
       <TouchableOpacity

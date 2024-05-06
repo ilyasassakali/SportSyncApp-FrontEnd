@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.profileHeader}>
@@ -17,8 +17,8 @@ const ProfileScreen = () => {
 
       {/* Profile Options */}
       <View style={styles.optionsContainer}>
-        <OptionItem title="Edit Profile" />
-        <OptionItem title="Notifications" />
+        <OptionItem title="Edit Profile" onPress={() => navigation.navigate('EditProfile')}/>
+        <OptionItem title="Notifications" onPress={() => navigation.navigate('Notifications')}/>
         <OptionItem title="Contact Us" />
         <OptionItem title="Frequently Asked Questions" />
         <OptionItem title="Sign Out" />
@@ -34,8 +34,8 @@ const ProfileScreen = () => {
   );
 };
 
-const OptionItem = ({ title }) => (
-  <TouchableOpacity style={styles.optionItem}>
+const OptionItem = ({ title, onPress }) => (
+  <TouchableOpacity style={styles.optionItem} onPress={onPress}>
     <Text style={styles.optionText}>{title}</Text>
     <Ionicons name="chevron-forward-outline" size={20} color="#000" />
   </TouchableOpacity>
