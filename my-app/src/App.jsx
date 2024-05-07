@@ -16,8 +16,8 @@ import EditProfileScreen from "./screens/ProfileScreens/EditProfileScreen"
 import NotificationsScreen from "./screens/ProfileScreens/NotificationsScreen"
 import IntroScreen from "./screens/RegisterScreens/IntroScreen"
 import CreateAccountScreen from "./screens/RegisterScreens/CreateAccountScreen"
+import LoginScreen from "./screens/RegisterScreens/LoginScreen";
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
-
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator(); 
@@ -78,6 +78,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        
         <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
         <Stack.Screen name="EventName" component={EventNameScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
@@ -91,6 +92,7 @@ export default function App() {
 
         <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false}}/>
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false}}/>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false}}/>
         
       </Stack.Navigator>
     </NavigationContainer>

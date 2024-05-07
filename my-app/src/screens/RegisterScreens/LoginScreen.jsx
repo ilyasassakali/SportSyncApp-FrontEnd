@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
-const CreateAccountScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -12,11 +12,6 @@ const CreateAccountScreen = ({ navigation }) => {
             </View>
             <View style={styles.content}>
                 
-                <Text style={styles.sublabel}>Name</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Name" 
-                />
                 <Text style={styles.sublabel}>E-mail</Text>
                 <TextInput 
                     style={styles.input} 
@@ -29,9 +24,6 @@ const CreateAccountScreen = ({ navigation }) => {
                     placeholder="Password" 
                     secureTextEntry={true}
                 />
-                <Text style={styles.termsText}>
-                    By creating your account, you agree to the Terms of Service and Privacy Policy
-                </Text>
             </View>
 
             <TouchableOpacity
@@ -39,8 +31,12 @@ const CreateAccountScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('Home')}
                 activeOpacity={0.7}
             >
-                <Text style={styles.buttonText}>Create Account</Text>
+                <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
+            <Text style={styles.termsText}>
+                    Forgot Your Password 
+            </Text>
+
         </View>
     );
 };
@@ -71,12 +67,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins_Regular',
         color: '#333'
     },
-    termsText: {
-        fontSize: 12,
-        color: '#666',
-        fontFamily: 'Poppins_Regular',
-        marginBottom: 20
-    },
     createAccountButton: {
         backgroundColor: '#4CAF50',
         padding: 12,
@@ -90,7 +80,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Poppins_SemiBold'
     },
+    termsText: {
+        fontSize: 15,
+        color: '#4CAF50',
+        fontFamily: 'Poppins_Regular',
+    }
 });
 
-export default CreateAccountScreen;
+export default LoginScreen;
 

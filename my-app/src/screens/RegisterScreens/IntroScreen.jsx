@@ -15,12 +15,15 @@ const IntroScreen = ({ navigation }) => {
                 <TouchableOpacity
                     style={styles.createAccountButton}
                     onPress={() => { navigation.navigate('CreateAccount') }}
+                    activeOpacity={0.7}
                 >
                     <Text style={styles.buttonText}>Create Account</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.loginButton}
+                    onPress={() => { navigation.navigate('Login') }}
+                    activeOpacity={0.7}
                 >
                     <Text style={styles.loginButtonText}>Log In</Text>
                 </TouchableOpacity>

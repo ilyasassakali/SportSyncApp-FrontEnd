@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     padding: 10,
     borderRadius: 10,
+    fontFamily: 'Poppins_Regular'
   },
   label: {
     fontSize: 18,
