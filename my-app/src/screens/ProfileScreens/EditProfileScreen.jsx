@@ -18,7 +18,7 @@ function EditProfileScreen({ navigation }) {
 
       <View style={styles.centeredContainer}>
         <View style={styles.initialsContainer}>
-          <Text style={styles.initialsText}>IA</Text>
+          <Text style={styles.initialsText}>AI</Text>
         </View>
       </View>
 
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   initialsText: {
     color: '#4CAF50',
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: 'Poppins_SemiBold'
   }
 });

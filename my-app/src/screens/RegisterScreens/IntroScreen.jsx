@@ -5,7 +5,7 @@ const IntroScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                <Text style={styles.title}>Welcome to SportSync</Text>
+                <Text style={styles.title}>Welcome to <Text style={styles.ssTitle}>SportSync</Text></Text>
                 <Text style={styles.description}>
                     Create an account with us and experience the ease of organizing sports activities with friends.
                 </Text>
@@ -47,10 +47,13 @@ const styles = StyleSheet.create({
         width: '100%', 
     },
     title: {
-        fontSize: 24,
+        fontSize: 28,
         fontFamily: 'Poppins_Bold',
         marginBottom: 10,
         textAlign: 'center'
+    },
+    ssTitle:{
+        color:'#4CAF50'
     },
     description: {
         fontSize: 16,

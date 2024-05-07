@@ -30,17 +30,20 @@ const CreateAccountScreen = ({ navigation }) => {
                     secureTextEntry={true}
                 />
                 <Text style={styles.termsText}>
-                    By creating your account, you agree to the Terms of Service and Privacy Policy
+                    By creating your account, you agree to the {"\n"}<Text style={styles.linkText}>Terms of Service</Text> and <Text style={styles.linkText}>Privacy Policy</Text>
                 </Text>
-            </View>
 
-            <TouchableOpacity
+                <TouchableOpacity
                 style={styles.createAccountButton}
                 onPress={() => navigation.navigate('Home')}
                 activeOpacity={0.7}
-            >
-                <Text style={styles.buttonText}>Create Account</Text>
-            </TouchableOpacity>
+                >
+                    <Text style={styles.buttonText}>Create Account</Text>
+                </TouchableOpacity>
+
+            </View>
+
+            
         </View>
     );
 };
@@ -76,6 +79,10 @@ const styles = StyleSheet.create({
         color: '#666',
         fontFamily: 'Poppins_Regular',
         marginBottom: 20
+    },
+    linkText: {
+        color: '#4CAF50',
+        textDecorationLine: 'underline'
     },
     createAccountButton: {
         backgroundColor: '#4CAF50',

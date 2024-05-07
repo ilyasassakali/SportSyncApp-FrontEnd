@@ -24,18 +24,22 @@ const LoginScreen = ({ navigation }) => {
                     placeholder="Password" 
                     secureTextEntry={true}
                 />
+                <Text style={styles.pw}>
+                    Forgot Your Password ?
+                </Text>
+
+                <TouchableOpacity
+                    style={styles.createAccountButton}
+                    onPress={() => navigation.navigate('Home')}
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.buttonText}>Log In</Text>
+                </TouchableOpacity>
+
             </View>
 
-            <TouchableOpacity
-                style={styles.createAccountButton}
-                onPress={() => navigation.navigate('Home')}
-                activeOpacity={0.7}
-            >
-                <Text style={styles.buttonText}>Log In</Text>
-            </TouchableOpacity>
-            <Text style={styles.termsText}>
-                    Forgot Your Password 
-            </Text>
+            
+            
 
         </View>
     );
@@ -73,17 +77,20 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '100%',
         alignItems: 'center',
-        marginBottom: 20
+        marginTop: 20
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
-        fontFamily: 'Poppins_SemiBold'
+        fontFamily: 'Poppins_SemiBold',
     },
-    termsText: {
-        fontSize: 15,
+    pw: {
+        fontSize: 14,
         color: '#4CAF50',
         fontFamily: 'Poppins_Regular',
+        textAlign: 'right',
+        marginTop: -15
+
     }
 });
 
