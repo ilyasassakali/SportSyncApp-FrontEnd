@@ -15,16 +15,14 @@ const ProfileScreen = ({navigation}) => {
         </View>
       </View>
 
-      {/* Profile Options */}
       <View style={styles.optionsContainer}>
         <OptionItem title="Edit Profile" onPress={() => navigation.navigate('EditProfile')}/>
         <OptionItem title="Notifications" onPress={() => navigation.navigate('Notifications')}/>
         <OptionItem title="Contact Us" />
         <OptionItem title="Frequently Asked Questions" />
-        <OptionItem title="Sign Out" />
+        <OptionItem title="Sign Out" onPress={() => navigation.navigate('Intro')}/>
       </View>
 
-      {/* Legal Links */}
       <View style={styles.legalContainer}>
         <Text style={styles.legalText}>Terms of Service</Text>
         <Text style={styles.legalIcon}> | </Text>
