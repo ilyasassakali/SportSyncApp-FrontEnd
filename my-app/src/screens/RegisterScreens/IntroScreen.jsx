@@ -14,6 +14,7 @@ const IntroScreen = ({ navigation }) => {
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity
                     style={styles.createAccountButton}
+                    onPress={() => { navigation.navigate('CreateAccount') }}
                 >
                     <Text style={styles.buttonText}>Create Account</Text>
                 </TouchableOpacity>

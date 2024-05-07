@@ -15,6 +15,7 @@ import EventOverviewScreen from "./screens/EventOverviewScreens/EventOverviewScr
 import EditProfileScreen from "./screens/ProfileScreens/EditProfileScreen"
 import NotificationsScreen from "./screens/ProfileScreens/NotificationsScreen"
 import IntroScreen from "./screens/RegisterScreens/IntroScreen"
+import CreateAccountScreen from "./screens/RegisterScreens/CreateAccountScreen"
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 
@@ -89,7 +90,8 @@ export default function App() {
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
 
         <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false}}/>
-
+        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false}}/>
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
