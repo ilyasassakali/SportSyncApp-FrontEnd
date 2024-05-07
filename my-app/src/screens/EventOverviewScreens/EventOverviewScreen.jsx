@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
-
-
+import * as Clipboard from 'expo-clipboard';
 
 function EventOverviewScreen({route, navigation }) {
   const { event } = route.params;
@@ -14,6 +13,20 @@ function EventOverviewScreen({route, navigation }) {
     longitude: 3.6005, 
     latitudeDelta: 0.003,
     longitudeDelta: 0.003,
+  };
+
+  const shareEvent = async () => {
+    const message = `Join me at ${event.title} hosted by ${event.hoste}. More details: ${event.location}, on ${event.date} at ${event.time}. See more at: https://example.com/event`;
+
+    Clipboard.setString(message);
+    Alert.alert(
+      "Copy to Clipboard",
+      "Text copied to clipboard. You can paste it in any app.",
+      [
+        { text: "OK" }
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -199,7 +212,7 @@ function EventOverviewScreen({route, navigation }) {
     <TouchableOpacity
         style={styles.button}
         activeOpacity={0.9}
-        onPress={() => console.log("Share Link Pressed")}
+        onPress={shareEvent}
       >
         <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
         <Text style={styles.buttonText}>Share Invite Link</Text>
