@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, Linking } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
+import * as Clipboard from 'expo-clipboard';
+
 
 function EventOverviewScreen({route, navigation }) {
   const { event } = route.params;
@@ -14,8 +16,7 @@ function EventOverviewScreen({route, navigation }) {
     longitudeDelta: 0.003,
   };
 
-  const shareEvent = async () => {
-    const message = `Join me at ${event.title}
+  const message = `Join me at ${event.title}
 Hosted by: ${event.hoste}
 
 Date: ${event.date}
@@ -24,6 +25,7 @@ Location: ${event.location}
 
 To join click here: https://example.com/event`;
 
+  const shareEvent = async () => {
     try {
       const result = await Share.share({
         message: message,
@@ -42,6 +44,36 @@ To join click here: https://example.com/event`;
     }
   };
 
+  const copyToClipboard = () => {
+    Clipboard.setString(message);
+    Alert.alert("Copied", "Event link copied to clipboard.");
+  };
+
+  const handleCancelPlan = () => {
+    Alert.alert("Cancel Plan", "Are you sure you want to cancel this plan?", [
+      { text: "No", style: "cancel" },
+      { text: "Yes", onPress: () => console.log("Plan Cancelled") }
+    ]);
+  };
+
+  const openMap = () => {
+    const encodedAddress = encodeURIComponent(event.location);
+    const url = `http://maps.google.com/maps?daddr=${encodedAddress}`;
+    const urlWaze = `https://waze.com/ul?q=${encodedAddress}&navigate=yes`;
+  
+    Alert.alert(
+      'Open in Maps',
+      'Choose an app to open the map',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Open in Google Maps', onPress: () => Linking.openURL(url) },
+        { text: 'Open in Waze', onPress: () => Linking.openURL(urlWaze) },
+      ],
+      { cancelable: true }
+    );
+  };
+  
+
   return (
     <View style={styles.outerContainer}>
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -49,6 +81,9 @@ To join click here: https://example.com/event`;
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.checkButton}>
           <Ionicons name="checkmark-outline" size={30} color="#000" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>
+          <Ionicons name="copy-outline" size={28} color="#000" />
         </TouchableOpacity>
       </View>
 
@@ -62,6 +97,7 @@ To join click here: https://example.com/event`;
             style={styles.map}
             initialRegion={eventLocation}
             customMapStyle={customMapStyle}
+            onPress={openMap}
         >
             <Marker coordinate={eventLocation} title={event.title} description={event.location} pinColor="#4caf50"/>
         </MapView>
@@ -219,12 +255,18 @@ To join click here: https://example.com/event`;
             </View>
             <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
         </View>
+
+        <TouchableOpacity style={styles.cancelButton} onPress={handleCancelPlan} activeOpacity={0.7}>
+          <Ionicons name="trash" size={25} color="white" style={styles.linkIcon2} />
+          <Text style={styles.cancelButtonText}>Cancel Plan</Text>
+        </TouchableOpacity>
       </View>
 
+      
     </ScrollView>
     <TouchableOpacity
         style={styles.button}
-        activeOpacity={0.9}
+        activeOpacity={0.7}
         onPress={shareEvent}
       >
         <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
@@ -409,7 +451,20 @@ payStatusContainer: {
   shirtIcon: {
     alignSelf: 'center',  
   },
-  
+  cancelButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    backgroundColor: '#fff', 
+    borderRadius: 10,
+    backgroundColor: '#F44336',
+  },
+  cancelButtonText: {
+    color: 'white', 
+    fontSize: 18,
+    fontFamily: 'Poppins_SemiBold'
+  },
   button: {
     position: "absolute",
     backgroundColor: "#4CAF50", 
@@ -435,9 +490,11 @@ payStatusContainer: {
   },
   linkIcon: {
     marginRight: 5,
-    transform: [{ rotate: '45deg' }] 
+    transform: [{ rotate: '45deg' }],
+    marginBottom: 3
   },
-  
-  
-
+  linkIcon2: {
+    marginRight: 5,
+    marginBottom: 5
+  },
 });

@@ -10,11 +10,12 @@ const HomeScreen = ({ navigation }) => {
   return(
   <View style={styles.container}>
     <Text style={styles.header}>Hello Ilyas!</Text>
-    <View style={styles.textContainer}>     
+
+    <Text style={styles.subTitle}>Up next</Text>
+    <View style={styles.textContainer}>  
       <Text style={styles.subText} >
-        Get ready to make your sports{"\n"}
-        meetups easy, Ready to play?{"\n"} 
-        Start here!
+        Your upcoming sport events{"\n"}
+        will appear here...
       </Text>
       <TouchableOpacity
           style={[styles.button, { backgroundColor: buttonColor }]}
@@ -26,18 +27,8 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Plan a Sport Event</Text>
         </TouchableOpacity>
     </View>
-    <Text style={styles.subHeader}>Next Up: Don’t miss out!</Text>
-    <View style={styles.eventContainer}>
-        <Ionicons name="calendar-outline" size={70} color="#4CAF50" />
-        <View style={styles.eventTextContainer}>
-          <Text style={styles.eventHeader}>No Events</Text>
-          <Text style={styles.eventSubText}>
-            Your schedule looks empty.{"\n"} 
-            Use SportSync to add exciting{"\n"}
-            sports activities.
-          </Text>
-        </View>
-    </View>
+
+
     {/* Floating Action Button */}
     <TouchableOpacity
         style={[styles.fab, { backgroundColor: fabColor }]}
@@ -72,17 +63,18 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginBottom: 10, 
   },
-  subHeader: {
+  subTitle:{
     fontFamily: 'Poppins_SemiBold',
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 10, 
-    marginTop: 20
+    color: "#666",
   },
   subText: {
-    fontFamily: 'Poppins_Regular',
+    fontFamily: 'Poppins_SemiBold',
     fontSize: 16,
     textAlign: 'left',
     marginBottom: 20, 
+    color: "#333",
   },
   button: {
     paddingVertical: 15,
@@ -93,23 +85,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: 'Poppins_SemiBold',
     color: "#FFFFFF", 
-  },
-  eventContainer: {
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'center'
-  },
-  eventTextContainer: {
-    marginLeft: 20
-  },
-  eventHeader: {
-    fontFamily: 'Poppins_SemiBold',
-    fontSize: 16
-  },
-  eventSubText: {
-    fontFamily: 'Poppins_Regular',
-    fontSize: 14,
-    color: '#A9A9A9' 
   },
   fab: {
     position: 'absolute',
