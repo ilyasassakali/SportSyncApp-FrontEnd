@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
-import * as Clipboard from 'expo-clipboard';
 
 function EventOverviewScreen({route, navigation }) {
   const { event } = route.params;
@@ -16,17 +15,31 @@ function EventOverviewScreen({route, navigation }) {
   };
 
   const shareEvent = async () => {
-    const message = `Join me at ${event.title} hosted by ${event.hoste}. More details: ${event.location}, on ${event.date} at ${event.time}. See more at: https://example.com/event`;
+    const message = `Join me at ${event.title}
+Hosted by: ${event.hoste}
 
-    Clipboard.setString(message);
-    Alert.alert(
-      "Copy to Clipboard",
-      "Text copied to clipboard. You can paste it in any app.",
-      [
-        { text: "OK" }
-      ],
-      { cancelable: false }
-    );
+Date: ${event.date}
+Time: ${event.time}
+Location: ${event.location}
+
+To join click here: https://example.com/event`;
+
+    try {
+      const result = await Share.share({
+        message: message,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("Shared with activity type of", result.activityType);
+        } else {
+          console.log("Shared");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Dismissed");
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
   };
 
   return (
