@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 const CreateAccountScreen = ({ navigation }) => {
@@ -43,22 +43,31 @@ const CreateAccountScreen = ({ navigation }) => {
                 <Ionicons name="chevron-back-outline" size={30} color="#000" />
                 </TouchableOpacity>    
             </View>
+            <KeyboardAvoidingView 
+            style={styles.container}
+            behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            >
             <View style={styles.content}>
-                
-                <Text style={styles.sublabel}>First Name</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="First Name" 
-                    value={firstName}
-                    onChangeText={setFirstName}
-                />
-                <Text style={styles.sublabel}>Last Name</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Last Name" 
-                    value={lastName}
-                    onChangeText={setLastName}
-                />
+                <View style={styles.row}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.sublabel}>First Name</Text>
+                        <TextInput 
+                            style={styles.halfInput} 
+                            placeholder="First Name" 
+                            value={firstName}
+                            onChangeText={setFirstName}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.sublabel}>Last Name</Text>
+                        <TextInput 
+                            style={styles.halfInput} 
+                            placeholder="Last Name" 
+                            value={lastName}
+                            onChangeText={setLastName}
+                        />
+                    </View>
+                </View>
                 <Text style={styles.sublabel}>E-mail</Text>
                 <TextInput 
                     style={styles.input} 
@@ -86,10 +95,9 @@ const CreateAccountScreen = ({ navigation }) => {
                 >
                     <Text style={styles.buttonText}>Create Account</Text>
                 </TouchableOpacity>
-
+               
             </View>
-
-            
+            </KeyboardAvoidingView>
         </View>
     );
 };
@@ -106,6 +114,20 @@ const styles = StyleSheet.create({
         flex: 1, 
         justifyContent: 'center', 
         width: '100%',
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    inputContainer: {
+        width: '48%', 
+    },
+    halfInput: {
+        padding: 10,
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+        borderRadius: 10,
     },
     input: {
         padding: 10,

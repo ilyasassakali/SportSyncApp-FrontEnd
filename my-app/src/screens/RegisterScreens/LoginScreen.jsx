@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform  } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 const LoginScreen = ({ navigation }) => {
@@ -39,6 +39,10 @@ const LoginScreen = ({ navigation }) => {
                 <Ionicons name="chevron-back-outline" size={30} color="#000" />
                 </TouchableOpacity>    
             </View>
+            <KeyboardAvoidingView 
+            style={styles.container}
+            behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            >
             <View style={styles.content}>
                 
                 <Text style={styles.sublabel}>E-mail</Text>
@@ -70,10 +74,7 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
 
             </View>
-
-            
-            
-
+            </KeyboardAvoidingView>
         </View>
     );
 };
