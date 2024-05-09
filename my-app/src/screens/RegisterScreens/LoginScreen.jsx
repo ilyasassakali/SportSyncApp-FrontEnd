@@ -1,8 +1,37 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 const LoginScreen = ({ navigation }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = async () => {
+        try {
+            const response = await fetch('http://192.168.129.29:3000/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
+
+            const jsonData = await response.json();
+            if (response.status === 200) {
+                Alert.alert("Succss", "You are connected !");
+                navigation.navigate('Home'); 
+            } else {
+                Alert.alert("Error", jsonData.message);
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Error", "An error occured when login.");
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -17,12 +46,16 @@ const LoginScreen = ({ navigation }) => {
                     style={styles.input} 
                     placeholder="E-mail" 
                     keyboardType="email-address"
+                    value={email}
+                    onChangeText={setEmail}
                 />
                 <Text style={styles.sublabel}>Password</Text>
                 <TextInput 
                     style={styles.input} 
                     placeholder="Password" 
                     secureTextEntry={true}
+                    value={password}
+                    onChangeText={setPassword}
                 />
                 <Text style={styles.pw}>
                     Forgot Your Password ?
@@ -30,7 +63,7 @@ const LoginScreen = ({ navigation }) => {
 
                 <TouchableOpacity
                     style={styles.createAccountButton}
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={handleLogin}
                     activeOpacity={0.7}
                 >
                     <Text style={styles.buttonText}>Log In</Text>

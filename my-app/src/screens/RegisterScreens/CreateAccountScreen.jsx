@@ -1,8 +1,41 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 const CreateAccountScreen = ({ navigation }) => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleCreateAccount = async () => {
+        try {
+            const response = await fetch('http://192.168.129.29:3000/users/create-account', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                }),
+            });
+
+            const jsonData = await response.json();
+            if (response.status === 201) {
+                Alert.alert("Succes", jsonData.message);
+                navigation.navigate('Home'); 
+            } else {
+                Alert.alert("Error", jsonData.message);
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Error", "An error occured when create account.");
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -12,22 +45,35 @@ const CreateAccountScreen = ({ navigation }) => {
             </View>
             <View style={styles.content}>
                 
-                <Text style={styles.sublabel}>Name</Text>
+                <Text style={styles.sublabel}>First Name</Text>
                 <TextInput 
                     style={styles.input} 
-                    placeholder="Name" 
+                    placeholder="First Name" 
+                    value={firstName}
+                    onChangeText={setFirstName}
+                />
+                <Text style={styles.sublabel}>Last Name</Text>
+                <TextInput 
+                    style={styles.input} 
+                    placeholder="Last Name" 
+                    value={lastName}
+                    onChangeText={setLastName}
                 />
                 <Text style={styles.sublabel}>E-mail</Text>
                 <TextInput 
                     style={styles.input} 
                     placeholder="E-mail" 
                     keyboardType="email-address"
+                    value={email}
+                    onChangeText={setEmail}
                 />
                 <Text style={styles.sublabel}>Password</Text>
                 <TextInput 
                     style={styles.input} 
                     placeholder="Password" 
                     secureTextEntry={true}
+                    value={password}
+                    onChangeText={setPassword}
                 />
                 <Text style={styles.termsText}>
                     By creating your account, you agree to the {"\n"}<Text style={styles.linkText}>Terms of Service</Text> and <Text style={styles.linkText}>Privacy Policy</Text>
@@ -35,7 +81,7 @@ const CreateAccountScreen = ({ navigation }) => {
 
                 <TouchableOpacity
                 style={styles.createAccountButton}
-                onPress={() => navigation.navigate('Home')}
+                onPress={handleCreateAccount}
                 activeOpacity={0.7}
                 >
                     <Text style={styles.buttonText}>Create Account</Text>
