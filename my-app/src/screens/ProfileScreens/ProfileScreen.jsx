@@ -1,8 +1,20 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
+
 
 const ProfileScreen = ({navigation}) => {
+  const handleSignOut = async () => {
+    try {
+      await SecureStore.deleteItemAsync('userData');
+      navigation.navigate('Intro');  
+    } catch (error) {
+      console.error("Failed to delete the user data", error);
+      Alert.alert("Error", "Failed to sign out.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileHeader}>
@@ -20,7 +32,7 @@ const ProfileScreen = ({navigation}) => {
         <OptionItem title="Notifications" onPress={() => navigation.navigate('Notifications')}/>
         <OptionItem title="Contact Us" />
         <OptionItem title="Frequently Asked Questions" />
-        <OptionItem title="Sign Out" onPress={() => navigation.navigate('Intro')}/>
+        <OptionItem title="Sign Out" onPress={handleSignOut}/>
       </View>
 
       <View style={styles.legalContainer}>

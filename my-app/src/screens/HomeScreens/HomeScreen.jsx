@@ -1,16 +1,31 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
+
 
 const HomeScreen = ({ navigation }) => {
   const [buttonColor, setButtonColor] = useState("#4CAF50");
   const [fabColor, setFabColor] = useState("#4CAF50");
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    async function loadUser() {
+        const userData = await getUserData();
+        setUser(userData);
+    }
+
+    loadUser();
+  }, []);
+
+  async function getUserData() {
+    const userDataString = await SecureStore.getItemAsync('userData');
+    return userDataString ? JSON.parse(userDataString) : null;
+  }
 
   return(
   <View style={styles.container}>
-    <Text style={styles.header}>Hello Ilyas!</Text>
-
+    <Text style={styles.header}>Hello {user?.firstName}!</Text>
     <Text style={styles.subTitle}>Up next</Text>
     <View style={styles.textContainer}>  
       <Text style={styles.subText} >

@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform  } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
+
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    async function saveUserData(userData) {
+        await SecureStore.setItemAsync('userData', JSON.stringify(userData));
+    }
 
     const handleLogin = async () => {
         try {
@@ -21,6 +27,7 @@ const LoginScreen = ({ navigation }) => {
 
             const jsonData = await response.json();
             if (response.status === 200) {
+                await saveUserData(jsonData.user);
                 Alert.alert("Succss", "You are connected !");
                 navigation.navigate('Home'); 
             } else {

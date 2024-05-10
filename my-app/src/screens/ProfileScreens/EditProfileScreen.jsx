@@ -4,6 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 
 
 function EditProfileScreen({ navigation }) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
 
   return (
     <View style={styles.container}>
@@ -22,11 +25,29 @@ function EditProfileScreen({ navigation }) {
         </View>
       </View>
 
-      <Text style={styles.sublabel}>Name</Text>
-      <TextInput placeholder="Enter Your Name" style={styles.input}/>
-
+      <View style={styles.row}>
+               <View style={styles.inputContainer}>
+                        <Text style={styles.sublabel}>First Name</Text>
+                        <TextInput 
+                            style={styles.halfInput} 
+                            placeholder="First Name" 
+                            value={firstName}
+                            onChangeText={setFirstName}
+                        />
+              </View>
+              <View style={styles.inputContainer}>
+                        <Text style={styles.sublabel}>Last Name</Text>
+                        <TextInput 
+                            style={styles.halfInput} 
+                            placeholder="Last Name" 
+                            value={lastName}
+                            onChangeText={setLastName}
+                        />
+              </View>
+        </View>
+        
       <Text style={styles.sublabel}>E-mail</Text>
-      <TextInput placeholder="Enter Your E-mail" style={styles.input}/>
+      <TextInput placeholder="E-mail" style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address"/>
     </View>
   );
 }
@@ -102,5 +123,19 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontSize: 40,
     fontFamily: 'Poppins_SemiBold'
-  }
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+},
+inputContainer: {
+    width: '48%', 
+},
+halfInput: {
+    padding: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 10,
+}
 });
