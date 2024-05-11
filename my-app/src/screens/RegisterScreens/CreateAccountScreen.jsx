@@ -1,12 +1,18 @@
 import React,{useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
+
 
 const CreateAccountScreen = ({ navigation }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    async function saveUserData(userData) {
+        await SecureStore.setItemAsync('userData', JSON.stringify(userData));
+    }
 
     const handleCreateAccount = async () => {
         try {
@@ -25,6 +31,11 @@ const CreateAccountScreen = ({ navigation }) => {
 
             const jsonData = await response.json();
             if (response.status === 201) {
+                await saveUserData({
+                    firstName,
+                    lastName,
+                    email
+                });
                 Alert.alert("Succes", jsonData.message);
                 navigation.navigate('Home'); 
             } else {

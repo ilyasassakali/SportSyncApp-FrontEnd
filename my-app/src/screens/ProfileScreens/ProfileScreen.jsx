@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
 
 
 const ProfileScreen = ({navigation}) => {
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    email: ''
+  });
+
+  const getInitials = () => {
+    const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+    return initials.toUpperCase();
+  };
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      const userDataString = await SecureStore.getItemAsync('userData');
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
+        setUser(userData);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
   const handleSignOut = async () => {
     try {
       await SecureStore.deleteItemAsync('userData');
@@ -19,11 +42,11 @@ const ProfileScreen = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.profileHeader}>
         <View style={styles.initialsContainer}>
-          <Text style={styles.initialsText}>IA</Text>
+          <Text style={styles.initialsText}>{getInitials()}</Text>
         </View>
         <View style={styles.profileInfo}>
-          <Text style={styles.nameText}>Ilyas Assakali</Text>
-          <Text style={styles.emailText}>ilyas.assakali@gmail.com</Text>
+          <Text style={styles.nameText}>{user.firstName} {user.lastName}</Text>
+          <Text style={styles.emailText}>{user.email}</Text>
         </View>
       </View>
 

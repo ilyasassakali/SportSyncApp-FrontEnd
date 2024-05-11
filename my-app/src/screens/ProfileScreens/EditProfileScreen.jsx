@@ -1,12 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
+
 
 
 function EditProfileScreen({ navigation }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    async function loadProfileData() {
+      const userDataString = await SecureStore.getItemAsync('userData');
+      const userData = JSON.parse(userDataString);
+      if (userData) {
+        setFirstName(userData.firstName);
+        setLastName(userData.lastName);
+        setEmail(userData.email);
+      }
+    }
+
+    loadProfileData();
+  }, []);
+
+  const handleSave = async () => {
+    console.log('Saved');
+  };
+
+  const getInitials = () => {
+    const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+    return initials.toUpperCase();
+  };
 
   return (
     <View style={styles.container}>
@@ -16,12 +41,12 @@ function EditProfileScreen({ navigation }) {
           <Ionicons name="chevron-back" size={30} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Profile</Text>
-        <Text style={styles.savelabel}>SAVE</Text>
+        <Text style={styles.savelabel} onPress={handleSave}>SAVE</Text>
       </View>
 
       <View style={styles.centeredContainer}>
         <View style={styles.initialsContainer}>
-          <Text style={styles.initialsText}>AI</Text>
+          <Text style={styles.initialsText}>{getInitials()}</Text>
         </View>
       </View>
 
