@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { Ionicons } from "@expo/vector-icons";
-import * as SecureStore from 'expo-secure-store';
+import { AuthProvider, useAuth } from "./components/AuthContext"
 import HomeScreen from "./screens/HomeScreens/HomeScreen";
 import EventsScreen from "./screens/EventsScreens/EventsScreen";
 import ProfileScreen from "./screens/ProfileScreens/ProfileScreen";
@@ -65,18 +65,9 @@ function Tabs() {
   );
 }
 
-export default function App() {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const userData = await SecureStore.getItemAsync('userData');
-      setIsUserLoggedIn(userData !== null);
-    };
-
-    checkLoginStatus();
-  }, []);
-
+function AppContainer() { 
+  const {isUserLoggedIn} = useAuth()
   let [fontsLoaded] = useFonts({
     Poppins_Regular: Poppins_400Regular,
     Poppins_SemiBold: Poppins_600SemiBold,
@@ -88,11 +79,11 @@ export default function App() {
   }
 
   return (
+    
     <NavigationContainer>
       <Stack.Navigator>
-
-        {isUserLoggedIn ? (
-            <>
+      {isUserLoggedIn ? (
+          <>
             <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
             <Stack.Screen name="EventName" component={EventNameScreen} options={{ headerShown: false }}/>
             <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
@@ -104,15 +95,22 @@ export default function App() {
             <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
             <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
             </>
-          ) : (
-            <>
-              <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false }} />
+        ) : (
+          <>
+            <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false }} />
             </>
         )}
-        
       </Stack.Navigator>
     </NavigationContainer>
   );
+}
+
+export default function App(){
+  return (
+    <AuthProvider>
+        <AppContainer/>
+    </AuthProvider>
+  )
 }

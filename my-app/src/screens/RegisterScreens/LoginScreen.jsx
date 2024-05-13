@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform  } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../components/AuthContext"
 import * as SecureStore from 'expo-secure-store';
 
 
 const LoginScreen = ({ navigation }) => {
+    const { setIsUserLoggedIn } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -28,8 +30,8 @@ const LoginScreen = ({ navigation }) => {
             const jsonData = await response.json();
             if (response.status === 200) {
                 await saveUserData(jsonData.user);
+                setIsUserLoggedIn(true);
                 Alert.alert("Succss", "You are connected !");
-                navigation.navigate('Home'); 
             } else {
                 Alert.alert("Error", jsonData.message);
             }

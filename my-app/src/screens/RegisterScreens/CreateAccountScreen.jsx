@@ -1,10 +1,12 @@
 import React,{useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../components/AuthContext"
 import * as SecureStore from 'expo-secure-store';
 
 
 const CreateAccountScreen = ({ navigation }) => {
+    const { setIsUserLoggedIn } = useAuth();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -36,8 +38,8 @@ const CreateAccountScreen = ({ navigation }) => {
                     lastName,
                     email
                 });
+                setIsUserLoggedIn(true);
                 Alert.alert("Succes", jsonData.message);
-                navigation.navigate('Home'); 
             } else {
                 Alert.alert("Error", jsonData.message);
             }

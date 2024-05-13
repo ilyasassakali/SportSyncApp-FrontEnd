@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../components/AuthContext"
 import * as SecureStore from 'expo-secure-store';
 
 
 const ProfileScreen = ({navigation}) => {
+  const { setIsUserLoggedIn } = useAuth();
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
@@ -31,7 +33,7 @@ const ProfileScreen = ({navigation}) => {
   const handleSignOut = async () => {
     try {
       await SecureStore.deleteItemAsync('userData');
-      navigation.navigate('Intro');  
+      setIsUserLoggedIn(false);
     } catch (error) {
       console.error("Failed to delete the user data", error);
       Alert.alert("Error", "Failed to sign out.");
