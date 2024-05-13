@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, LogBox } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 
 function EventNameScreen({ navigation }) {
   const [eventName, setEventName] = useState('');
+
+  LogBox.ignoreLogs(['Warning: Unknown: Support for defaultProps will be removed from memo components in a future major release.']);
+
 
   return (
     <View style={styles.container}>

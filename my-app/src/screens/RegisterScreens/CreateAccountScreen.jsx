@@ -61,6 +61,7 @@ const CreateAccountScreen = ({ navigation }) => {
             behavior={Platform.OS === "ios" ? "padding" : "height"} 
             >
             <View style={styles.content}>
+            <Text style={styles.ssTitle}>SportSync</Text>
                 <View style={styles.row}>
                     <View style={styles.inputContainer}>
                         <Text style={styles.sublabel}>First Name</Text>
@@ -127,6 +128,13 @@ const styles = StyleSheet.create({
         flex: 1, 
         justifyContent: 'center', 
         width: '100%',
+    },
+    ssTitle:{
+        fontSize: 35,
+        fontFamily: 'Poppins_Bold',
+        marginBottom: 30,
+        textAlign: 'center',
+        color:'#4CAF50'
     },
     row: {
         flexDirection: 'row',

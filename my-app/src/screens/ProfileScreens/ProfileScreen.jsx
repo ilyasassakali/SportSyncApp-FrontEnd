@@ -132,9 +132,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   optionText: {
-    fontFamily: 'Poppins_Regular',
+    fontFamily: 'Poppins_SemiBold',
     fontSize: 16,
-    color: '#000',
+    color: '#333',
   },
   legalContainer: {
     flexDirection: 'row',
