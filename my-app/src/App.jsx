@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { Ionicons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
 import HomeScreen from "./screens/HomeScreens/HomeScreen";
 import EventsScreen from "./screens/EventsScreens/EventsScreen";
 import ProfileScreen from "./screens/ProfileScreens/ProfileScreen";
@@ -65,6 +66,17 @@ function Tabs() {
 }
 
 export default function App() {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const userData = await SecureStore.getItemAsync('userData');
+      setIsUserLoggedIn(userData !== null);
+    };
+
+    checkLoginStatus();
+  }, []);
+
   let [fontsLoaded] = useFonts({
     Poppins_Regular: Poppins_400Regular,
     Poppins_SemiBold: Poppins_600SemiBold,
@@ -78,21 +90,27 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        
-        <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
-        <Stack.Screen name="EventName" component={EventNameScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
-        <Stack.Screen name="EventLocation" component={EventLocationScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
-        <Stack.Screen name="EventSetup" component={EventSetupScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
 
-        <Stack.Screen name="EventOverview" component={EventOverviewScreen} options={{ headerShown: false}}/>
+        {isUserLoggedIn ? (
+            <>
+            <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
+            <Stack.Screen name="EventName" component={EventNameScreen} options={{ headerShown: false }}/>
+            <Stack.Screen name="EventDate" component={EventDateScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
+            <Stack.Screen name="EventLocation" component={EventLocationScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
+            <Stack.Screen name="EventSetup" component={EventSetupScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
 
-        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
-        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
+            <Stack.Screen name="EventOverview" component={EventOverviewScreen} options={{ headerShown: false}}/>
 
-        <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false}}/>
-        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false}}/>
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false}}/>
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
+            <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false }} />
+            </>
+        )}
         
       </Stack.Navigator>
     </NavigationContainer>
