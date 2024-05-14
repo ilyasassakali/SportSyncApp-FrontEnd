@@ -142,7 +142,7 @@ function EventSetupScreen({ navigation }) {
                 if (teamOne && teamTwo && numberOfPlayers > 0 && isValidPrice(price) 
                     && (parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers)
                     && teamOneColor !== teamTwoColor) { 
-                    navigation.navigate('EventSetup');
+                    navigation.navigate('EventPreview', { event: { ...event, numberOfPlayers, teamDistribution: { teamOne, teamTwo }, teamColors: { teamOneColor, teamTwoColor }, price } });
                 }
             }}
             style={teamOne && teamTwo && numberOfPlayers > 0 && isValidPrice(price) 

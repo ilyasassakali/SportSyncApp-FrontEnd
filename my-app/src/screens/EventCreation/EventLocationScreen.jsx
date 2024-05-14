@@ -4,10 +4,16 @@ import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { customMapStyle } from '../../components/MapStyles';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 
 
-const EventLocationScreen = ({ navigation }) => {
+
+const EventLocationScreen = () => {
+    const navigation = useNavigation();
+    const route = useRoute();
+    const [eventData, setEventData] = useState({});
+
     const [location, setLocation] = useState('');
     const [region, setRegion] = useState({
       latitude: 50.8503,
@@ -16,6 +22,15 @@ const EventLocationScreen = ({ navigation }) => {
       longitudeDelta: 0.01,
     });
     const [marker, setMarker] = useState(null);
+
+    useEffect(() => {
+      if (route.params?.event) {
+          setEventData(route.params.event);
+          console.log(route.params.event); 
+      } else {
+          console.error("No event data found in route params");
+      }
+    }, [route.params]);
   
     const handleLocationSearch = async () => {
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}&addressdetails=1&accept-language=en`);
@@ -103,7 +118,12 @@ const EventLocationScreen = ({ navigation }) => {
         <TouchableOpacity
             onPress={() => {
                 if (location && marker) {
-                navigation.navigate('EventSetup');
+                  navigation.navigate('EventPreview', {
+                    event: {
+                      ...eventData,
+                      location: `${location} (${region.latitude}, ${region.longitude})`
+                    }
+                  });
                 }
             }}
             style={(location && marker) ? styles.button : styles.buttonDisabled}

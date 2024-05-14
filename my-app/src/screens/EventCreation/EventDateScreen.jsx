@@ -5,7 +5,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons } from "@expo/vector-icons";
 
 
-const EventDateScreen = ({ navigation }) => {
+const EventDateScreen = ({ route, navigation }) => {
+  const { event } = route.params;
   const [selectedDate, setSelectedDate] = useState('');
   const [markedDates, setMarkedDates] = useState({});
   const [startTime, setStartTime] = useState(new Date());
@@ -126,7 +127,13 @@ const EventDateScreen = ({ navigation }) => {
       <TouchableOpacity
         onPress={() => {
             if (selectedDate && startTime <= endTime) {
-            navigation.navigate('EventLocation');
+              navigation.navigate('EventLocation', {
+                event: {
+                  ...event,
+                  date: selectedDate,
+                  time: `${formatTime(startTime)} - ${formatTime(endTime)}`
+                }
+              });
             }
         }}
         style={(selectedDate && startTime <= endTime) ? styles.button : styles.buttonDisabled}

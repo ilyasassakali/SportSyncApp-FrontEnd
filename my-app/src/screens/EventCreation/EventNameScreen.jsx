@@ -30,7 +30,7 @@ function EventNameScreen({ navigation }) {
       </View>
 
       <TouchableOpacity
-        onPress={() => eventName.trim() && navigation.navigate('EventDate')}
+        onPress={() => eventName.trim() && navigation.navigate('EventDate', { event: { title: eventName } })}
         style={eventName.trim() ? styles.button : styles.buttonDisabled}
         activeOpacity={0.9}
         >
