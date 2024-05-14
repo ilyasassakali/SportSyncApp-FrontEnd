@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 
 
 const LoginScreen = ({ navigation }) => {
-    const { setIsUserLoggedIn } = useAuth();
+    const { setUserData, setIsUserLoggedIn } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -29,12 +29,14 @@ const LoginScreen = ({ navigation }) => {
 
             const jsonData = await response.json();
             if (response.status === 200) {
-                await saveUserData({
-                    id: jsonData.user.id, 
+                const userData = {
+                    id: jsonData.user.id,
                     firstName: jsonData.user.firstName,
                     lastName: jsonData.user.lastName,
                     email: jsonData.user.email
-                });
+                };
+                await SecureStore.setItemAsync('userData', JSON.stringify(userData));
+                setUserData(userData);
                 setIsUserLoggedIn(true);
                 Alert.alert("Succss", "You are connected !");
             } else {

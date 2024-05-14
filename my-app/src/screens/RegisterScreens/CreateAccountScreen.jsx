@@ -6,15 +6,11 @@ import * as SecureStore from 'expo-secure-store';
 
 
 const CreateAccountScreen = ({ navigation }) => {
-    const { setIsUserLoggedIn } = useAuth();
+    const { setUserData, setIsUserLoggedIn } = useAuth();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    async function saveUserData(userData) {
-        await SecureStore.setItemAsync('userData', JSON.stringify(userData));
-    }
 
     const handleCreateAccount = async () => {
         try {
@@ -33,12 +29,14 @@ const CreateAccountScreen = ({ navigation }) => {
 
             const jsonData = await response.json();
             if (response.status === 201) {
-                await saveUserData({
-                    id: jsonData.user.id, 
+                const userData = {
+                    id: jsonData.user.id,
                     firstName: jsonData.user.firstName,
                     lastName: jsonData.user.lastName,
                     email: jsonData.user.email
-                });
+                };
+                await SecureStore.setItemAsync('userData', JSON.stringify(userData));
+                setUserData(userData);
                 setIsUserLoggedIn(true);
                 Alert.alert("Succes", jsonData.message);
             } else {

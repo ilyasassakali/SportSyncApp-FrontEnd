@@ -12,7 +12,7 @@ const HomeScreen = ({ navigation }) => {
 
   return(
   <View style={styles.container}>
-    <Text style={styles.header}>Hello {userData.firstName}!</Text>
+    <Text style={styles.header}>Hello {userData ? userData.firstName : ""}!</Text>
     <Text style={styles.subTitle}>Up next</Text>
     <View style={styles.textContainer}>  
       <Text style={styles.subText} >

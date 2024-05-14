@@ -6,21 +6,23 @@ import * as SecureStore from 'expo-secure-store';
 
 
 const ProfileScreen = ({navigation}) => {
-  const { userData, setIsUserLoggedIn } = useAuth();
-
-  const getInitials = () => {
-    const initials = `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`;
-    return initials.toUpperCase();
-  };
+  const { userData, setUserData, setIsUserLoggedIn } = useAuth();
 
   const handleSignOut = async () => {
     try {
       await SecureStore.deleteItemAsync('userData');
       setIsUserLoggedIn(false);
+      setUserData(null); 
     } catch (error) {
       console.error("Failed to delete the user data", error);
       Alert.alert("Error", "Failed to sign out.");
     }
+  };
+
+  const getInitials = () => {
+    if (!userData) return "";
+    const initials = `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`;
+    return initials.toUpperCase();
   };
 
   return (
@@ -30,8 +32,8 @@ const ProfileScreen = ({navigation}) => {
           <Text style={styles.initialsText}>{getInitials()}</Text>
         </View>
         <View style={styles.profileInfo}>
-          <Text style={styles.nameText}>{userData.firstName} {userData.lastName}</Text>
-          <Text style={styles.emailText}>{userData.email}</Text>
+          <Text style={styles.nameText}>{userData ? `${userData.firstName} ${userData.lastName}` : ""}</Text>
+          <Text style={styles.emailText}>{userData ? userData.email : ""}</Text>
         </View>
       </View>
 
