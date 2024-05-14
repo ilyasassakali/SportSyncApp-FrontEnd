@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
+import { useAuth } from '../../components/AuthContext';
 
 
 
@@ -9,6 +10,7 @@ function EditProfileScreen({ navigation }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const { setUserData } = useAuth();
 
   useEffect(() => {
     async function loadProfileData() {
@@ -51,6 +53,7 @@ function EditProfileScreen({ navigation }) {
               lastName,
               email
             }));
+            setUserData({ id: userData.id, firstName, lastName, email });
         } else {
             Alert.alert("Error", jsonData.message);
         }

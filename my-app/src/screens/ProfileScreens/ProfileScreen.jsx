@@ -6,29 +6,12 @@ import * as SecureStore from 'expo-secure-store';
 
 
 const ProfileScreen = ({navigation}) => {
-  const { setIsUserLoggedIn } = useAuth();
-  const [user, setUser] = useState({
-    firstName: '',
-    lastName: '',
-    email: ''
-  });
+  const { userData, setIsUserLoggedIn } = useAuth();
 
   const getInitials = () => {
-    const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+    const initials = `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`;
     return initials.toUpperCase();
   };
-
-  useEffect(() => {
-    const loadUserData = async () => {
-      const userDataString = await SecureStore.getItemAsync('userData');
-      if (userDataString) {
-        const userData = JSON.parse(userDataString);
-        setUser(userData);
-      }
-    };
-
-    loadUserData();
-  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -47,8 +30,8 @@ const ProfileScreen = ({navigation}) => {
           <Text style={styles.initialsText}>{getInitials()}</Text>
         </View>
         <View style={styles.profileInfo}>
-          <Text style={styles.nameText}>{user.firstName} {user.lastName}</Text>
-          <Text style={styles.emailText}>{user.email}</Text>
+          <Text style={styles.nameText}>{userData.firstName} {userData.lastName}</Text>
+          <Text style={styles.emailText}>{userData.email}</Text>
         </View>
       </View>
 
