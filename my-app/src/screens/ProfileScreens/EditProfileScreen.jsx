@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
 
@@ -25,13 +25,47 @@ function EditProfileScreen({ navigation }) {
   }, []);
 
   const handleSave = async () => {
-    console.log('Saved');
+    const userDataString = await SecureStore.getItemAsync('userData');
+    const userData = JSON.parse(userDataString);
+
+    try {
+        const response = await fetch('http://192.168.129.29:3000/users/edit-profile', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: userData.id, 
+                firstName,
+                lastName,
+                email,
+            }),
+        });
+
+        const jsonData = await response.json();
+        if (response.status === 200) {
+            Alert.alert("Success", "Profile updated successfully");
+            await SecureStore.setItemAsync('userData', JSON.stringify({
+              id: userData.id,
+              firstName,
+              lastName,
+              email
+            }));
+        } else {
+            Alert.alert("Error", jsonData.message);
+        }
+    } catch (error) {
+        console.error(error);
+        Alert.alert("Error", "An error occurred while updating profile.");
+    }
   };
 
   const getInitials = () => {
     const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
     return initials.toUpperCase();
   };
+
+  
 
   return (
     <View style={styles.container}>

@@ -29,7 +29,12 @@ const LoginScreen = ({ navigation }) => {
 
             const jsonData = await response.json();
             if (response.status === 200) {
-                await saveUserData(jsonData.user);
+                await saveUserData({
+                    id: jsonData.user.id, 
+                    firstName: jsonData.user.firstName,
+                    lastName: jsonData.user.lastName,
+                    email: jsonData.user.email
+                });
                 setIsUserLoggedIn(true);
                 Alert.alert("Succss", "You are connected !");
             } else {

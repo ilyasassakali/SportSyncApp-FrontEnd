@@ -34,9 +34,10 @@ const CreateAccountScreen = ({ navigation }) => {
             const jsonData = await response.json();
             if (response.status === 201) {
                 await saveUserData({
-                    firstName,
-                    lastName,
-                    email
+                    id: jsonData.user.id, 
+                    firstName: jsonData.user.firstName,
+                    lastName: jsonData.user.lastName,
+                    email: jsonData.user.email
                 });
                 setIsUserLoggedIn(true);
                 Alert.alert("Succes", jsonData.message);
