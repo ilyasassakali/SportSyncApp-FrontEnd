@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const ProfileScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
-      
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={30} color="#000" />
@@ -14,17 +15,42 @@ const ProfileScreen = ({navigation}) => {
       </View>
 
       <View style={styles.optionsContainer}>
-        <OptionItem title="Receive notification when guests Go or cancel"/>
-        <OptionItem title="Receive notification for activity that involves me"/>
-        <OptionItem title="Receive notification about approaching events " />
+        <OptionItem title="Receive notification when guests Go or cancel" settingKey="notif_guests_go_cancel"/>
+        <OptionItem title="Receive notification for activity that involves me" settingKey="notif_activity_involved"/>
+        <OptionItem title="Receive notification about approaching events " settingKey="notif_approaching_events"/>
       </View>
     </View>
   );
 };
 
-const OptionItem = ({ title }) => {
+const OptionItem = ({ title, settingKey }) => {
     const [isEnabled, setIsEnabled] = useState(true);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    
+    useEffect(() => {
+      loadSettings();
+    }, []);
+
+    const loadSettings = async () => {
+      try {
+          const value = await AsyncStorage.getItem(settingKey);
+          if (value !== null) {
+              setIsEnabled(JSON.parse(value));
+          }
+      } catch (e) {
+          console.error('Failed to load the setting ' + settingKey);
+      }
+    };
+
+    const toggleSwitch = async () => {
+        try {
+            const newValue = !isEnabled;
+            setIsEnabled(newValue);
+            await AsyncStorage.setItem(settingKey, JSON.stringify(newValue));
+        } catch (e) {
+            console.error('Failed to save the setting ' + settingKey);
+        }
+    };
+
   
     return (
       <View style={styles.optionItem}>
