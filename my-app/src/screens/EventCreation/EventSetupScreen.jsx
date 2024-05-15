@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
-function EventSetupScreen({ navigation }) {
+function EventSetupScreen({ route, navigation }) {
+  const { event } = route.params;
   const [numberOfPlayers, setNumberOfPlayers] = useState(10);
   const [teamOne, setTeamOne] = useState('5');
   const [teamTwo, setTeamTwo] = useState('5');
   const [teamOneColor, setTeamOneColor] = useState('#4CAF50');
-  const [teamTwoColor, setTeamTwoColor] = useState('#ff4500');
+  const [teamTwoColor, setTeamTwoColor] = useState('red');
   const colors = ['#4CAF50', 'red', '#0080ff', '#ffe200', 'purple', 'orange', 'black', '#ffffff']; 
   const [price, setPrice] = useState('0');
 
@@ -139,20 +140,45 @@ function EventSetupScreen({ navigation }) {
 
         <TouchableOpacity
             onPress={() => {
-                if (teamOne && teamTwo && numberOfPlayers > 0 && isValidPrice(price) 
-                    && (parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers)
-                    && teamOneColor !== teamTwoColor) { 
-                    navigation.navigate('EventPreview', { event: { ...event, numberOfPlayers, teamDistribution: { teamOne, teamTwo }, teamColors: { teamOneColor, teamTwoColor }, price } });
-                }
+              if (
+                teamOne &&
+                teamTwo &&
+                numberOfPlayers > 0 &&
+                isValidPrice(price) &&
+                parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
+                teamOneColor !== teamTwoColor
+              ) {
+                navigation.navigate('EventPreview', {
+                  event: {
+                    ...event,
+                    numberOfPlayers,
+                    teamDistribution: { teamOne, teamTwo },
+                    teamColors: { teamOneColor, teamTwoColor },
+                    price,
+                  },
+                });
+              }
             }}
-            style={teamOne && teamTwo && numberOfPlayers > 0 && isValidPrice(price) 
-                && (parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers) 
-                && teamOneColor !== teamTwoColor 
-                    ? styles.button : styles.buttonDisabled}
+            style={
+              teamOne &&
+              teamTwo &&
+              numberOfPlayers > 0 &&
+              isValidPrice(price) &&
+              parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
+              teamOneColor !== teamTwoColor
+                ? styles.button
+                : styles.buttonDisabled
+            }
             activeOpacity={0.9}
-            disabled={!teamOne || !teamTwo || numberOfPlayers <= 0 || !isValidPrice(price) 
-                || (parseInt(teamOne) + parseInt(teamTwo) !== numberOfPlayers) || teamOneColor === teamTwoColor} 
-            >
+            disabled={
+              !teamOne ||
+              !teamTwo ||
+              numberOfPlayers <= 0 ||
+              !isValidPrice(price) ||
+              parseInt(teamOne) + parseInt(teamTwo) !== numberOfPlayers ||
+              teamOneColor === teamTwoColor
+            }
+          >
             <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
 

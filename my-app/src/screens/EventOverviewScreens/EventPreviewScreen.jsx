@@ -101,9 +101,9 @@ function EventPreviewScreen({route, navigation }) {
       <View style={styles.statisticsContainer}>
         <View style={styles.statItem}>
             <View style={styles.distributionContainer}>
-                <Text style={styles.distributionText}>5 vs 5</Text>
+                <Text style={styles.distributionText}>{event.teamDistribution.teamOne} vs {event.teamDistribution.teamTwo}</Text>
             </View>
-            <Text style={styles.statNumber}>10</Text>
+            <Text style={styles.statNumber}>{event.numberOfPlayers}</Text>
             <Text style={styles.statLabel}>Players</Text>
         </View>
         <View style={styles.statItem}>
@@ -114,7 +114,7 @@ function EventPreviewScreen({route, navigation }) {
         </View>
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>
-            <Text style={styles.smallUnit}>€</Text>2.5
+            <Text style={styles.smallUnit}>€</Text>{event.price}
             </Text>
             <Text style={styles.statLabel}>Price</Text>
         </View>
@@ -142,7 +142,7 @@ function EventPreviewScreen({route, navigation }) {
                     </View>
                 </View>
             </View>
-            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
+            <Ionicons name="shirt" size={28} color={event.teamColors.teamOneColor} style={styles.shirtIcon} />
         </View>
 
       </View>

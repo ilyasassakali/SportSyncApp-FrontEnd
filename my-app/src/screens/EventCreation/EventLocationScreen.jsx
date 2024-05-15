@@ -118,7 +118,7 @@ const EventLocationScreen = () => {
         <TouchableOpacity
             onPress={() => {
                 if (location && marker) {
-                  navigation.navigate('EventPreview', {
+                  navigation.navigate('EventSetup', {
                     event: {
                       ...eventData,
                       location: location,
