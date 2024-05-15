@@ -121,7 +121,9 @@ const EventLocationScreen = () => {
                   navigation.navigate('EventPreview', {
                     event: {
                       ...eventData,
-                      location: `${location} (${region.latitude}, ${region.longitude})`
+                      location: location,
+                      latitude: region.latitude,
+                      longitude: region.longitude 
                     }
                   });
                 }

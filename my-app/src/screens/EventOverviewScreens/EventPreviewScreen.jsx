@@ -3,45 +3,72 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, Lin
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
+import {useAuth} from '../../components/AuthContext'
 
 
 function EventPreviewScreen({route, navigation }) {
   const { event } = route.params;
+  const { userData } = useAuth();
 
-  /*const createEvent = () => {
+  const createEvent = () => {
     console.log(event);
     alert('Event created successfully!');
-  };*/
+  };
+
+  const eventLocation = {
+    latitude: event.latitude,
+    longitude: event.longitude, 
+    latitudeDelta: 0.003,
+    longitudeDelta: 0.003,
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { weekday: 'long', day: 'numeric', month: 'long' };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
 
   useEffect(() => {
     console.log(event);
   }, []);
 
-  return (
-    <View style={styles.container}>
-    <Text>Title: {event.title}</Text>
-    <Text>Date: {event.date}</Text>
-    <Text>Time: {event.time}</Text>
-    <Text>Location: {event.location}</Text>
-  </View>
-    );
+  const getInitials = () => {
+    if (!userData) return "";
+    const initials = `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`;
+    return initials.toUpperCase();
+  };
 
-    /*
+  const openMap = () => {
+    const encodedAddress = encodeURIComponent(event.location);
+    const url = `http://maps.google.com/maps?daddr=${encodedAddress}`;
+    const urlWaze = `https://waze.com/ul?q=${encodedAddress}&navigate=yes`;
+  
+    Alert.alert(
+      'Open in Maps',
+      'Choose an app to open the map',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Open in Google Maps', onPress: () => Linking.openURL(url) },
+        { text: 'Open in Waze', onPress: () => Linking.openURL(urlWaze) },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  return (
+ 
     <View style={styles.outerContainer}>
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.checkButton}>
-          <Ionicons name="checkmark-outline" size={30} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>
-          <Ionicons name="copy-outline" size={28} color="#000" />
+          <Ionicons name="chevron-back" size={30} color="#000" />
         </TouchableOpacity>
       </View>
 
       <Text style={styles.eventName}>{event.title}</Text>
       <Text style={styles.hostedBy}>
-            Hosted by <Text style={styles.hostName}>{event.hoste}</Text>
+            Hosted by <Text style={styles.hostName}>{`${userData.firstName} ${userData.lastName}`}</Text>
       </Text>
 
       <View style={styles.mapContainer}>
@@ -62,7 +89,7 @@ function EventPreviewScreen({route, navigation }) {
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="calendar-outline" size={20} color="#4CAF50" />
-          <Text style={styles.detailText}>{event.date}</Text>
+          <Text style={styles.detailText}>{formatDate(event.date)}</Text>
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="time-outline" size={20} color="#4CAF50" />
@@ -70,7 +97,7 @@ function EventPreviewScreen({route, navigation }) {
         </View>
       </View>
 
-
+    
       <View style={styles.statisticsContainer}>
         <View style={styles.statItem}>
             <View style={styles.distributionContainer}>
@@ -105,10 +132,10 @@ function EventPreviewScreen({route, navigation }) {
         <View style={styles.profileHeader}>
             <View style={styles.profileContent}>
                 <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>IA</Text>
+                    <Text style={styles.initialsText}>{getInitials()}</Text>
                 </View>
                 <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Ilyas Assakali</Text>
+                    <Text style={styles.nameText}>{`${userData.firstName} ${userData.lastName}`}</Text>
                     <View style={styles.payStatusContainer}>
                         <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
                         <Text style={styles.payText}>Paid</Text>
@@ -117,12 +144,7 @@ function EventPreviewScreen({route, navigation }) {
             </View>
             <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
         </View>
-        
 
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancelPlan} activeOpacity={0.7}>
-          <Ionicons name="trash" size={25} color="white" style={styles.linkIcon2} />
-          <Text style={styles.cancelButtonText}>Cancel Plan</Text>
-        </TouchableOpacity>
       </View>
 
       
@@ -135,7 +157,8 @@ function EventPreviewScreen({route, navigation }) {
         <Text style={styles.buttonText}>Create Plan</Text>
     </TouchableOpacity>
     </View>
-  */
+    );
+  
 }
 
 export default EventPreviewScreen;
@@ -157,6 +180,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
    
+  },
+  checkButton:{
+    marginLeft: -10
   },
   headerTitle: {
     fontSize: 22,
@@ -195,6 +221,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
     marginLeft: 10,
+    paddingRight:20
   },
   map: {
     height: 150,
