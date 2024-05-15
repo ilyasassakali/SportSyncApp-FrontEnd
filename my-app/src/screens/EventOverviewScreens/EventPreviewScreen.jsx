@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
@@ -9,6 +9,9 @@ import {useAuth} from '../../components/AuthContext'
 function EventPreviewScreen({route, navigation }) {
   const { event } = route.params;
   const { userData } = useAuth();
+  const [teamColor, setTeamColor] = useState(event.teamColors.teamOneColor);
+  const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
+
 
   const createEvent = () => {
     console.log(event);
@@ -55,6 +58,23 @@ function EventPreviewScreen({route, navigation }) {
     );
   };
 
+  const changeTeamColor = () => {
+    Alert.alert(
+      'Change Team Color',
+      'Choose a team to change the color',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Team One', onPress: () => setTeamColor(event.teamColors.teamOneColor) },
+        { text: 'Team Two', onPress: () => setTeamColor(event.teamColors.teamTwoColor) },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  
+  
+  
+
   return (
  
     <View style={styles.outerContainer}>
@@ -100,18 +120,17 @@ function EventPreviewScreen({route, navigation }) {
     
       <View style={styles.statisticsContainer}>
         <View style={styles.statItem}>
-            <View style={styles.distributionContainer}>
-                <Text style={styles.distributionText}>{event.teamDistribution.teamOne} vs {event.teamDistribution.teamTwo}</Text>
-            </View>
             <Text style={styles.statNumber}>{event.numberOfPlayers}</Text>
             <Text style={styles.statLabel}>Players</Text>
         </View>
+
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>
-              1<Text style={styles.smallUnit}>h</Text><Text style={styles.smallerUnit}>30</Text>
+            <Text style={styles.statNumber}>{event.teamDistribution.teamOne}<Text style={styles.smallUnit}>vs</Text>{event.teamDistribution.teamTwo}</Text>
             </Text>
-            <Text style={styles.statLabel}>Duration</Text>
+            <Text style={styles.statLabel}>Distribution</Text>
         </View>
+
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>
             <Text style={styles.smallUnit}>€</Text>{event.price}
@@ -142,7 +161,7 @@ function EventPreviewScreen({route, navigation }) {
                     </View>
                 </View>
             </View>
-            <Ionicons name="shirt" size={28} color={event.teamColors.teamOneColor} style={styles.shirtIcon} />
+            <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} onPress={changeTeamColor} />
         </View>
 
       </View>
@@ -258,19 +277,7 @@ const styles = StyleSheet.create({
     color: "#4CAF50",
     marginTop: -20
   },
-  distributionContainer: {
-    position: 'absolute',
-    top: 8, 
-    left: '90%', 
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  distributionText: {
-    fontFamily: 'Poppins_Regular',
-    fontSize: 16,
-    color: "#666",
-  },
+  
   smallUnit: {
     fontFamily: 'Poppins_Regular',
     fontSize: 18,  
