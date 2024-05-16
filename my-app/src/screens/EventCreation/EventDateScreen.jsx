@@ -35,6 +35,15 @@ const EventDateScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     const today = new Date();
+    const nextHour = new Date(today);
+    nextHour.setHours(today.getHours() + 1, 0, 0, 0);
+
+    const oneHourLater = new Date(nextHour);
+    oneHourLater.setHours(nextHour.getHours() + 1);
+
+    setStartTime(nextHour);
+    setEndTime(oneHourLater);
+
     const todayString = today.toISOString().split('T')[0];
     setSelectedDate(todayString);  
     generateMarkedDates(todayString);  
@@ -99,6 +108,7 @@ const EventDateScreen = ({ route, navigation }) => {
         onConfirm={handleConfirm}
         onCancel={hideTimePicker}
         is24Hour={true}
+        date={timePickerMode === 'start' ? startTime : endTime}
       />
       <Calendar   
         onDayPress={onDayPress}
@@ -126,7 +136,7 @@ const EventDateScreen = ({ route, navigation }) => {
       /> 
       <TouchableOpacity
         onPress={() => {
-            if (selectedDate && startTime <= endTime) {
+            if (selectedDate && startTime && endTime) {
               navigation.navigate('EventLocation', {
                 event: {
                   ...event,
@@ -136,7 +146,7 @@ const EventDateScreen = ({ route, navigation }) => {
               });
             }
         }}
-        style={(selectedDate && startTime <= endTime) ? styles.button : styles.buttonDisabled}
+        style={(selectedDate && startTime && endTime) ? styles.button : styles.buttonDisabled}
         activeOpacity={0.9}
         >
         <Text style={styles.buttonText}>Continue</Text>
