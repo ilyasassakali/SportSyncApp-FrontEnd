@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -7,13 +7,10 @@ import { customMapStyle } from '../../components/MapStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 
-
-
 const EventLocationScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const [eventData, setEventData] = useState({});
-
     const [location, setLocation] = useState('');
     const [region, setRegion] = useState({
       latitude: 50.8503,
@@ -22,6 +19,7 @@ const EventLocationScreen = () => {
       longitudeDelta: 0.01,
     });
     const [marker, setMarker] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
       if (route.params?.event) {
@@ -33,27 +31,34 @@ const EventLocationScreen = () => {
     }, [route.params]);
   
     const handleLocationSearch = async () => {
+      setIsLoading(true);
+      try {
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}&addressdetails=1&accept-language=en`);
         const data = await response.json();
         if (data && data.length > 0) {
-            const item = data[0];
-            if (item.address) {
-                const formattedAddress = formatAddress(item.address);
-                setLocation(formattedAddress);
-                const newRegion = {
-                latitude: parseFloat(item.lat),
-                longitude: parseFloat(item.lon),
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-                };
-                setRegion(newRegion);
-                setMarker(newRegion);
-            } else {
-                alert('Address details are not available for this location.');
-            }
+          const item = data[0];
+          if (item.address) {
+            const formattedAddress = formatAddress(item.address);
+            setLocation(formattedAddress);
+            const newRegion = {
+              latitude: parseFloat(item.lat),
+              longitude: parseFloat(item.lon),
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            };
+            setRegion(newRegion);
+            setMarker(newRegion);
+          } else {
+            alert('Address details are not available for this location.');
+          }
         } else {
-            alert('No results found');
+          alert('No results found');
         }
+      } catch (error) {
+        alert('Error fetching location data');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     useEffect(() => {
@@ -114,6 +119,12 @@ const EventLocationScreen = () => {
         >
           {marker && <Marker coordinate={marker} pinColor="#4caf50" />}
         </MapView>
+
+        {isLoading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#4CAF50" />
+        </View>
+        )}
       
         <TouchableOpacity
             onPress={() => {
@@ -182,7 +193,6 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     zIndex: 1,
-    
   },
   input: {
     flex: 1,
@@ -199,6 +209,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -25 }, { translateY: -25 }],
+    zIndex: 1,
   },
   button: {
     position: "absolute",

@@ -25,8 +25,14 @@ function EventSetupScreen({ route, navigation }) {
   };
 
   function isValidPrice(value) {
-    return /^\d+(\,\d{0,2})?$/.test(value);
+    return /^\d+(\.\d{0,2})?$/.test(value);
   }
+
+  const handlePriceChange = (value) => {
+    const formattedValue = value.replace(',', '.');
+    setPrice(formattedValue);
+  };
+  
 
   return (
     <View style={styles.container}>
@@ -148,7 +154,7 @@ function EventSetupScreen({ route, navigation }) {
             placeholder="1"
             style={styles.priceInput}
             value={price}
-            onChangeText={setPrice}
+            onChangeText={handlePriceChange}
             keyboardType="decimal-pad"
         />
         </View>
