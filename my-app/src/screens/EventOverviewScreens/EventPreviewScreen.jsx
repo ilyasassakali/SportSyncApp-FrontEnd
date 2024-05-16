@@ -124,12 +124,18 @@ function EventPreviewScreen({route, navigation }) {
             <Text style={styles.statLabel}>Players</Text>
         </View>
 
+        
         <View style={styles.statItem}>
-            <Text style={styles.statNumber}>
-            <Text style={styles.statNumber}>{event.teamDistribution.teamOne}<Text style={styles.smallUnit}>vs</Text>{event.teamDistribution.teamTwo}</Text>
-            </Text>
+            {event.isTeamDistributionEnabled ? (
+              <Text style={styles.statNumber}>
+                {event.teamDistribution.teamOne}<Text style={styles.smallUnit}>vs</Text>{event.teamDistribution.teamTwo}
+              </Text>
+            ) : (
+              <Text style={styles.statNumber}>no</Text>
+            )}
             <Text style={styles.statLabel}>Distribution</Text>
         </View>
+        
 
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>
@@ -161,7 +167,9 @@ function EventPreviewScreen({route, navigation }) {
                     </View>
                 </View>
             </View>
+            {event.isTeamDistributionEnabled && (
             <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} onPress={changeTeamColor} />
+            )}
         </View>
 
       </View>

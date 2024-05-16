@@ -11,6 +11,7 @@ function EventSetupScreen({ route, navigation }) {
   const [teamTwoColor, setTeamTwoColor] = useState('red');
   const colors = ['#4CAF50', 'red', '#0080ff', '#ffe200', 'purple', 'orange', 'black', '#ffffff']; 
   const [price, setPrice] = useState('0');
+  const [isTeamDistributionEnabled, setIsTeamDistributionEnabled] = useState(false);
 
 
   const handleIncrease = () => {
@@ -39,7 +40,7 @@ function EventSetupScreen({ route, navigation }) {
       <Text style={styles.label}>Number of Players</Text>
       <View style={styles.numberInputContainer}>
         <TouchableOpacity onPress={handleDecrease} style={styles.changeNumberButton}>
-          <Text style={styles.buttonText}>-</Text>
+          <Ionicons name="remove-outline" size={30} color="#fff" />
         </TouchableOpacity>
         <TextInput 
           placeholder="10" 
@@ -49,11 +50,23 @@ function EventSetupScreen({ route, navigation }) {
           onChangeText={text => setNumberOfPlayers(Number(text))}
         />
         <TouchableOpacity onPress={handleIncrease} style={styles.changeNumberButton}>
-          <Text style={styles.buttonText}>+</Text>
+          <Ionicons name="add-outline" size={30} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.label}>Team Distribution</Text>
+
+      <View style={styles.checkboxContainer}>
+        <TouchableOpacity onPress={() => setIsTeamDistributionEnabled(prev => !prev)} style={styles.checkbox}>
+          {isTeamDistributionEnabled ? (
+            <Ionicons name="checkbox" size={30} color="#4CAF50" />
+          ) : (
+            <Ionicons name="square-outline" size={30} color="#4CAF50" />
+          )}
+          <Text style={styles.checkboxText}>Enable Team Distribution</Text>
+        </TouchableOpacity>
+      </View>
+
+      {isTeamDistributionEnabled && (
       <View style={styles.teamDistributionContainer}>
         <Ionicons name="shirt" size={40} style={[styles.shirtIcon, {
             color: teamOneColor,
@@ -81,7 +94,9 @@ function EventSetupScreen({ route, navigation }) {
             padding: teamTwoColor === '#ffffff' ? 1 : 0 
         }]}  />
       </View>
+      )}
 
+      {isTeamDistributionEnabled && (
       <View style={styles.colorPickerContainer}>
         <View style={styles.colorPickerContainerLeft}>
             <View style={styles.colorRow}>
@@ -124,6 +139,7 @@ function EventSetupScreen({ route, navigation }) {
             </View>
         </View>
        </View>
+      )}
 
        <Text style={styles.label}>Price per Person</Text>
        <View style={styles.priceContainer}>
@@ -141,12 +157,12 @@ function EventSetupScreen({ route, navigation }) {
         <TouchableOpacity
             onPress={() => {
               if (
-                teamOne &&
-                teamTwo &&
-                numberOfPlayers > 0 &&
-                isValidPrice(price) &&
-                parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
-                teamOneColor !== teamTwoColor
+                (!isTeamDistributionEnabled ||
+                  (isTeamDistributionEnabled &&
+                    parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
+                    teamOneColor !== teamTwoColor))
+                && numberOfPlayers > 0
+                && isValidPrice(price)
               ) {
                 navigation.navigate('EventPreview', {
                   event: {
@@ -155,32 +171,36 @@ function EventSetupScreen({ route, navigation }) {
                     teamDistribution: { teamOne, teamTwo },
                     teamColors: { teamOneColor, teamTwoColor },
                     price,
+                    isTeamDistributionEnabled
                   },
                 });
               }
             }}
             style={
-              teamOne &&
-              teamTwo &&
+              (!isTeamDistributionEnabled ||
+                (isTeamDistributionEnabled &&
+                  parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
+                  teamOneColor !== teamTwoColor)) &&
               numberOfPlayers > 0 &&
-              isValidPrice(price) &&
-              parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
-              teamOneColor !== teamTwoColor
+              isValidPrice(price)
                 ? styles.button
                 : styles.buttonDisabled
             }
             activeOpacity={0.9}
             disabled={
-              !teamOne ||
-              !teamTwo ||
               numberOfPlayers <= 0 ||
-              !isValidPrice(price) ||
-              parseInt(teamOne) + parseInt(teamTwo) !== numberOfPlayers ||
-              teamOneColor === teamTwoColor
+              !isValidPrice(price)
             }
           >
             <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
+
+
+
+
+
+
+        
 
     </View>
   );
@@ -218,22 +238,22 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   numberInput: {
-    borderBottomWidth:1,
+    borderWidth:1,
     borderTopWidth: 1,
     borderColor: '#e0e0e0',
     padding: 10,
     borderRadius: 10,
     textAlign: 'center',
-    marginHorizontal: -10,
     fontSize: 16,
     fontFamily: 'Poppins_Regular',
-    width: 100
+    width: 100,
+    marginHorizontal:10
   },
   changeNumberButton: {
-    padding: 10,
+    paddingVertical: 9,
     backgroundColor: "#4CAF50",
     borderRadius: 10,
-    paddingHorizontal: 20
+    paddingHorizontal: 5,
   },
   label: {
     fontSize: 18,
@@ -294,6 +314,21 @@ const styles = StyleSheet.create({
     margin: 5,
     borderWidth: 1.25, 
     borderColor: '#e0e0e0' 
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  checkbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkboxText: {
+    marginLeft: 8,
+    fontSize: 16,
+    fontFamily: 'Poppins_Regular',
+    marginTop: 5
   },
   priceContainer: {
     flexDirection: 'row',
