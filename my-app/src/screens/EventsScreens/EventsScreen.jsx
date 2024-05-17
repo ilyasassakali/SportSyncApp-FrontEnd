@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import * as SecureStore from 'expo-secure-store';
+
 
 const Tab = createMaterialTopTabNavigator();
 
 const EventCard = ({ event, onPress }) => (
   <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
     <View style={styles.dateContainer}>
-      <Text style={styles.dateDay}>{event.day}</Text>
-      <Text style={styles.dateMonth}>{event.month}</Text>
+      <Text style={styles.dateDay}>{new Date(event.date).getDate()}</Text>
+      <Text style={styles.dateMonth}>{new Date(event.date).toLocaleString('default', { month: 'short' })}</Text>
     </View>
     <View style={styles.detailContainer}>
       <Text style={styles.eventTitle} numberOfLines={1} ellipsizeMode="tail">{event.title}</Text>
@@ -21,7 +22,7 @@ const EventCard = ({ event, onPress }) => (
   </TouchableOpacity>
 );
 
-function UpNextEventsScreen({navigation}) {
+function UpNextEventsScreen({navigation, events}) {
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {events.map(event => (
@@ -31,7 +32,7 @@ function UpNextEventsScreen({navigation}) {
   );
 }
 
-function PastEventsScreen({navigation}) {
+function PastEventsScreen({navigation, events}) {
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {events.map(event => (
@@ -42,7 +43,34 @@ function PastEventsScreen({navigation}) {
 }
 
 const EventsScreen = ({ navigation }) => {
+  const [upNextEvents, setUpNextEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
   const [fabColor, setFabColor] = useState("#4CAF50");
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const userDataString = await SecureStore.getItemAsync('userData');
+        const userData = JSON.parse(userDataString);
+
+        if (userData && userData.id) {
+          const userId = userData.id;
+          const response = await fetch(`http://192.168.129.29:3000/events/user-events/${userId}`);
+          const events = await response.json();
+
+          const now = new Date();
+          setUpNextEvents(events.filter(event => new Date(event.date) >= now));
+          setPastEvents(events.filter(event => new Date(event.date) < now));
+        } else {
+          console.error("No user ID found");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -57,8 +85,13 @@ const EventsScreen = ({ navigation }) => {
         }}
         
         >
-          <Tab.Screen name="Up Next" component={UpNextEventsScreen} />
-          <Tab.Screen name="Past" component={PastEventsScreen} />
+          <Tab.Screen name="Up Next">
+          {() => <UpNextEventsScreen navigation={navigation} events={upNextEvents} />}
+        </Tab.Screen>
+        <Tab.Screen name="Past">
+          {() => <PastEventsScreen navigation={navigation} events={pastEvents} />}
+        </Tab.Screen>
+
         </Tab.Navigator>
 
 
@@ -167,7 +200,7 @@ const styles = StyleSheet.create({
 export default EventsScreen;
 
 
-// Simulated event data
+/*
 const events = [
   {
     id: 1,
@@ -279,4 +312,4 @@ const events = [
     hoste: "Ilyas Assakali",
     date: "Wednesday 16 Decembre"
   },
-];
+];*/
