@@ -9,6 +9,8 @@ import * as Clipboard from 'expo-clipboard';
 function EventOverviewScreen({route, navigation }) {
   const { event } = route.params;
   const [hostDetails, setHostDetails] = useState(null);
+  const [teamColor, setTeamColor] = useState(event.teamColors.teamOneColor);
+  const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
 
   useEffect(() => {
     const fetchHostDetails = async () => {
@@ -93,7 +95,25 @@ To join click here: https://example.com/event`;
       { cancelable: true }
     );
   };
+
+  const changeTeamColor = () => {
+    Alert.alert(
+      'Change Team Color',
+      'Choose a team to change the color',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Team One', onPress: () => setTeamColor(event.teamColors.teamOneColor) },
+        { text: 'Team Two', onPress: () => setTeamColor(event.teamColors.teamTwoColor) },
+      ],
+      { cancelable: true }
+    );
+  };
   
+  const getInitials = () => {
+    if (!hostDetails) return "";
+    const initials = `${hostDetails.firstName.charAt(0)}${hostDetails.lastName.charAt(0)}`;
+    return initials.toUpperCase();
+  };
 
   return (
     <View style={styles.outerContainer}>
@@ -142,21 +162,26 @@ To join click here: https://example.com/event`;
 
       <View style={styles.statisticsContainer}>
         <View style={styles.statItem}>
-            <View style={styles.distributionContainer}>
-                <Text style={styles.distributionText}>5 vs 5</Text>
-            </View>
-            <Text style={styles.statNumber}>10</Text>
+            <Text style={styles.statNumber}>{event.numberOfPlayers}</Text>
             <Text style={styles.statLabel}>Players</Text>
         </View>
+
+        
         <View style={styles.statItem}>
-            <Text style={styles.statNumber}>
-              1<Text style={styles.smallUnit}>h</Text><Text style={styles.smallerUnit}>30</Text>
-            </Text>
-            <Text style={styles.statLabel}>Duration</Text>
+            {event.isTeamDistributionEnabled ? (
+              <Text style={styles.statNumber}>
+                {event.teamDistribution.teamOne}<Text style={styles.smallUnit}>vs</Text>{event.teamDistribution.teamTwo}
+              </Text>
+            ) : (
+              <Text style={styles.statNumber}>no</Text>
+            )}
+            <Text style={styles.statLabel}>Distribution</Text>
         </View>
+        
+
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>
-            <Text style={styles.smallUnit}>€</Text>2.5
+            <Text style={styles.smallUnit}>€</Text>{event.price}
             </Text>
             <Text style={styles.statLabel}>Price</Text>
         </View>
@@ -166,9 +191,26 @@ To join click here: https://example.com/event`;
       <View style={styles.guestsContainer}>
         <View style={styles.goingHeader}>
             <Ionicons name="radio-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-            <Text style={styles.guestsNumber}>7 going</Text>
+            <Text style={styles.guestsNumber}>1 going</Text>
         </View>
         
+        <View style={styles.profileHeader}>
+            <View style={styles.profileContent}>
+                <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>{getInitials()}</Text>
+                </View>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.nameText}>{hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}</Text>
+                    <View style={styles.payStatusContainer}>
+                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                        <Text style={styles.payText}>Paid</Text>
+                    </View>
+                </View>
+            </View>
+            {event.isTeamDistributionEnabled && (
+            <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} onPress={changeTeamColor} />
+            )}
+        </View>
         
         {/*
         <View style={styles.profileHeader}>
@@ -275,7 +317,7 @@ To join click here: https://example.com/event`;
                 </View>
             </View>
             <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
-  </View>
+        </View>
 
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancelPlan} activeOpacity={0.7}>
           <Ionicons name="trash" size={25} color="white" style={styles.linkIcon2} />
