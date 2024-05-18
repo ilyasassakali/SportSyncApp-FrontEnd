@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, Linking } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
@@ -8,6 +8,21 @@ import * as Clipboard from 'expo-clipboard';
 
 function EventOverviewScreen({route, navigation }) {
   const { event } = route.params;
+  const [hostDetails, setHostDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchHostDetails = async () => {
+      try {
+        const response = await fetch(`http://192.168.129.29:3000/events/user/${event.hostId}`);
+        const host = await response.json();
+        setHostDetails(host);
+      } catch (error) {
+        console.error('Error fetching host details:', error);
+      }
+    };
+
+    fetchHostDetails();
+  }, [event.hostId]);
 
   const eventLocation = {
     latitude: 50.7459,
@@ -49,12 +64,18 @@ To join click here: https://example.com/event`;
     Alert.alert("Copied", "Event link copied to clipboard.");
   };
 
-  const handleCancelPlan = () => {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { weekday: 'long', day: 'numeric', month: 'long' };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
+
+  /*const handleCancelPlan = () => {
     Alert.alert("Cancel Plan", "Are you sure you want to cancel this plan?", [
       { text: "No", style: "cancel" },
       { text: "Yes", onPress: () => console.log("Plan Cancelled") }
     ]);
-  };
+  };*/
 
   const openMap = () => {
     const encodedAddress = encodeURIComponent(event.location);
@@ -89,7 +110,7 @@ To join click here: https://example.com/event`;
 
       <Text style={styles.eventName}>{event.title}</Text>
       <Text style={styles.hostedBy}>
-            Hosted by <Text style={styles.hostName}>{event.hoste}</Text>
+            Hosted by <Text style={styles.hostName}>{hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}</Text>
       </Text>
 
       <View style={styles.mapContainer}>
@@ -110,7 +131,7 @@ To join click here: https://example.com/event`;
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="calendar-outline" size={20} color="#4CAF50" />
-          <Text style={styles.detailText}>{event.date}</Text>
+          <Text style={styles.detailText}>{formatDate(event.date)}</Text>
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="time-outline" size={20} color="#4CAF50" />
@@ -149,7 +170,7 @@ To join click here: https://example.com/event`;
         </View>
         
         
-
+        {/*
         <View style={styles.profileHeader}>
             <View style={styles.profileContent}>
                 <View style={styles.initialsContainer}>
@@ -254,12 +275,12 @@ To join click here: https://example.com/event`;
                 </View>
             </View>
             <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
-        </View>
+  </View>
 
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancelPlan} activeOpacity={0.7}>
           <Ionicons name="trash" size={25} color="white" style={styles.linkIcon2} />
           <Text style={styles.cancelButtonText}>Cancel Plan</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
       </View>
 
       

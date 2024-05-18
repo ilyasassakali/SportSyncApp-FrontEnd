@@ -13,9 +13,37 @@ function EventPreviewScreen({route, navigation }) {
   const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
 
 
-  const createEvent = () => {
-    console.log(event);
-    alert('Event created successfully!');
+  const createEvent = async () => {
+    try {
+      const response = await fetch('http://192.168.129.29:3000/events/create-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: event.title,
+          location: event.location,
+          date: event.date,
+          time: event.time,
+          numberOfPlayers: event.numberOfPlayers,
+          isTeamDistributionEnabled: event.isTeamDistributionEnabled,
+          teamDistribution: event.teamDistribution,
+          teamColors: event.teamColors,
+          price: event.price,
+          hostId: userData.id,
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        Alert.alert('Success', 'Event created successfully!');
+      } else {
+        Alert.alert('Error', result.message || 'Failed to create event');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while creating the event');
+    }
   };
 
   const eventLocation = {
@@ -71,9 +99,6 @@ function EventPreviewScreen({route, navigation }) {
     );
   };
 
-  
-  
-  
 
   return (
  
