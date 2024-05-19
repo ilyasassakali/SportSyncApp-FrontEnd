@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as SecureStore from 'expo-secure-store';
 import { useEvents } from '../../components/EventsContext'; 
+import { useFocusEffect } from '@react-navigation/native';
+
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -54,27 +56,29 @@ function PastEventsScreen({ navigation }) {
 const EventsScreen = ({ navigation }) => {
   const { setEvents } = useEvents();
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const userDataString = await SecureStore.getItemAsync('userData');
-        const userData = JSON.parse(userDataString);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchEvents = async () => {
+        try {
+          const userDataString = await SecureStore.getItemAsync('userData');
+          const userData = JSON.parse(userDataString);
 
-        if (userData && userData.id) {
-          const userId = userData.id;
-          const response = await fetch(`http://192.168.129.29:3000/events/user-events/${userId}`);
-          const events = await response.json();
-          setEvents(events);
-        } else {
-          console.error("No user ID found");
+          if (userData && userData.id) {
+            const userId = userData.id;
+            const response = await fetch(`http://192.168.129.29:3000/events/user-events/${userId}`);
+            const events = await response.json();
+            setEvents(events);
+          } else {
+            console.error("No user ID found");
+          }
+        } catch (error) {
+          console.error("Error fetching events:", error);
         }
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
+      };
 
-    fetchEvents();
-  }, [setEvents]);
+      fetchEvents();
+    }, [setEvents])
+  );
 
   return (
     <View style={styles.container}>
