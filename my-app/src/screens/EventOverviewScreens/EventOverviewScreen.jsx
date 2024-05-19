@@ -9,7 +9,7 @@ import * as Clipboard from 'expo-clipboard';
 function EventOverviewScreen({route, navigation }) {
   const { event } = route.params;
   const [hostDetails, setHostDetails] = useState(null);
-  const [teamColor, setTeamColor] = useState(event.teamColors.teamOneColor);
+  const [teamColor, setTeamColor] = useState(event && event.teamColors ? event.teamColors.teamOneColor : '#FFFFFF');
   const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
 
   useEffect(() => {
@@ -32,15 +32,6 @@ function EventOverviewScreen({route, navigation }) {
     latitudeDelta: 0.003,
     longitudeDelta: 0.003,
   };
-
-  const message = `Join me at ${event.title}
-Hosted by: ${event.hoste}
-
-Date: ${event.date}
-Time: ${event.time}
-Location: ${event.location}
-
-To join click here: https://example.com/event`;
 
   const shareEvent = async () => {
     try {
@@ -114,6 +105,15 @@ To join click here: https://example.com/event`;
     const initials = `${hostDetails.firstName.charAt(0)}${hostDetails.lastName.charAt(0)}`;
     return initials.toUpperCase();
   };
+
+    const message = `Join me at ${event.title}
+Hosted by: ${hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}
+
+Date: ${formatDate(event.date)}
+Time: ${event.time}
+Location: ${event.location}
+
+To join click here: https://example.com/event`;
 
   return (
     <View style={styles.outerContainer}>
