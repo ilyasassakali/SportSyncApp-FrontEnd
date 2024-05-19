@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { Ionicons } from "@expo/vector-icons";
 import { AuthProvider, useAuth } from "./components/AuthContext"
+import { EventsProvider } from './components/EventsContext';
 import HomeScreen from "./screens/HomeScreens/HomeScreen";
 import EventsScreen from "./screens/EventsScreens/EventsScreen";
 import ProfileScreen from "./screens/ProfileScreens/ProfileScreen";
@@ -81,6 +82,7 @@ function AppContainer() {
 
   return (
     
+    <EventsProvider>
     <NavigationContainer>
       <Stack.Navigator>
       {isUserLoggedIn ? (
@@ -107,6 +109,7 @@ function AppContainer() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </EventsProvider>
   );
 }
 

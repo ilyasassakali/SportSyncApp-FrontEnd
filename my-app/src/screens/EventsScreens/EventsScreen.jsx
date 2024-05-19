@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-nati
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as SecureStore from 'expo-secure-store';
+import { useEvents } from '../../components/EventsContext'; 
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -22,30 +23,36 @@ const EventCard = ({ event, onPress }) => (
   </TouchableOpacity>
 );
 
-function UpNextEventsScreen({navigation, events}) {
+function UpNextEventsScreen({ navigation }) {
+  const { events } = useEvents();
+  const now = new Date();
+  const upNextEvents = events.filter(event => new Date(event.date) >= now);
+
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {events.map(event => (
-          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })}/>
-        ))}
+      {upNextEvents.map(event => (
+        <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+      ))}
     </ScrollView>
   );
 }
 
-function PastEventsScreen({navigation, events}) {
+function PastEventsScreen({ navigation }) {
+  const { events } = useEvents(); 
+  const now = new Date();
+  const pastEvents = events.filter(event => new Date(event.date) < now);
+
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {events.map(event => (
-          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })}/>
-        ))}
+      {pastEvents.map(event => (
+        <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+      ))}
     </ScrollView>
   );
 }
 
 const EventsScreen = ({ navigation }) => {
-  const [upNextEvents, setUpNextEvents] = useState([]);
-  const [pastEvents, setPastEvents] = useState([]);
-  const [fabColor, setFabColor] = useState("#4CAF50");
+  const { setEvents } = useEvents();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -57,10 +64,7 @@ const EventsScreen = ({ navigation }) => {
           const userId = userData.id;
           const response = await fetch(`http://192.168.129.29:3000/events/user-events/${userId}`);
           const events = await response.json();
-
-          const now = new Date();
-          setUpNextEvents(events.filter(event => new Date(event.date) >= now));
-          setPastEvents(events.filter(event => new Date(event.date) < now));
+          setEvents(events);
         } else {
           console.error("No user ID found");
         }
@@ -70,7 +74,7 @@ const EventsScreen = ({ navigation }) => {
     };
 
     fetchEvents();
-  }, []);
+  }, [setEvents]);
 
   return (
     <View style={styles.container}>
@@ -85,20 +89,17 @@ const EventsScreen = ({ navigation }) => {
         }}
         
         >
-          <Tab.Screen name="Up Next">
-          {() => <UpNextEventsScreen navigation={navigation} events={upNextEvents} />}
+        <Tab.Screen name="Up Next">
+          {() => <UpNextEventsScreen navigation={navigation} />}
         </Tab.Screen>
         <Tab.Screen name="Past">
-          {() => <PastEventsScreen navigation={navigation} events={pastEvents} />}
+          {() => <PastEventsScreen navigation={navigation} />}
         </Tab.Screen>
-
         </Tab.Navigator>
 
 
       <TouchableOpacity
-        style={[styles.fab, { backgroundColor: fabColor }]}
-        onPressIn={() => setFabColor("#449D48")}
-        onPressOut={() => setFabColor("#4CAF50")}
+        style={[styles.fab, { backgroundColor: "#4CAF50" }]}
         onPress={() => navigation.navigate('EventName')}
         activeOpacity={1}
       >
@@ -108,6 +109,7 @@ const EventsScreen = ({ navigation }) => {
   );
 };
 
+export default EventsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -197,4 +199,3 @@ const styles = StyleSheet.create({
   }
 });
 
-export default EventsScreen;

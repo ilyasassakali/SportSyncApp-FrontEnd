@@ -4,11 +4,13 @@ import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
 import {useAuth} from '../../components/AuthContext'
+import { useEvents } from '../../components/EventsContext';
 
 
 function EventPreviewScreen({route, navigation }) {
   const { event } = route.params;
   const { userData } = useAuth();
+  const { addEvent } = useEvents();
   const [teamColor, setTeamColor] = useState(event.teamColors.teamOneColor);
   const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
 
@@ -36,7 +38,13 @@ function EventPreviewScreen({route, navigation }) {
 
       const result = await response.json();
       if (response.ok) {
-        Alert.alert('Success', 'Event created successfully!');
+        addEvent(result);
+        Alert.alert('Success', 'Event created successfully!', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Events')
+          }
+        ]);
       } else {
         Alert.alert('Error', result.message || 'Failed to create event');
       }
