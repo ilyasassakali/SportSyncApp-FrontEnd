@@ -120,7 +120,7 @@ To join click here: https://example.com/event`;
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.checkButton}>
+        <TouchableOpacity onPress={() => navigation.navigate('Events')} style={styles.checkButton}>
           <Ionicons name="checkmark-outline" size={30} color="#000" />
         </TouchableOpacity>
         <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>

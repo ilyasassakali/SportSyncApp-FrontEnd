@@ -42,7 +42,7 @@ function EventPreviewScreen({route, navigation }) {
         Alert.alert('Success', 'Event created successfully!', [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('Events')
+            onPress: () => navigation.navigate('EventOverview', { event: result.event })
           }
         ]);
       } else {
