@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -52,6 +52,7 @@ function PastEventsScreen({ navigation }) {
 }
 
 const EventsScreen = ({ navigation }) => {
+  const [fabColor, setFabColor] = useState("#4CAF50");
   const { setEvents } = useEvents();
 
   useFocusEffect(
@@ -101,7 +102,9 @@ const EventsScreen = ({ navigation }) => {
 
 
       <TouchableOpacity
-        style={[styles.fab, { backgroundColor: "#4CAF50" }]}
+        style={[styles.fab, { backgroundColor: fabColor }]}
+        onPressIn={() => setFabColor("#449D48")}
+        onPressOut={() => setFabColor("#4CAF50")}
         onPress={() => navigation.navigate('EventName')}
         activeOpacity={1}
       >

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
@@ -31,6 +31,8 @@ function EventPreviewScreen({route, navigation }) {
           teamColors: event.teamColors,
           price: event.price,
           hostId: userData.id,
+          latitude: event.latitude,
+          longitude: event.longitude
         }),
       });
 
@@ -63,10 +65,6 @@ function EventPreviewScreen({route, navigation }) {
     const options = { weekday: 'long', day: 'numeric', month: 'long' };
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
-
-  useEffect(() => {
-    console.log(event);
-  }, []);
 
   const getInitials = () => {
     if (!userData) return "";

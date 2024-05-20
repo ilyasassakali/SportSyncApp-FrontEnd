@@ -30,8 +30,6 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
     </View>
 
-
-    {/* Floating Action Button */}
     <TouchableOpacity
         style={[styles.fab, { backgroundColor: fabColor }]}
         onPressIn={() => setFabColor("#449D48")}

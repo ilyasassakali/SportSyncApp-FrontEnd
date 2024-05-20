@@ -34,8 +34,8 @@ function EventOverviewScreen({route, navigation }) {
   }, [event.hostId]);
 
   const eventLocation = {
-    latitude: 50.7459,
-    longitude: 3.6005, 
+    latitude: parseFloat(event.latitude), 
+    longitude: parseFloat(event.longitude),
     latitudeDelta: 0.003,
     longitudeDelta: 0.003,
   };
