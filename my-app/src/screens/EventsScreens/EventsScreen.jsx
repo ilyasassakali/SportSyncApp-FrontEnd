@@ -6,8 +6,6 @@ import * as SecureStore from 'expo-secure-store';
 import { useEvents } from '../../components/EventsContext'; 
 import { useFocusEffect } from '@react-navigation/native';
 
-
-
 const Tab = createMaterialTopTabNavigator();
 
 const EventCard = ({ event, onPress }) => (

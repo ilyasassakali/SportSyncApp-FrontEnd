@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, Linking, BackHandler } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
@@ -24,6 +24,13 @@ function EventOverviewScreen({route, navigation }) {
     };
 
     fetchHostDetails();
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.navigate('Events');
+      return true; 
+    });
+
+    return () => backHandler.remove();
   }, [event.hostId]);
 
   const eventLocation = {

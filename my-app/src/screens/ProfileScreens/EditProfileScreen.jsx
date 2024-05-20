@@ -4,8 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '../../components/AuthContext';
 
-
-
 function EditProfileScreen({ navigation }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
