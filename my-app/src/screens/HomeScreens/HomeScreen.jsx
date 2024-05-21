@@ -49,6 +49,7 @@ const HomeScreen = ({ navigation }) => {
 
 
     <View style={styles.textContainer}>  
+
     {upcomingEvent ? (
           <TouchableOpacity style={styles.cardContainer} onPress={() => navigation.navigate('EventOverview', { event: upcomingEvent })}>
             <View style={styles.dateContainer}>
@@ -65,9 +66,10 @@ const HomeScreen = ({ navigation }) => {
         ) : (
           <View>
             <Text style={styles.subText} >
-              Your upcoming sport events{"\n"}
-              will appear here...
+              Your upcoming sport event{"\n"}
+              will appear here...{"\n"}
             </Text>
+            
             <TouchableOpacity
             style={[styles.button, { backgroundColor: buttonColor }]}
             onPressIn={() => setButtonColor("#449D48")} 
@@ -77,10 +79,10 @@ const HomeScreen = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Plan a Sport Event</Text>
           </TouchableOpacity>
+          
         </View>
+        )}   
 
-        )}
-      
     </View>
 
 
@@ -109,9 +111,10 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     padding: 20,
-    backgroundColor: "#D7F5D8", 
     borderRadius: 10,
     alignSelf: 'stretch',
+    borderWidth: 1,
+    borderColor: "#4CAF50"
   },
   header: {
     fontFamily: 'Poppins_Bold',
@@ -120,15 +123,14 @@ const styles = StyleSheet.create({
   },
   subTitle:{
     fontFamily: 'Poppins_SemiBold',
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 10, 
-    color: "#666",
+    color: "#4CAF50",
   },
   subText: {
     fontFamily: 'Poppins_SemiBold',
     fontSize: 16,
     textAlign: 'left',
-    marginBottom: 20, 
     color: "#333",
   },
   button: {

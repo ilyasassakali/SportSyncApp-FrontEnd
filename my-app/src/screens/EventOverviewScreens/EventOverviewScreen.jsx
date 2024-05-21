@@ -284,6 +284,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
     marginLeft: 10,
+    paddingRight:20
   },
   map: {
     height: 150,
