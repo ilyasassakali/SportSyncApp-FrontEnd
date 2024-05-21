@@ -23,10 +23,20 @@ const EventCard = ({ event, onPress }) => (
   </TouchableOpacity>
 );
 
+const parseEventDateTime = (event) => {
+  const [startHour, startMinute] = event.time.split(' - ')[0].split(':');
+  const eventDate = new Date(event.date);
+  eventDate.setHours(startHour);
+  eventDate.setMinutes(startMinute);
+  return eventDate;
+};
+
 function UpNextEventsScreen({ navigation }) {
   const { events } = useEvents();
   const now = new Date();
-  const upNextEvents = events.filter(event => new Date(event.date) >= now);
+  const upNextEvents = events
+    .filter(event => parseEventDateTime(event) >= now)
+    .sort((a, b) => parseEventDateTime(a) - parseEventDateTime(b));
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -40,7 +50,9 @@ function UpNextEventsScreen({ navigation }) {
 function PastEventsScreen({ navigation }) {
   const { events } = useEvents(); 
   const now = new Date();
-  const pastEvents = events.filter(event => new Date(event.date) < now);
+  const pastEvents = events
+    .filter(event => parseEventDateTime(event) < now)
+    .sort((a, b) => parseEventDateTime(b) - parseEventDateTime(a));
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
