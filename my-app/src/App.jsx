@@ -13,7 +13,8 @@ import EventNameScreen from "./screens/EventCreation/EventNameScreen";
 import EventDateScreen from "./screens/EventCreation/EventDateScreen";
 import EventLocationScreen from "./screens/EventCreation/EventLocationScreen";
 import EventSetupScreen from "./screens/EventCreation/EventSetupScreen";
-import EventOverviewScreen from "./screens/EventOverviewScreens/EventOverviewScreen" 
+import EventOverviewScreen from "./screens/EventOverviewScreens/EventOverviewScreen"  
+import EventJoinScreen from "./screens/EventOverviewScreens/EventJoinScreen"
 import EventPreviewScreen from "./screens/EventOverviewScreens/EventPreviewScreen" 
 import EditProfileScreen from "./screens/ProfileScreens/EditProfileScreen"
 import NotificationsScreen from "./screens/ProfileScreens/NotificationsScreen"
@@ -107,6 +108,7 @@ function AppContainer() {
             <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false }} />
             </>
         )}
+        <Stack.Screen name="EventJoin" component={EventJoinScreen} options={{ headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
     </EventsProvider>

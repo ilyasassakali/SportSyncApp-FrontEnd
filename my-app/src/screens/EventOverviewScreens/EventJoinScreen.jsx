@@ -6,7 +6,7 @@ import { customMapStyle } from '../../components/MapStyles';
 import * as Clipboard from 'expo-clipboard';
 
 
-function EventOverviewScreen({route, navigation }) {
+function EventJoinScreen({route, navigation }) {
   const { event } = route.params;
   const [hostDetails, setHostDetails] = useState(null);
   const [teamColor, setTeamColor] = useState(event && event.teamColors ? event.teamColors.teamOneColor : '#FFFFFF');
@@ -40,32 +40,32 @@ function EventOverviewScreen({route, navigation }) {
     longitudeDelta: 0.003,
   };
 
-  const shareEvent = async () => {
-    const eventLink = `https://example.com/event/${event.id}`;
-    const message = `Join me at ${event.title}\n
-Hosted by: ${hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}\n
-Date: ${formatDate(event.date)}\n
-Time: ${event.time}\n
-Location: ${event.location}\n
-To join click here: ${eventLink}`;
-
+  const joinEvent = async () => {
     try {
-      const result = await Share.share({
-        message: message,
+      const response = await fetch('http://192.168.129.29:3000/events/join-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventId: event.id, 
+          userId: 38,
+          paymentMethod: 'direct', 
+          shirtColor: 'Red',
+        }),
       });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          console.log("Shared with activity type of", result.activityType);
-        } else {
-          console.log("Shared");
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log("Dismissed");
+      if (response.ok) {
+        Alert.alert('Success', 'You have successfully joined the event!');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to join event');
       }
     } catch (error) {
-      Alert.alert(error.message);
+      console.error('Error joining event:', error);
+      Alert.alert('Error', error.message || 'Failed to join event');
     }
   };
+  
 
   const copyToClipboard = () => {
     Clipboard.setString(message);
@@ -215,19 +215,29 @@ To join click here: ${eventLink}`;
       </View>
       
     </ScrollView>
-    <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.7}
-        onPress={shareEvent}
-      >
-        <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
-        <Text style={styles.buttonText}>Share Invite Link</Text>
-    </TouchableOpacity>
+    <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.joinButton]}
+          activeOpacity={0.7}
+          onPress={joinEvent}
+        >
+          <Ionicons name="checkmark" size={25} color="#fff" />
+          <Text style={styles.buttonText}>Join</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.declineButton]}
+          activeOpacity={0.7}
+          onPress={declineEvent}
+        >
+          <Ionicons name="close" size={25} color="#fff" />
+          <Text style={styles.buttonText}>Decline</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-export default EventOverviewScreen;
+export default EventJoinScreen;
 
 
 const styles = StyleSheet.create({
@@ -402,19 +412,21 @@ payStatusContainer: {
   shirtIcon: {
     alignSelf: 'center',  
   },
-  cancelButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    backgroundColor: '#fff', 
-    borderRadius: 10,
-    backgroundColor: '#F44336',
-  },
   cancelButtonText: {
     color: 'white', 
     fontSize: 18,
     fontFamily: 'Poppins_SemiBold'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    margin: 20,
+  },
+  joinButton: {
+    backgroundColor: '#4CAF50',
+  },
+  declineButton: {
+    backgroundColor: '#F44336',
   },
   button: {
     position: "absolute",
@@ -449,115 +461,3 @@ payStatusContainer: {
     marginBottom: 5
   },
 });
-
-{/*
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>IA</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Ilyas Assakali</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-            </View>
-            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
-        </View>
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>ME</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Mohamed El Asharfil</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-            </View>
-            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
-        </View>
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>AB</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Abdellah  Bakalioussama</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Pay Cash</Text>
-                    </View>
-                </View>
-            </View>
-            <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
-        </View>
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>YH</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Yarno De Hedebouer</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-            </View>
-            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
-        </View>
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>OB</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Oussama Ben KhafirKabir</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Paid</Text>
-                    </View>
-                </View>
-            </View>
-            <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
-        </View>
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>IA</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Ismail Assakali</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Pay Cash</Text>
-                    </View>
-                </View>
-            </View>
-            <Ionicons name="shirt" size={28} color="#4CAF50" style={styles.shirtIcon} />
-        </View>
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>AA</Text>
-                </View>
-                <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>Amine Assakali</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Pay Cash</Text>
-                    </View>
-                </View>
-            </View>
-            <Ionicons name="shirt" size={28} color="#000" style={styles.shirtIcon} />
-        </View>
-
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancelPlan} activeOpacity={0.7}>
-          <Ionicons name="trash" size={25} color="white" style={styles.linkIcon2} />
-          <Text style={styles.cancelButtonText}>Cancel Plan</Text>
-        </TouchableOpacity>*/}
