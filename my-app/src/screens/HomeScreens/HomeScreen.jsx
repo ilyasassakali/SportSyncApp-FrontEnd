@@ -4,6 +4,69 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../components/AuthContext";
 import { useEvents } from '../../components/EventsContext'; 
 
+const CountdownTimer = ({ targetDate }) => {
+  const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining(targetDate));
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeRemaining(getTimeRemaining(targetDate));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [targetDate]);
+
+  if (!timeRemaining) {
+    return null;
+  }
+
+  return (
+    <View style={styles.countdownContainer}>
+      <View style={styles.countdownSection}>
+        <Text style={styles.countdownLabel}>Days</Text>
+        <Text style={styles.countdownValue}>{timeRemaining.days}</Text>
+      </View>
+      <View style={styles.countdownSection}>
+        <Text style={styles.countdownLabel}>Hours</Text>
+        <Text style={styles.countdownValue}>{timeRemaining.hours}</Text>
+      </View>
+      <View style={styles.countdownSection}>
+        <Text style={styles.countdownLabel}>Minutes</Text>
+        <Text style={styles.countdownValue}>{timeRemaining.minutes}</Text>
+      </View>
+      <View style={styles.countdownSection}>
+        <Text style={styles.countdownLabel}>Seconds</Text>
+        <Text style={styles.countdownValue}>{timeRemaining.seconds}</Text>
+      </View>
+    </View>
+  );
+};
+
+const getTimeRemaining = (targetDate) => {
+  const now = new Date();
+  const difference = targetDate - now;
+
+  if (difference <= 0) {
+    return null;
+  }
+
+  return {
+    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((difference / 1000 / 60) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
+  };
+};
+
+const parseEventDateTime = (date, time) => {
+  const [startTime] = time.split(' - ');
+  const [hours, minutes] = startTime.split(':').map(Number);
+  const eventDate = new Date(date);
+  eventDate.setHours(hours);
+  eventDate.setMinutes(minutes);
+  eventDate.setSeconds(0);
+  eventDate.setMilliseconds(0);
+  return eventDate;
+};
 
 const HomeScreen = ({ navigation }) => {
   const { userData } = useAuth();
@@ -15,23 +78,16 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     const now = new Date();
     const upcomingEvents = events.filter(event => {
-      const [eventStartHour, eventStartMinute] = event.time.split(' - ')[0].split(':');
-      const eventDate = new Date(event.date);
-      eventDate.setHours(eventStartHour);
-      eventDate.setMinutes(eventStartMinute);
+      const eventDate = parseEventDateTime(event.date, event.time);
       return eventDate >= now;
     });
+
     upcomingEvents.sort((a, b) => {
-      const eventADate = new Date(a.date);
-      const eventBDate = new Date(b.date);
-      const [eventAStartHour, eventAStartMinute] = a.time.split(' - ')[0].split(':');
-      const [eventBStartHour, eventBStartMinute] = b.time.split(' - ')[0].split(':');
-      eventADate.setHours(eventAStartHour);
-      eventADate.setMinutes(eventAStartMinute);
-      eventBDate.setHours(eventBStartHour);
-      eventBDate.setMinutes(eventBStartMinute);
+      const eventADate = parseEventDateTime(a.date, a.time);
+      const eventBDate = parseEventDateTime(b.date, b.time);
       return eventADate - eventBDate;
     });
+
     if (upcomingEvents.length > 0) {
       setUpcomingEvent(upcomingEvents[0]);
     } else {
@@ -40,17 +96,14 @@ const HomeScreen = ({ navigation }) => {
   }, [events]);
   
   
-
   return(
   <View style={styles.container}>
     <Text style={styles.header}>Hello {userData ? userData.firstName : ""}!</Text>
     <Text style={styles.subTitle}>Up next</Text>
-
-
-
     <View style={styles.textContainer}>  
-
     {upcomingEvent ? (
+      <View>
+      <CountdownTimer targetDate={parseEventDateTime(upcomingEvent.date, upcomingEvent.time)} />
           <TouchableOpacity style={styles.cardContainer} onPress={() => navigation.navigate('EventOverview', { event: upcomingEvent })}>
             <View style={styles.dateContainer}>
               <Text style={styles.dateDay}>{new Date(upcomingEvent.date).getDate()}</Text>
@@ -63,6 +116,7 @@ const HomeScreen = ({ navigation }) => {
               </View>
             </View>
           </TouchableOpacity>
+          </View>
         ) : (
           <View>
             <Text style={styles.subText} >
@@ -84,9 +138,6 @@ const HomeScreen = ({ navigation }) => {
         )}   
 
     </View>
-
-
-
     <TouchableOpacity
         style={[styles.fab, { backgroundColor: fabColor }]}
         onPressIn={() => setFabColor("#449D48")}
@@ -209,6 +260,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#4CAF50",
     color:"#333"
+  },
+  countdownContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
+  },
+  countdownSection: {
+    alignItems: 'center',
+  },
+  countdownLabel: {
+    fontSize: 12,
+    color: '#FFFFFF',
+  },
+  countdownValue: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
 });
 
