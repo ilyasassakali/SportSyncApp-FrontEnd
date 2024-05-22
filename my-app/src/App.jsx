@@ -14,6 +14,7 @@ import EventDateScreen from "./screens/EventCreation/EventDateScreen";
 import EventLocationScreen from "./screens/EventCreation/EventLocationScreen";
 import EventSetupScreen from "./screens/EventCreation/EventSetupScreen";
 import EventOverviewScreen from "./screens/EventOverviewScreens/EventOverviewScreen"  
+import EventEnterCodeScreen from "./screens/EventOverviewScreens/EventEnterCodeScreen";
 import EventJoinScreen from "./screens/EventOverviewScreens/EventJoinScreen"
 import EventPreviewScreen from "./screens/EventOverviewScreens/EventPreviewScreen" 
 import EditProfileScreen from "./screens/ProfileScreens/EditProfileScreen"
@@ -97,6 +98,8 @@ function AppContainer() {
             <Stack.Screen name="EventPreview" component={EventPreviewScreen} options={{ headerShown: false}}/>
 
             <Stack.Screen name="EventOverview" component={EventOverviewScreen} options={{ headerShown: false}}/>
+
+            <Stack.Screen name="EventEnterCode" component={EventEnterCodeScreen} options={{ headerShown: false}}/>
 
             <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
             <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>

@@ -20,7 +20,7 @@ const FabButton = () => {
             {
               icon: 'account-plus',
               label: 'Join Event',
-              onPress: () => console.log('Pressed Join Event'),
+              onPress: () => navigation.navigate('EventEnterCode'),
               style: { backgroundColor: '#4CAF50' }, 
               color: '#FFFFFF',
               labelTextColor: '#4CAF50'
