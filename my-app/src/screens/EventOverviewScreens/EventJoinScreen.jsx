@@ -227,7 +227,7 @@ function EventJoinScreen({route, navigation }) {
         <TouchableOpacity
           style={[styles.button, styles.declineButton]}
           activeOpacity={0.7}
-          onPress={declineEvent}
+          //onPress={declineEvent}
         >
           <Ionicons name="close" size={25} color="#fff" />
           <Text style={styles.buttonText}>Decline</Text>

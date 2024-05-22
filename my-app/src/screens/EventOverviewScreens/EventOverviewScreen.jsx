@@ -41,13 +41,15 @@ function EventOverviewScreen({route, navigation }) {
   };
 
   const shareEvent = async () => {
-    const eventLink = `https://example.com/event/${event.id}`;
+    const downloadLink = `https://sportsync/download`;
+    const inviteCode = event.inviteCode;
     const message = `Join me at ${event.title}\n
 Hosted by: ${hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}\n
 Date: ${formatDate(event.date)}\n
 Time: ${event.time}\n
 Location: ${event.location}\n
-To join click here: ${eventLink}`;
+To join use this code: ${inviteCode}\n
+Download SportSync: ${downloadLink}`;
 
     try {
       const result = await Share.share({

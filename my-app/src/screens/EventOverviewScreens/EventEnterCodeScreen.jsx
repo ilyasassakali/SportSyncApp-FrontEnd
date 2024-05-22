@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 
 const EventEnterCodeScreen = ({ navigation }) => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
+  const inputs = useRef([]);
 
   const handleInputChange = (text, index) => {
     if (/^\d*$/.test(text)) {
@@ -13,7 +14,7 @@ const EventEnterCodeScreen = ({ navigation }) => {
       setCode(newCode);
 
       if (text && index < 5) {
-        inputs[index + 1].focus();
+        inputs.current[index + 1].focus();
       } else if (index === 5) {
         validateCode(newCode.join(''));
       }
@@ -26,21 +27,34 @@ const EventEnterCodeScreen = ({ navigation }) => {
         const newCode = [...code];
         newCode[index - 1] = '';
         setCode(newCode);
-        inputs[index - 1].focus();
+        inputs.current[index - 1].focus();
       }
     }
   };
 
-  const validateCode = (enteredCode) => {
-    const validCode = '123456';
-    if (enteredCode === validCode) {
-      navigation.navigate('EventJoin');
-    } else {
-      Alert.alert('Invalid Code', 'The code you entered is invalid. Please try again.');
+  const validateCode = async (enteredCode) => {
+    try {
+      const response = await fetch('http://192.168.129.29:3000/events/validate-invite-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ inviteCode: enteredCode }),
+      });
+
+      if (response.status === 200) {
+        const { event } = await response.json();
+        Alert.alert('Valid Code', 'The code you entered is valid.');
+        navigation.navigate('EventJoin', { event });
+      } else {
+        Alert.alert('Invalid Code', 'The code you entered is invalid. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error validating invite code:', error);
+      Alert.alert('Error', 'An error occurred while validating the invite code. Please try again.');
     }
   };
 
-  const inputs = [];
 
   return (
     <View style={styles.container}>
@@ -63,7 +77,7 @@ const EventEnterCodeScreen = ({ navigation }) => {
               style={styles.input}
               keyboardType="numeric"
               maxLength={1}
-              ref={(input) => { inputs[index] = input; }}
+              ref={(input) => { inputs.current[index] = input; }}
             />
           ))}
         </View>
