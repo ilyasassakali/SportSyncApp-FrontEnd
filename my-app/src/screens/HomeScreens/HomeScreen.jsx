@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../components/AuthContext";
 import { useEvents } from '../../components/EventsContext'; 
+import * as SecureStore from 'expo-secure-store';
+
 
 const CountdownTimer = ({ targetDate }) => {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining(targetDate));
@@ -70,10 +72,32 @@ const parseEventDateTime = (date, time) => {
 
 const HomeScreen = ({ navigation }) => {
   const { userData } = useAuth();
-  const { events } = useEvents();
+  const { events, setEvents } = useEvents();
   const [buttonColor, setButtonColor] = useState("#4CAF50");
   const [fabColor, setFabColor] = useState("#4CAF50");
   const [upcomingEvent, setUpcomingEvent] = useState(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const userDataString = await SecureStore.getItemAsync('userData');
+        const userData = JSON.parse(userDataString);
+
+        if (userData && userData.id) {
+          const userId = userData.id;
+          const response = await fetch(`http://192.168.129.29:3000/events/user-events/${userId}`);
+          const eventsData = await response.json();
+          setEvents(eventsData); 
+        } else {
+          console.error("No user ID found");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, [setEvents]);
 
   useEffect(() => {
     const now = new Date();
@@ -136,7 +160,6 @@ const HomeScreen = ({ navigation }) => {
           
         </View>
         )}   
-
     </View>
     <TouchableOpacity
         style={[styles.fab, { backgroundColor: fabColor }]}
@@ -214,11 +237,11 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flexDirection: 'row',
-    padding: 10,  
+    paddingLeft: 10,  
+    paddingTop: 10
   },
   dateContainer: {
     marginRight: 30,
-    marginLeft:15,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -233,7 +256,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_Regular',
     fontSize: 18,
     color: "#4CAF50",
-    marginBottom: 0,
   },
   detailContainer: {
     flex: 1,
@@ -268,7 +290,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     borderRadius: 10,
     padding: 10,
-    marginBottom: 20,
   },
   countdownSection: {
     alignItems: 'center',
