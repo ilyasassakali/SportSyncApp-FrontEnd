@@ -100,6 +100,7 @@ function AppContainer() {
             <Stack.Screen name="EventOverview" component={EventOverviewScreen} options={{ headerShown: false}}/>
 
             <Stack.Screen name="EventEnterCode" component={EventEnterCodeScreen} options={{ headerShown: false}}/>
+            <Stack.Screen name="EventJoin" component={EventJoinScreen} options={{ headerShown: false}}/>
 
             <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
             <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}/>
@@ -111,7 +112,6 @@ function AppContainer() {
             <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ headerShown: false }} />
             </>
         )}
-        <Stack.Screen name="EventJoin" component={EventJoinScreen} options={{ headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
     </EventsProvider>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 
@@ -14,6 +14,8 @@ const EventEnterCodeScreen = ({ navigation }) => {
 
       if (text && index < 5) {
         inputs[index + 1].focus();
+      } else if (index === 5) {
+        validateCode(newCode.join(''));
       }
     }
   };
@@ -26,6 +28,15 @@ const EventEnterCodeScreen = ({ navigation }) => {
         setCode(newCode);
         inputs[index - 1].focus();
       }
+    }
+  };
+
+  const validateCode = (enteredCode) => {
+    const validCode = '123456';
+    if (enteredCode === validCode) {
+      navigation.navigate('EventJoin');
+    } else {
+      Alert.alert('Invalid Code', 'The code you entered is invalid. Please try again.');
     }
   };
 
