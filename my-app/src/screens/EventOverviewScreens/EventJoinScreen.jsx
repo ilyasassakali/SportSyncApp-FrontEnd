@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, Linking, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
-import * as Clipboard from 'expo-clipboard';
+import { useAuth } from '../../components/AuthContext';
+import * as SecureStore from 'expo-secure-store';
+
+
 
 
 function EventJoinScreen({route, navigation }) {
   const { event } = route.params;
+  const { userData } = useAuth();
   const [hostDetails, setHostDetails] = useState(null);
   const [teamColor, setTeamColor] = useState(event && event.teamColors ? event.teamColors.teamOneColor : '#FFFFFF');
   const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
@@ -24,13 +28,6 @@ function EventJoinScreen({route, navigation }) {
     };
 
     fetchHostDetails();
-
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      navigation.navigate('Events');
-      return true; 
-    });
-
-    return () => backHandler.remove();
   }, [event.hostId]);
 
   const eventLocation = {
@@ -40,8 +37,10 @@ function EventJoinScreen({route, navigation }) {
     longitudeDelta: 0.003,
   };
 
-  const joinEvent = async () => {
+  const joinEvent = async (paymentMethod) => {
     try {
+      const userDataString = await SecureStore.getItemAsync('userData');
+      const userData = JSON.parse(userDataString);
       const response = await fetch('http://192.168.129.29:3000/events/join-event', {
         method: 'POST',
         headers: {
@@ -49,8 +48,8 @@ function EventJoinScreen({route, navigation }) {
         },
         body: JSON.stringify({
           eventId: event.id, 
-          userId: 38,
-          paymentMethod: 'direct', 
+          userId: userData.id,
+          paymentMethod: paymentMethod,
           shirtColor: 'Red',
         }),
       });
@@ -64,12 +63,6 @@ function EventJoinScreen({route, navigation }) {
       console.error('Error joining event:', error);
       Alert.alert('Error', error.message || 'Failed to join event');
     }
-  };
-  
-
-  const copyToClipboard = () => {
-    Clipboard.setString(message);
-    Alert.alert("Copied", "Event link copied to clipboard.");
   };
 
   const formatDate = (dateString) => {
@@ -120,11 +113,8 @@ function EventJoinScreen({route, navigation }) {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('Events')} style={styles.checkButton}>
-          <Ionicons name="checkmark-outline" size={30} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>
-          <Ionicons name="copy-outline" size={28} color="#000" />
+        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.checkButton}>
+          <Ionicons name="close-outline" size={30} color="#000" />
         </TouchableOpacity>
       </View>
 
@@ -210,29 +200,28 @@ function EventJoinScreen({route, navigation }) {
             {event.isTeamDistributionEnabled && (
             <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} onPress={changeTeamColor} />
             )}
-        </View>
-        
-      </View>
-      
+        </View>     
+      </View>   
     </ScrollView>
+
     <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.button, styles.joinButton]}
+          style={[styles.button, styles.nowButton]}
           activeOpacity={0.7}
-          onPress={joinEvent}
+          onPress={() => joinEvent('direct')}
         >
-          <Ionicons name="checkmark" size={25} color="#fff" />
-          <Text style={styles.buttonText}>Join</Text>
+          <Text style={styles.buttonText}>Go, Pay now €{event.price}</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
-          style={[styles.button, styles.declineButton]}
+          style={[styles.button, styles.laterButton]}
           activeOpacity={0.7}
-          //onPress={declineEvent}
+          onPress={() => joinEvent('cash')}
         >
-          <Ionicons name="close" size={25} color="#fff" />
-          <Text style={styles.buttonText}>Decline</Text>
+          <Text style={styles.buttonText}>Go, Pay later Cash</Text>
         </TouchableOpacity>
-      </View>
+    </View>
+     
     </View>
   );
 }
@@ -294,6 +283,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
     marginLeft: 10,
+    paddingRight:20
   },
   map: {
     height: 150,
@@ -418,33 +408,33 @@ payStatusContainer: {
     fontFamily: 'Poppins_SemiBold'
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    margin: 20,
-  },
-  joinButton: {
-    backgroundColor: '#4CAF50',
-  },
-  declineButton: {
-    backgroundColor: '#F44336',
-  },
-  button: {
-    position: "absolute",
-    backgroundColor: "#4CAF50", 
-    padding: 12, 
-    alignItems: 'center', 
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderRadius: 10, 
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     margin: 20,
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.25, 
-    shadowRadius: 3.84, 
-    elevation: 5 
+  },
+  nowButton: {
+    backgroundColor: '#4CAF50',
+    marginBottom: 10,
+  },
+  laterButton: {
+    backgroundColor: '#039BE5',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: "#4CAF50",
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
   },
   buttonText: {
     color: "#fff", 

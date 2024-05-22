@@ -27,7 +27,7 @@ const FabButton = () => {
             },
             {
               icon: 'pencil',
-              label: 'Create Event',
+              label: 'Plan Event',
               onPress: () => navigation.navigate('EventName'),
               style: { backgroundColor: '#4CAF50' }, 
               color: '#FFFFFF',
