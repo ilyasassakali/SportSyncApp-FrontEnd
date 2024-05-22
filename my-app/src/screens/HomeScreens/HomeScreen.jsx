@@ -1,8 +1,8 @@
 import React,{useState, useEffect} from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../components/AuthContext";
 import { useEvents } from '../../components/EventsContext'; 
+import FabButton from '../../components/FabButton';
 import * as SecureStore from 'expo-secure-store';
 
 
@@ -74,7 +74,6 @@ const HomeScreen = ({ navigation }) => {
   const { userData } = useAuth();
   const { events, setEvents } = useEvents();
   const [buttonColor, setButtonColor] = useState("#4CAF50");
-  const [fabColor, setFabColor] = useState("#4CAF50");
   const [upcomingEvent, setUpcomingEvent] = useState(null);
 
   useEffect(() => {
@@ -161,15 +160,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
         )}   
     </View>
-    <TouchableOpacity
-        style={[styles.fab, { backgroundColor: fabColor }]}
-        onPressIn={() => setFabColor("#449D48")}
-        onPressOut={() => setFabColor("#4CAF50")}
-        onPress={() => navigation.navigate('EventName')}
-        activeOpacity={1}
-      >
-        <Ionicons name="create-outline" size={30} color="#FFFFFF" />
-    </TouchableOpacity>
+    <FabButton/>
   </View>
   );
 };
@@ -216,24 +207,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: 'Poppins_SemiBold',
     color: "#FFFFFF", 
-  },
-  fab: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
   },
   cardContainer: {
     flexDirection: 'row',
@@ -302,7 +275,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#FFFFFF',
     fontWeight: 'bold',
-  },
+  }
 });
 
 export default HomeScreen;

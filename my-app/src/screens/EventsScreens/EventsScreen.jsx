@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as SecureStore from 'expo-secure-store';
 import { useEvents } from '../../components/EventsContext'; 
+import FabButton from '../../components/FabButton';
 import { useFocusEffect } from '@react-navigation/native';
 
 const Tab = createMaterialTopTabNavigator();
@@ -64,7 +64,6 @@ function PastEventsScreen({ navigation }) {
 }
 
 const EventsScreen = ({ navigation }) => {
-  const [fabColor, setFabColor] = useState("#4CAF50");
   const { setEvents } = useEvents();
 
   useFocusEffect(
@@ -113,15 +112,7 @@ const EventsScreen = ({ navigation }) => {
         </Tab.Navigator>
 
 
-      <TouchableOpacity
-        style={[styles.fab, { backgroundColor: fabColor }]}
-        onPressIn={() => setFabColor("#449D48")}
-        onPressOut={() => setFabColor("#4CAF50")}
-        onPress={() => navigation.navigate('EventName')}
-        activeOpacity={1}
-      >
-        <Ionicons name="create-outline" size={30} color="#FFFFFF" />
-      </TouchableOpacity>
+        <FabButton/>
     </View>
   );
 };
@@ -196,23 +187,5 @@ const styles = StyleSheet.create({
     color: "#4CAF50",
     color:"#333"
   },
-  fab: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
-  }
 });
 
