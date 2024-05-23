@@ -12,6 +12,8 @@ function EventOverviewScreen({route, navigation }) {
   const [participants, setParticipants] = useState([]);
   const [teamColor, setTeamColor] = useState(event && event.teamColors ? event.teamColors.teamOneColor : '#FFFFFF');
   const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
+
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -103,25 +105,46 @@ Download SportSync: ${downloadLink}`;
     );
   };
 
-  const changeTeamColor = () => {
-    Alert.alert(
-      'Change Team Color',
-      'Choose a team to change the color',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Team One', onPress: () => setTeamColor(event.teamColors.teamOneColor) },
-        { text: 'Team Two', onPress: () => setTeamColor(event.teamColors.teamTwoColor) },
-      ],
-      { cancelable: true }
-    );
+  const changeParticipantShirtColor = (participantId) => {
+    if (selectedParticipant) {
+      const participantIndex = participants.findIndex(p => p.id === participantId);
+      const selectedParticipantIndex = participants.findIndex(p => p.id === selectedParticipant.id);
+  
+      if (participantIndex !== -1 && selectedParticipantIndex !== -1) {
+        const updatedParticipants = [...participants];
+        const tempColor = updatedParticipants[participantIndex].shirtColor;
+        updatedParticipants[participantIndex].shirtColor = updatedParticipants[selectedParticipantIndex].shirtColor;
+        updatedParticipants[selectedParticipantIndex].shirtColor = tempColor;
+  
+        setParticipants(updatedParticipants);
+        setSelectedParticipant(null);
+  
+        updateParticipantColors(updatedParticipants[participantIndex].id, updatedParticipants[participantIndex].shirtColor);
+        updateParticipantColors(updatedParticipants[selectedParticipantIndex].id, updatedParticipants[selectedParticipantIndex].shirtColor);
+      }
+    } else {
+      const participant = participants.find(p => p.id === participantId);
+      setSelectedParticipant(participant);
+    }
   };
   
-  const getInitials = () => {
-    if (!hostDetails) return "";
-    const initials = `${hostDetails.firstName.charAt(0)}${hostDetails.lastName.charAt(0)}`;
-    return initials.toUpperCase();
-  };
 
+  const updateParticipantColors = async (participantId, shirtColor) => {
+    try {
+      await fetch(`http://192.168.129.29:3000/events/update-participant-color`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          participantId,
+          shirtColor
+        })
+      });
+    } catch (error) {
+      console.error('Error updating participant color:', error);
+    }
+  };
 
   return (
     <View style={styles.outerContainer}>
@@ -222,13 +245,18 @@ Download SportSync: ${downloadLink}`;
                 </View>
               </View>
               {event.isTeamDistributionEnabled && participant.shirtColor && (
-                <Ionicons
-                  name="shirt"
-                  size={32}
-                  color={participant.shirtColor}
-                  style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]}
-                  onPress={changeTeamColor}
-                />
+                <View>
+                  <Ionicons
+                    name="shirt"
+                    size={selectedParticipant && selectedParticipant.id === participant.id ? 24 : 32}
+                    color={participant.shirtColor}
+                    style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]}
+                    onPress={() => changeParticipantShirtColor(participant.id)}
+                  />
+                  {selectedParticipant && selectedParticipant.id === participant.id && (
+                    <Text style={styles.swapText}>Swap</Text>
+                  )}
+                </View>
               )}
             </View>
           ))}
@@ -471,5 +499,12 @@ payStatusContainer: {
   linkIcon2: {
     marginRight: 5,
     marginBottom: 5
+  },
+  swapText: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 2,
   },
 });
