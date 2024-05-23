@@ -53,7 +53,6 @@ function EventJoinScreen({route, navigation }) {
           eventId: event.id, 
           userId: userData.id,
           paymentMethod: paymentMethod,
-          shirtColor: 'Red',
         }),
       });
       if (response.ok) {
