@@ -7,28 +7,31 @@ import { useAuth } from '../../components/AuthContext';
 import * as SecureStore from 'expo-secure-store';
 
 
-
-
 function EventJoinScreen({route, navigation }) {
   const { event } = route.params;
   const { userData } = useAuth();
   const [hostDetails, setHostDetails] = useState(null);
+  const [participants, setParticipants] = useState([]);
   const [teamColor, setTeamColor] = useState(event && event.teamColors ? event.teamColors.teamOneColor : '#FFFFFF');
   const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
 
   useEffect(() => {
-    const fetchHostDetails = async () => {
+    const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`http://192.168.129.29:3000/events/user/${event.hostId}`);
-        const host = await response.json();
-        setHostDetails(host);
+        const eventResponse = await fetch(`http://192.168.129.29:3000/events/event/${event.id}`);
+        const eventData = await eventResponse.json();
+        setParticipants(eventData.participants);
+  
+        const hostResponse = await fetch(`http://192.168.129.29:3000/events/user/${event.hostId}`);
+        const hostData = await hostResponse.json();
+        setHostDetails(hostData);
       } catch (error) {
-        console.error('Error fetching host details:', error);
+        console.error('Error fetching event details:', error);
       }
     };
-
-    fetchHostDetails();
-  }, [event.hostId]);
+  
+    fetchEventDetails();
+  }, [event.id]);
 
   const eventLocation = {
     latitude: parseFloat(event.latitude), 
@@ -54,7 +57,9 @@ function EventJoinScreen({route, navigation }) {
         }),
       });
       if (response.ok) {
-        Alert.alert('Success', 'You have successfully joined the event!');
+        Alert.alert('Success', 'You have successfully joined the event!', [
+          { text: 'OK', onPress: () => navigation.navigate('EventOverview', { event: event }) }
+        ]);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to join event');
@@ -114,7 +119,7 @@ function EventJoinScreen({route, navigation }) {
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.checkButton}>
-          <Ionicons name="close-outline" size={30} color="#000" />
+          <Ionicons name="close-outline" size={35} color="#000" />
         </TouchableOpacity>
       </View>
 
@@ -181,26 +186,39 @@ function EventJoinScreen({route, navigation }) {
       <View style={styles.guestsContainer}>
         <View style={styles.goingHeader}>
             <Ionicons name="radio-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-            <Text style={styles.guestsNumber}>1 going</Text>
+            <Text style={styles.guestsNumber}>{participants.length} going</Text>
         </View>
-        
-        <View style={styles.profileHeader}>
-            <View style={styles.profileContent}>
+        {participants.map((participant, index) => (
+            <View key={index} style={styles.profileHeader}>
+              <View style={styles.profileContent}>
                 <View style={styles.initialsContainer}>
-                    <Text style={styles.initialsText}>{getInitials()}</Text>
+                  <Text style={styles.initialsText}>
+                    {participant.firstName.charAt(0)}{participant.lastName.charAt(0)}
+                  </Text>
                 </View>
                 <View style={styles.profileInfo}>
-                    <Text style={styles.nameText}>{hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}</Text>
-                    <View style={styles.payStatusContainer}>
-                        <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
-                        <Text style={styles.payText}>Paid</Text>
-                    </View>
+                  <Text style={styles.nameText}>{`${participant.firstName} ${participant.lastName}`}</Text>
+                  <View style={styles.payStatusContainer}>
+                    {participant.paid ? (
+                      <Ionicons name="checkmark-done-circle-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
+                    ) : (
+                      <Ionicons name="checkmark-circle-outline" size={20} color="#039BE5" style={styles.iconStyle}/>
+                    )}
+                    <Text style={styles.payText}>{participant.paid ? 'Paid' : 'Pay Cash'}</Text>
+                  </View>
                 </View>
+              </View>
+              {participant.shirtColor && (
+                <Ionicons
+                  name="shirt"
+                  size={32}
+                  color={participant.shirtColor}
+                  style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]}
+                  onPress={changeTeamColor}
+                />
+              )}
             </View>
-            {event.isTeamDistributionEnabled && (
-            <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} onPress={changeTeamColor} />
-            )}
-        </View>     
+          ))}    
       </View>   
     </ScrollView>
 
@@ -450,4 +468,7 @@ payStatusContainer: {
     marginRight: 5,
     marginBottom: 5
   },
+  checkButton:{
+    marginLeft: -7
+  }
 });
