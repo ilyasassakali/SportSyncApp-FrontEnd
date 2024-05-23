@@ -208,7 +208,7 @@ function EventJoinScreen({route, navigation }) {
                   </View>
                 </View>
               </View>
-              {participant.shirtColor && (
+              {event.isTeamDistributionEnabled && participant.shirtColor && (
                 <Ionicons
                   name="shirt"
                   size={32}

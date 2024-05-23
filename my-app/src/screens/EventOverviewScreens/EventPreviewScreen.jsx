@@ -129,7 +129,6 @@ function EventPreviewScreen({route, navigation }) {
             <Marker coordinate={eventLocation} title={event.title} description={event.location} pinColor="#4caf50"/>
         </MapView>
       </View>
-
       <View style={styles.detailsContainer}>
         <View style={styles.detailItem}>
           <Ionicons name="location-outline" size={20} color="#4CAF50" />
@@ -144,15 +143,11 @@ function EventPreviewScreen({route, navigation }) {
           <Text style={styles.detailText}>{event.time}</Text>
         </View>
       </View>
-
-    
       <View style={styles.statisticsContainer}>
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>{event.numberOfPlayers}</Text>
             <Text style={styles.statLabel}>Players</Text>
-        </View>
-
-        
+        </View>    
         <View style={styles.statItem}>
             {event.isTeamDistributionEnabled ? (
               <Text style={styles.statNumber}>
@@ -163,8 +158,6 @@ function EventPreviewScreen({route, navigation }) {
             )}
             <Text style={styles.statLabel}>Distribution</Text>
         </View>
-        
-
         <View style={styles.statItem}>
             <Text style={styles.statNumber}>
             <Text style={styles.smallUnit}>€</Text>{event.price}
@@ -172,16 +165,11 @@ function EventPreviewScreen({route, navigation }) {
             <Text style={styles.statLabel}>Price</Text>
         </View>
       </View>
-
-
       <View style={styles.guestsContainer}>
         <View style={styles.goingHeader}>
             <Ionicons name="radio-outline" size={20} color="#4CAF50" style={styles.iconStyle}/>
             <Text style={styles.guestsNumber}>1 going</Text>
         </View>
-        
-        
-
         <View style={styles.profileHeader}>
             <View style={styles.profileContent}>
                 <View style={styles.initialsContainer}>
@@ -199,10 +187,7 @@ function EventPreviewScreen({route, navigation }) {
             <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} onPress={changeTeamColor} />
             )}
         </View>
-
       </View>
-
-      
     </ScrollView>
     <TouchableOpacity
         style={styles.button}

@@ -200,14 +200,6 @@ function EventSetupScreen({ route, navigation }) {
           >
             <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
-
-
-
-
-
-
-        
-
     </View>
   );
 }
