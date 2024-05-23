@@ -89,20 +89,6 @@ function EventPreviewScreen({route, navigation }) {
     );
   };
 
-  const changeTeamColor = () => {
-    Alert.alert(
-      'Change Team Color',
-      'Choose a team to change the color',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Team One', onPress: () => setTeamColor(event.teamColors.teamOneColor) },
-        { text: 'Team Two', onPress: () => setTeamColor(event.teamColors.teamTwoColor) },
-      ],
-      { cancelable: true }
-    );
-  };
-
-
   return (
  
     <View style={styles.outerContainer}>
@@ -184,7 +170,7 @@ function EventPreviewScreen({route, navigation }) {
                 </View>
             </View>
             {event.isTeamDistributionEnabled && (
-            <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} onPress={changeTeamColor} />
+            <Ionicons name="shirt" size={32} color={teamColor} style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]} />
             )}
         </View>
       </View>

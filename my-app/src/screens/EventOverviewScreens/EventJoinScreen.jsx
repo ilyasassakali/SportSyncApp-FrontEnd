@@ -92,26 +92,6 @@ function EventJoinScreen({route, navigation }) {
     );
   };
 
-  const changeTeamColor = () => {
-    Alert.alert(
-      'Change Team Color',
-      'Choose a team to change the color',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Team One', onPress: () => setTeamColor(event.teamColors.teamOneColor) },
-        { text: 'Team Two', onPress: () => setTeamColor(event.teamColors.teamTwoColor) },
-      ],
-      { cancelable: true }
-    );
-  };
-  
-  const getInitials = () => {
-    if (!hostDetails) return "";
-    const initials = `${hostDetails.firstName.charAt(0)}${hostDetails.lastName.charAt(0)}`;
-    return initials.toUpperCase();
-  };
-
-
   return (
     <View style={styles.outerContainer}>
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -213,7 +193,6 @@ function EventJoinScreen({route, navigation }) {
                   size={32}
                   color={participant.shirtColor}
                   style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]}
-                  onPress={changeTeamColor}
                 />
               )}
             </View>
