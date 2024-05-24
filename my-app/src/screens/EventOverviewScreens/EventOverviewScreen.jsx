@@ -81,6 +81,35 @@ Download SportSync: ${downloadLink}`;
     }
   };
 
+  const deleteEvent = () => {
+    Alert.alert(
+      'Cancel Event',
+      'Are you sure you want to cancel this event?',
+      [
+        { text: 'No', style: 'cancel' },
+        { text: 'Yes, Cancel', onPress: async () => {
+            try {
+              const response = await fetch(`http://192.168.129.29:3000/events/delete-event/${event.id}`, {
+                method: 'DELETE'
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to delete event');
+              }
+
+              const result = await response.json();
+              Alert.alert(result.message);
+              navigation.navigate('Events');
+            } catch (error) {
+              console.error('Error deleting event:', error);
+              Alert.alert('Error', 'Failed to delete event');
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const copyToClipboard = () => {
     Clipboard.setString(message);
     Alert.alert("Copied", "Event link copied to clipboard.");
@@ -171,10 +200,15 @@ Download SportSync: ${downloadLink}`;
           <Ionicons name="checkmark-outline" size={30} color="#000" />
         </TouchableOpacity>
         {isHost && (
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity onPress={deleteEvent} style={[styles.checkButton, {marginRight: 20}]}>
+              <Ionicons name="trash-outline" size={27} color="#000" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>
               <Ionicons name="copy-outline" size={28} color="#000" />
             </TouchableOpacity>
-          )}
+          </View>
+        )}
       </View>
 
       <Text style={styles.eventName}>{event.title}</Text>
