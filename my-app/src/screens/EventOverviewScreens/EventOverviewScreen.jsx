@@ -109,42 +109,49 @@ Download SportSync: ${downloadLink}`;
     if (selectedParticipant) {
       const participantIndex = participants.findIndex(p => p.id === participantId);
       const selectedParticipantIndex = participants.findIndex(p => p.id === selectedParticipant.id);
-  
+
       if (participantIndex !== -1 && selectedParticipantIndex !== -1) {
         const updatedParticipants = [...participants];
         const tempColor = updatedParticipants[participantIndex].shirtColor;
         updatedParticipants[participantIndex].shirtColor = updatedParticipants[selectedParticipantIndex].shirtColor;
         updatedParticipants[selectedParticipantIndex].shirtColor = tempColor;
-  
+
         setParticipants(updatedParticipants);
         setSelectedParticipant(null);
-  
-        updateParticipantColors(updatedParticipants[participantIndex].id, updatedParticipants[participantIndex].shirtColor);
-        updateParticipantColors(updatedParticipants[selectedParticipantIndex].id, updatedParticipants[selectedParticipantIndex].shirtColor);
+
+        updateParticipantColors(event.id, updatedParticipants[participantIndex].id, updatedParticipants[selectedParticipantIndex].id);
       }
     } else {
       const participant = participants.find(p => p.id === participantId);
       setSelectedParticipant(participant);
     }
   };
-  
 
-  const updateParticipantColors = async (participantId, shirtColor) => {
+  const updateParticipantColors = async (eventId, participant1Id, participant2Id) => {
     try {
-      await fetch(`http://192.168.129.29:3000/events/update-participant-color`, {
+      const response = await fetch(`http://192.168.129.29:3000/events/update-participant-color`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          participantId,
-          shirtColor
+          eventId,
+          participant1Id,
+          participant2Id
         })
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to update participant colors');
+      }
+
+      const result = await response.json();
+      console.log(result.message);
     } catch (error) {
-      console.error('Error updating participant color:', error);
+      console.error('Error updating participant colors:', error);
     }
   };
+  
 
   return (
     <View style={styles.outerContainer}>
