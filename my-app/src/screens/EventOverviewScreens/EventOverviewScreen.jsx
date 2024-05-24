@@ -110,6 +110,42 @@ Download SportSync: ${downloadLink}`;
     );
   };
 
+  const leaveEvent = async () => {
+    try {
+      Alert.alert(
+        'Leave Event',
+        'Are you sure you want to leave this event?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Yes', onPress: async () => {
+              const response = await fetch(`http://192.168.129.29:3000/events/leave-event`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  eventId: event.id,
+                  userId: userData.id
+                })
+              });
+          
+              if (!response.ok) {
+                throw new Error('Failed to leave event');
+              }
+          
+              const result = await response.json();
+              Alert.alert(result.message);
+              navigation.navigate('Events');
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error leaving event:', error);
+      Alert.alert('Error', 'Failed to leave event');
+    }
+  };
+  
   const copyToClipboard = () => {
     Clipboard.setString(message);
     Alert.alert("Copied", "Event link copied to clipboard.");
@@ -302,7 +338,7 @@ Download SportSync: ${downloadLink}`;
                     name="shirt"
                     size={selectedParticipant && selectedParticipant.id === participant.id ? 24 : 32}
                     color={participant.shirtColor}
-                    style={[styles.shirtIcon, { backgroundColor: shirtBackgroundColor, borderRadius: 10 }]}
+                    style={[styles.shirtIcon, { backgroundColor: participant.shirtColor === '#ffffff' ? '#4CAF50' : 'transparent', borderRadius: 10 }]}
                     onPress={() => changeParticipantShirtColor(participant.id)}
                   />
                   {selectedParticipant && selectedParticipant.id === participant.id && (
@@ -317,7 +353,7 @@ Download SportSync: ${downloadLink}`;
 
     </ScrollView>
 
-    {isHost && (
+    {isHost ? (
     <TouchableOpacity
         style={styles.button}
         activeOpacity={0.7}
@@ -326,6 +362,15 @@ Download SportSync: ${downloadLink}`;
         <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
         <Text style={styles.buttonText}>Share Invite Link</Text>
     </TouchableOpacity>
+    ) : (
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: '#F44336' }]}
+        activeOpacity={0.7}
+        onPress={leaveEvent}
+      >
+        <Ionicons name="exit-outline" size={25} color="#fff" style={styles.linkIcon} />
+        <Text style={styles.buttonText}>Leave Event</Text>
+      </TouchableOpacity>
     )}
     </View>
   );
