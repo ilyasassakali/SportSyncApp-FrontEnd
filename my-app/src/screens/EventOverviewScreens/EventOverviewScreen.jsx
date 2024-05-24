@@ -81,33 +81,23 @@ Download SportSync: ${downloadLink}`;
     }
   };
 
-  const deleteEvent = () => {
-    Alert.alert(
-      'Cancel Event',
-      'Are you sure you want to cancel this event?',
-      [
-        { text: 'No', style: 'cancel' },
-        { text: 'Yes, Cancel', onPress: async () => {
-            try {
-              const response = await fetch(`http://192.168.129.29:3000/events/delete-event/${event.id}`, {
-                method: 'DELETE'
-              });
+  const cancelEvent = async () => {
+    try {
+      const response = await fetch(`http://192.168.129.29:3000/events/cancel-event/${event.id}`, {
+        method: 'PUT'
+      });
 
-              if (!response.ok) {
-                throw new Error('Failed to delete event');
-              }
+      if (!response.ok) {
+        throw new Error('Failed to cancel event');
+      }
 
-              const result = await response.json();
-              Alert.alert(result.message);
-              navigation.navigate('Events');
-            } catch (error) {
-              console.error('Error deleting event:', error);
-              Alert.alert('Error', 'Failed to delete event');
-            }
-          }
-        }
-      ]
-    );
+      const result = await response.json();
+      Alert.alert(result.message);
+      navigation.navigate('Events');
+    } catch (error) {
+      console.error('Error cancelling event:', error);
+      Alert.alert('Error', 'Failed to cancel event');
+    }
   };
 
   const leaveEvent = async () => {
@@ -237,7 +227,7 @@ Download SportSync: ${downloadLink}`;
         </TouchableOpacity>
         {isHost && (
           <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={deleteEvent} style={[styles.checkButton, {marginRight: 20}]}>
+            <TouchableOpacity onPress={cancelEvent} style={[styles.checkButton, {marginRight: 20}]}>
               <Ionicons name="trash-outline" size={27} color="#000" />
             </TouchableOpacity>
             <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>

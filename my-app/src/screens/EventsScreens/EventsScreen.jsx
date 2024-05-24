@@ -35,7 +35,7 @@ function UpNextEventsScreen({ navigation }) {
   const { events } = useEvents();
   const now = new Date();
   const upNextEvents = events
-    .filter(event => parseEventDateTime(event) >= now)
+    .filter(event => parseEventDateTime(event) >= now && event.status === "active")
     .sort((a, b) => parseEventDateTime(a) - parseEventDateTime(b));
 
   return (
@@ -51,12 +51,25 @@ function PastEventsScreen({ navigation }) {
   const { events } = useEvents(); 
   const now = new Date();
   const pastEvents = events
-    .filter(event => parseEventDateTime(event) < now)
+    .filter(event => parseEventDateTime(event) < now && event.status === "active")
     .sort((a, b) => parseEventDateTime(b) - parseEventDateTime(a));
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       {pastEvents.map(event => (
+        <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+      ))}
+    </ScrollView>
+  );
+}
+
+function CancelledEventsScreen({ navigation }) {
+  const { events } = useEvents(); 
+  const cancelledEvents = events.filter(event => event.status === "cancelled");
+
+  return (
+    <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      {cancelledEvents.map(event => (
         <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
       ))}
     </ScrollView>
@@ -108,6 +121,9 @@ const EventsScreen = ({ navigation }) => {
         </Tab.Screen>
         <Tab.Screen name="Past">
           {() => <PastEventsScreen navigation={navigation} />}
+        </Tab.Screen>
+        <Tab.Screen name="Cancelled">
+          {() => <CancelledEventsScreen navigation={navigation} />}
         </Tab.Screen>
         </Tab.Navigator>
 
