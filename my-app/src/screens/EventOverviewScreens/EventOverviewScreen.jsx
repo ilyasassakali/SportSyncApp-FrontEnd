@@ -4,15 +4,19 @@ import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import { customMapStyle } from '../../components/MapStyles';
 import * as Clipboard from 'expo-clipboard';
+import { useAuth } from '../../components/AuthContext';
+
 
 
 function EventOverviewScreen({route, navigation }) {
+  const { userData } = useAuth();
   const { event } = route.params;
   const [hostDetails, setHostDetails] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [teamColor, setTeamColor] = useState(event && event.teamColors ? event.teamColors.teamOneColor : '#FFFFFF');
   const shirtBackgroundColor = teamColor === '#ffffff' ? '#4CAF50' : 'transparent';
   const [selectedParticipant, setSelectedParticipant] = useState(null);
+  const isHost = userData && userData.id === event.hostId;
 
 
   useEffect(() => {
@@ -106,6 +110,11 @@ Download SportSync: ${downloadLink}`;
   };
 
   const changeParticipantShirtColor = (participantId) => {
+    if (!isHost) {
+      Alert.alert("Permission Denied", "Only the host can change participant shirt colors.");
+      return;
+    }
+    
     if (selectedParticipant) {
       const participantIndex = participants.findIndex(p => p.id === participantId);
       const selectedParticipantIndex = participants.findIndex(p => p.id === selectedParticipant.id);
@@ -161,9 +170,11 @@ Download SportSync: ${downloadLink}`;
         <TouchableOpacity onPress={() => navigation.navigate('Events')} style={styles.checkButton}>
           <Ionicons name="checkmark-outline" size={30} color="#000" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>
-          <Ionicons name="copy-outline" size={28} color="#000" />
-        </TouchableOpacity>
+        {isHost && (
+            <TouchableOpacity onPress={copyToClipboard} style={styles.checkButton}>
+              <Ionicons name="copy-outline" size={28} color="#000" />
+            </TouchableOpacity>
+          )}
       </View>
 
       <Text style={styles.eventName}>{event.title}</Text>
@@ -272,6 +283,7 @@ Download SportSync: ${downloadLink}`;
 
     </ScrollView>
 
+    {isHost && (
     <TouchableOpacity
         style={styles.button}
         activeOpacity={0.7}
@@ -280,7 +292,7 @@ Download SportSync: ${downloadLink}`;
         <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
         <Text style={styles.buttonText}>Share Invite Link</Text>
     </TouchableOpacity>
-    
+    )}
     </View>
   );
 }
