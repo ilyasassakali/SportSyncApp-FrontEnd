@@ -225,7 +225,7 @@ Download SportSync: ${downloadLink}`;
         <TouchableOpacity onPress={() => navigation.navigate('Events')} style={styles.checkButton}>
           <Ionicons name="checkmark-outline" size={30} color="#000" />
         </TouchableOpacity>
-        {isHost && (
+        {isHost && event.status !== "cancelled" && (
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity onPress={cancelEvent} style={[styles.checkButton, {marginRight: 20}]}>
               <Ionicons name="trash-outline" size={27} color="#000" />
@@ -237,10 +237,27 @@ Download SportSync: ${downloadLink}`;
         )}
       </View>
 
-      <Text style={styles.eventName}>{event.title}</Text>
-      <Text style={styles.hostedBy}>
+      {event.status === "cancelled" && (
+        <View style={styles.cancelledContainer}>
+          <Text style={styles.cancelledText}>This plan has been cancelled!</Text>
+        </View>
+      )}
+
+      {event.status !== "cancelled" ? (
+        <>
+          <Text style={styles.eventName}>{event.title}</Text>
+          <Text style={styles.hostedBy}>
+                Hosted by <Text style={styles.hostName}>{hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}</Text>
+          </Text>
+        </>
+      ) : (
+        <>
+        <Text style={[styles.eventName, styles.cancelledTitle]}>{event.title}</Text>
+        <Text style={styles.hostedBy}>
             Hosted by <Text style={styles.hostName}>{hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}</Text>
-      </Text>
+        </Text>
+        </>
+      )}
 
       <View style={styles.mapContainer}>
         <MapView
@@ -343,16 +360,18 @@ Download SportSync: ${downloadLink}`;
 
     </ScrollView>
 
-    {isHost ? (
-    <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.7}
-        onPress={shareEvent}
-      >
-        <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
-        <Text style={styles.buttonText}>Share Invite Link</Text>
-    </TouchableOpacity>
-    ) : (
+    {isHost && event.status === "active" ? (
+      <TouchableOpacity
+          style={styles.button}
+          activeOpacity={0.7}
+          onPress={shareEvent}
+        >
+          <Ionicons name="link" size={25} color="#fff" style={styles.linkIcon} />
+          <Text style={styles.buttonText}>Share Invite Link</Text>
+      </TouchableOpacity>
+    ) : null}
+
+    {!isHost && event.status === "active" ? (
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#F44336' }]}
         activeOpacity={0.7}
@@ -361,7 +380,9 @@ Download SportSync: ${downloadLink}`;
         <Ionicons name="exit-outline" size={25} color="#fff" style={styles.linkIcon} />
         <Text style={styles.buttonText}>Leave Event</Text>
       </TouchableOpacity>
-    )}
+    ) : null}
+
+    
     </View>
   );
 }
@@ -595,4 +616,13 @@ payStatusContainer: {
     textAlign: 'center',
     marginTop: 2,
   },
+  cancelledText: {
+    fontFamily: 'Poppins_Bold',
+    fontSize: 14,
+    color: '#F44336',
+  },
+  cancelledTitle: {
+    textDecorationLine: 'line-through',
+  }
+  
 });
