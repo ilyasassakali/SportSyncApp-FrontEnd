@@ -52,34 +52,6 @@ function EventOverviewScreen({route, navigation }) {
     longitudeDelta: 0.003,
   };
 
-  const shareEvent = async () => {
-    const downloadLink = `https://sportsync/download`;
-    const inviteCode = event.inviteCode;
-    const message = `Join me at ${event.title}\n
-Hosted by: ${hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}\n
-Date: ${formatDate(event.date)}\n
-Time: ${event.time}\n
-Location: ${event.location}\n
-To join use this code: ${inviteCode}\n
-Download SportSync: ${downloadLink}`;
-
-    try {
-      const result = await Share.share({
-        message: message,
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          console.log("Shared with activity type of", result.activityType);
-        } else {
-          console.log("Shared");
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log("Dismissed");
-      }
-    } catch (error) {
-      Alert.alert(error.message);
-    }
-  };
 
   const cancelEvent = async () => {
     Alert.alert(
@@ -151,7 +123,38 @@ Download SportSync: ${downloadLink}`;
     }
   };
   
+  const generateEventMessage = () => {
+    const downloadLink = `https://sportsync/download`;
+    const inviteCode = event.inviteCode;
+    return `Join me at ${event.title}\n
+Hosted by: ${hostDetails ? `${hostDetails.firstName} ${hostDetails.lastName}` : 'Loading...'}\n
+Date: ${formatDate(event.date)}\n
+Time: ${event.time}\n
+Location: ${event.location}\n
+To join use this code: ${inviteCode}\n
+Download SportSync: ${downloadLink}`;
+  };
+
+  const shareEvent = async () => {
+    const message = generateEventMessage();
+    try {
+      const result = await Share.share({ message });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("Shared with activity type of", result.activityType);
+        } else {
+          console.log("Shared");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Dismissed");
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
+
   const copyToClipboard = () => {
+    const message = generateEventMessage();
     Clipboard.setString(message);
     Alert.alert("Copied", "Event link copied to clipboard.");
   };
