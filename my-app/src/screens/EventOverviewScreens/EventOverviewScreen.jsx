@@ -82,22 +82,37 @@ Download SportSync: ${downloadLink}`;
   };
 
   const cancelEvent = async () => {
-    try {
-      const response = await fetch(`http://192.168.129.29:3000/events/cancel-event/${event.id}`, {
-        method: 'PUT'
-      });
+    Alert.alert(
+      "Cancel Event",
+      "Are you sure you want to cancel this event?",
+      [
+        {
+          text: "No",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            try {
+              const response = await fetch(`http://192.168.129.29:3000/events/cancel-event/${event.id}`, {
+                method: 'PUT'
+              });
 
-      if (!response.ok) {
-        throw new Error('Failed to cancel event');
-      }
+              if (!response.ok) {
+                throw new Error('Failed to cancel event');
+              }
 
-      const result = await response.json();
-      Alert.alert(result.message);
-      navigation.navigate('Events');
-    } catch (error) {
-      console.error('Error cancelling event:', error);
-      Alert.alert('Error', 'Failed to cancel event');
-    }
+              const result = await response.json();
+              Alert.alert(result.message);
+              navigation.navigate('Events');
+            } catch (error) {
+              console.error('Error cancelling event:', error);
+              Alert.alert('Error', 'Failed to cancel event');
+            }
+          }
+        }
+      ]
+    );
   };
 
   const leaveEvent = async () => {

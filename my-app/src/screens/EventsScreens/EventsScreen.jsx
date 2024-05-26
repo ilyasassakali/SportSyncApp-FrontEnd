@@ -40,9 +40,15 @@ function UpNextEventsScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-      {upNextEvents.map(event => (
-        <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
-      ))}
+      {upNextEvents.length === 0 ? (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>No events here</Text>
+        </View>
+      ) : (
+        upNextEvents.map(event => (
+          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+        ))
+      )}
     </ScrollView>
   );
 }
@@ -56,9 +62,15 @@ function PastEventsScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-      {pastEvents.map(event => (
-        <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
-      ))}
+      {pastEvents.length === 0 ? (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>No events here</Text>
+        </View>
+      ) : (
+        pastEvents.map(event => (
+          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+        ))
+      )}
     </ScrollView>
   );
 }
@@ -69,9 +81,15 @@ function CancelledEventsScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-      {cancelledEvents.map(event => (
-        <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
-      ))}
+      {cancelledEvents.length === 0 ? (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>No events here</Text>
+        </View>
+      ) : (
+        cancelledEvents.map(event => (
+          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+        ))
+      )}
     </ScrollView>
   );
 }
@@ -202,6 +220,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#4CAF50",
     color:"#333"
+  },
+  noEventsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 250,
+  },
+  noEventsText: {
+    fontFamily: 'Poppins_Regular',
+    fontSize: 18,
+    color: "#666",
   },
 });
 

@@ -102,7 +102,7 @@ const HomeScreen = ({ navigation }) => {
     const now = new Date();
     const upcomingEvents = events.filter(event => {
       const eventDate = parseEventDateTime(event.date, event.time);
-      return eventDate >= now;
+      return eventDate >= now && event.status === "active";
     });
 
     upcomingEvents.sort((a, b) => {

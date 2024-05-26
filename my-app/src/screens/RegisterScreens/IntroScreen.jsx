@@ -7,7 +7,7 @@ const IntroScreen = ({ navigation }) => {
             <View style={styles.content}>
                 <Text style={styles.title}>Welcome to <Text style={styles.ssTitle}>SportSync</Text></Text>
                 <Text style={styles.description}>
-                    Create an account with us and experience the ease of organizing sports activities with friends.
+                    Create an account with us and experience the ease of planning sports activities with friends.
                 </Text>
             </View>
             

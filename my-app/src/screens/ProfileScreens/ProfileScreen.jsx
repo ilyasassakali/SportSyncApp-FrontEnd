@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../components/AuthContext"
 import * as SecureStore from 'expo-secure-store';
@@ -9,14 +9,29 @@ const ProfileScreen = ({navigation}) => {
   const { userData, setUserData, setIsUserLoggedIn } = useAuth();
 
   const handleSignOut = async () => {
-    try {
-      await SecureStore.deleteItemAsync('userData');
-      setIsUserLoggedIn(false);
-      setUserData(null); 
-    } catch (error) {
-      console.error("Failed to delete the user data", error);
-      Alert.alert("Error", "Failed to sign out.");
-    }
+    Alert.alert(
+      "Sign Out",
+      "Are you sure you want to sign out?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            try {
+              await SecureStore.deleteItemAsync('userData');
+              setIsUserLoggedIn(false);
+              setUserData(null); 
+            } catch (error) {
+              console.error("Failed to delete the user data", error);
+              Alert.alert("Error", "Failed to sign out.");
+            }
+          }
+        }
+      ]
+    );
   };
 
   const getInitials = () => {
