@@ -49,33 +49,42 @@ function EventJoinScreen({route, navigation }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ eventId: event.id }),
+        body: JSON.stringify({
+          eventId: event.id,
+          userId: userData.id,
+          hostId: event.hostId  
+        }),
       });
-      const { paymentIntent, customer } = await response.json();
-
-      const { error } = await initPaymentSheet({
-        customerId: customer,
-        paymentIntentClientSecret: paymentIntent,
-        merchantDisplayName: 'sportsync'
-      });
-      if (error) {
-        console.error('Error initializing payment sheet:', error);
-        return;
-      }
-
-      const result = await presentPaymentSheet();
-      if (result.error) {
-        Alert.alert('Payment failed', result.error.message);
+      const data = await response.json();
+  
+      if (data.success) {
+        const { clientSecret } = data;
+        const { error } = await initPaymentSheet({
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: 'sportsync',
+        });
+  
+        if (error) {
+          console.error('Error initializing payment sheet:', error);
+          return;
+        }
+  
+        const result = await presentPaymentSheet();
+        if (result.error) {
+          Alert.alert('Payment failed', result.error.message);
+        } else {
+          Alert.alert('Success', 'Payment successful');
+          joinEvent('direct');
+        }
       } else {
-        Alert.alert('Success', 'Payment successful');
-        joinEvent('direct')
+        throw new Error(data.message || 'Failed to initiate payment');
       }
     } catch (error) {
       console.error('Payment initiation failed:', error);
       Alert.alert('Error', 'Failed to initiate payment');
     }
   };
-
+  
   const joinEvent = async (paymentMethod) => {
     try {
       const userDataString = await SecureStore.getItemAsync('userData');
