@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -6,6 +6,7 @@ import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/
 import { Ionicons } from "@expo/vector-icons";
 import { AuthProvider, useAuth } from "./components/AuthContext"
 import { EventsProvider } from './components/EventsContext';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import HomeScreen from "./screens/HomeScreens/HomeScreen";
 import EventsScreen from "./screens/EventsScreens/EventsScreen";
 import ProfileScreen from "./screens/ProfileScreens/ProfileScreen";
@@ -26,6 +27,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } fr
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator(); 
+
 
 function Tabs() {
   return (
@@ -120,8 +122,10 @@ function AppContainer() {
 
 export default function App(){
   return (
+    <StripeProvider publishableKey={process.env.PUBLISHABLE_KEY}>
     <AuthProvider>
         <AppContainer/>
     </AuthProvider>
+    </StripeProvider>
   )
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useStripe } from '@stripe/stripe-react-native';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from 'react-native-maps';
@@ -9,6 +10,7 @@ import * as SecureStore from 'expo-secure-store';
 
 function EventJoinScreen({route, navigation }) {
   const { event } = route.params;
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userData } = useAuth();
   const [hostDetails, setHostDetails] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -38,6 +40,40 @@ function EventJoinScreen({route, navigation }) {
     longitude: parseFloat(event.longitude),
     latitudeDelta: 0.003,
     longitudeDelta: 0.003,
+  };
+
+  const handlePayment = async () => {
+    try {
+      const response = await fetch('http://192.168.129.29:3000/payments/payment-sheet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ eventId: event.id }),
+      });
+      const { paymentIntent, customer } = await response.json();
+
+      const { error } = await initPaymentSheet({
+        customerId: customer,
+        paymentIntentClientSecret: paymentIntent,
+        merchantDisplayName: 'sportsync'
+      });
+      if (error) {
+        console.error('Error initializing payment sheet:', error);
+        return;
+      }
+
+      const result = await presentPaymentSheet();
+      if (result.error) {
+        Alert.alert('Payment failed', result.error.message);
+      } else {
+        Alert.alert('Success', 'Payment successful');
+        joinEvent('direct')
+      }
+    } catch (error) {
+      console.error('Payment initiation failed:', error);
+      Alert.alert('Error', 'Failed to initiate payment');
+    }
   };
 
   const joinEvent = async (paymentMethod) => {
@@ -204,7 +240,7 @@ function EventJoinScreen({route, navigation }) {
         <TouchableOpacity
           style={[styles.button, styles.nowButton]}
           activeOpacity={0.7}
-          onPress={() => joinEvent('direct')}
+          onPress={() => handlePayment()}
         >
           <Text style={styles.buttonText}>Go, Pay now €{event.price}</Text>
         </TouchableOpacity>
