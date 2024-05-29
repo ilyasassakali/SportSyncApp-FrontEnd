@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "my-app",
-    "slug": "my-app",
+    "slug": "sportsyncapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
@@ -29,6 +29,12 @@
     "plugins": [
       "expo-font",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "19e375a0-6e89-46ce-8fdb-485e73631b17"
+      }
+    },
+    "owner": "ilyasassakali"
   }
 }
