@@ -4,18 +4,8 @@ import { useAuth } from "../../components/AuthContext";
 import { useEvents } from '../../components/EventsContext'; 
 import FabButton from '../../components/FabButton';
 import * as SecureStore from 'expo-secure-store';
-import * as Device from 'expo-device';
+import { usePushNotifications } from '../../components/PushNotificationManager';
 import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
-
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
 
 const CountdownTimer = ({ targetDate }) => {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining(targetDate));
@@ -86,73 +76,9 @@ const HomeScreen = ({ navigation }) => {
   const { events, setEvents } = useEvents();
   const [buttonColor, setButtonColor] = useState("#4CAF50");
   const [upcomingEvent, setUpcomingEvent] = useState(null);
-
-  /*push notifications logic*/ 
-  const [expoPushToken, setExpoPushToken] = useState('');
-
-  useEffect(() => {
-    console.log("Registering for push notifications");
-    registerForPushNotificationsAsync().then(
-      token => { console.log("token: ", token);
-      setExpoPushToken(token)
-      })
-      .catch((err) => console.log(err))
-  }, []);
-
-  async function registerForPushNotificationsAsync() {
-    let token;
-  
-    if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-  
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      // Learn more about projectId:
-      // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-      // EAS projectId is used here.
-      try {
-        const projectId =
-          Constants?.expoConfig?.extra?.eas?.projectId ??
-          Constants?.easConfig?.projectId;
-        if (!projectId) {
-          throw new Error('Project ID not found');
-        }
-        token = (
-          await Notifications.getExpoPushTokenAsync({
-            projectId: "19e375a0-6e89-46ce-8fdb-485e73631b17",
-          })
-        ).data;
-        console.log(token);
-      } catch (e) {
-        token = `${e}`;
-      }
-    } else {
-      alert('Must use physical device for Push Notifications');
-    }
-  
-    return token;
-  }
-
+  const expoPushToken = usePushNotifications();
 
   const sendNotification = async () => {
-    console.log("sending push notification...");
-    //notification message
     const message = {
       to: expoPushToken,
       sound: "default",
@@ -170,8 +96,6 @@ const HomeScreen = ({ navigation }) => {
       body: JSON.stringify(message)
     })
   };
-
-  /*push notifications logic*/
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -214,6 +138,36 @@ const HomeScreen = ({ navigation }) => {
       setUpcomingEvent(null);
     }
   }, [events]);
+
+  useEffect(() => {
+    if (upcomingEvent) {
+      const eventDate = parseEventDateTime(upcomingEvent.date, upcomingEvent.time);
+      const reminders = [
+        { title: "8 Hours Reminder", body: `Your event "${upcomingEvent.title}" is starting in 8 hours.`, time: 8 * 60 * 60 * 1000 },
+        { title: "1 Hour Reminder", body: `Your event "${upcomingEvent.title}" is starting in 1 hour.`, time: 1 * 60 * 60 * 1000 },
+        { title: "20 Minutes Reminder", body: `Your event "${upcomingEvent.title}" is starting in 20 minutes.`, time: 20 * 60 * 1000 },
+      ];
+
+      const scheduleNotifications = async () => {
+        await Notifications.cancelAllScheduledNotificationsAsync();
+        reminders.forEach(async (reminder) => {
+          const reminderDate = new Date(eventDate.getTime() - reminder.time);
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: "Upcoming Event Reminder",
+              body: reminder.body,
+              sound: "default",
+            },
+            trigger: {
+              date: reminderDate,
+            },
+          });
+        });
+      };
+
+      scheduleNotifications();
+    }
+  }, [upcomingEvent]);
   
   
   return(
