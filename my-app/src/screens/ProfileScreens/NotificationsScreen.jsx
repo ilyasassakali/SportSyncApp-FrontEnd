@@ -15,9 +15,8 @@ const ProfileScreen = ({navigation}) => {
       </View>
 
       <View style={styles.optionsContainer}>
-        <OptionItem title="Receive notifications when guests Go or cancel" settingKey="notif_guests_go_cancel"/>
-        <OptionItem title="Receive notifications for activity that involves me" settingKey="notif_activity_involved"/>
-        <OptionItem title="Receive notifications about approaching events as reminders" settingKey="notif_approaching_events"/>
+        <OptionItem title="Receive practical notifications that involves me" settingKey="notif_involves_me"/>
+        <OptionItem title="Receive reminder notifications about approaching events" settingKey="notif_approaching_events"/>
       </View>
     </View>
   );
@@ -90,6 +89,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
   },
+  backButton:{
+    marginLeft: -10
+  },
   optionsContainer: {
     width: '100%',
   },
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     color: '#000',
     color: '#000',
     flex: 1, 
-    marginRight: 90,
+    marginRight: 60,
   },
 });
 

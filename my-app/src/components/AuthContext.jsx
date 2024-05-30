@@ -4,7 +4,8 @@ import * as SecureStore from 'expo-secure-store';
 const AuthContext = createContext({
     isUserLoggedIn: false,
     userData: null, 
-    setUserData: () => {} 
+    setUserData: () => {},
+    savePushToken: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -21,8 +22,22 @@ export const AuthProvider = ({ children }) => {
         checkLoginStatus();
     }, []);
 
+    const savePushToken = async (userId, pushToken) => {
+        try {
+            await fetch('http://192.168.129.29:3000/users/save-push-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId, pushToken })
+            });
+        } catch (error) {
+            console.error('Failed to save push token:', error);
+        }
+    };
+      
     return (
-        <AuthContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn, userData, setUserData  }}>
+        <AuthContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn, userData, setUserData, savePushToken }}>
             {children}
         </AuthContext.Provider>
     );

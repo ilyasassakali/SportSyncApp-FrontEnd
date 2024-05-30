@@ -74,12 +74,18 @@ const parseEventDateTime = (date, time) => {
 };
 
 const HomeScreen = ({ navigation }) => {
-  const { userData } = useAuth();
+  const { userData, savePushToken } = useAuth();
   const { events, setEvents } = useEvents();
   const [buttonColor, setButtonColor] = useState("#4CAF50");
   const [upcomingEvent, setUpcomingEvent] = useState(null);
   const expoPushToken = usePushNotifications();
   const [notifApproachingEvents, setNotifApproachingEvents] = useState(true);
+
+  useEffect(() => {
+    if (userData && expoPushToken) {
+      savePushToken(userData.id, expoPushToken);
+    }
+  }, [userData, expoPushToken, savePushToken]);
 
   const sendNotification = async () => {
     const message = {
