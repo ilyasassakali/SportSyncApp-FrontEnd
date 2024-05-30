@@ -6,6 +6,8 @@ import FabButton from '../../components/FabButton';
 import * as SecureStore from 'expo-secure-store';
 import { usePushNotifications } from '../../components/PushNotificationManager';
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const CountdownTimer = ({ targetDate }) => {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining(targetDate));
@@ -77,6 +79,7 @@ const HomeScreen = ({ navigation }) => {
   const [buttonColor, setButtonColor] = useState("#4CAF50");
   const [upcomingEvent, setUpcomingEvent] = useState(null);
   const expoPushToken = usePushNotifications();
+  const [notifApproachingEvents, setNotifApproachingEvents] = useState(true);
 
   const sendNotification = async () => {
     const message = {
@@ -140,9 +143,25 @@ const HomeScreen = ({ navigation }) => {
   }, [events]);
 
   useEffect(() => {
-    if (upcomingEvent) {
+    const loadNotificationPreference = async () => {
+      try {
+        const value = await AsyncStorage.getItem('notif_approaching_events');
+        if (value !== null) {
+          setNotifApproachingEvents(JSON.parse(value));
+        }
+      } catch (e) {
+        console.error('Failed to load the notification preference.');
+      }
+    };
+
+    loadNotificationPreference();
+  }, []);
+
+  useEffect(() => {
+    if (upcomingEvent && notifApproachingEvents) {
       const eventDate = parseEventDateTime(upcomingEvent.date, upcomingEvent.time);
       const reminders = [
+        { title: "24 Hours Reminder", body: `Your event "${upcomingEvent.title}" is starting in 24 hours.`, time: 24 * 60 * 60 * 1000 },
         { title: "8 Hours Reminder", body: `Your event "${upcomingEvent.title}" is starting in 8 hours.`, time: 8 * 60 * 60 * 1000 },
         { title: "1 Hour Reminder", body: `Your event "${upcomingEvent.title}" is starting in 1 hour.`, time: 1 * 60 * 60 * 1000 },
         { title: "20 Minutes Reminder", body: `Your event "${upcomingEvent.title}" is starting in 20 minutes.`, time: 20 * 60 * 1000 },
@@ -167,7 +186,7 @@ const HomeScreen = ({ navigation }) => {
 
       scheduleNotifications();
     }
-  }, [upcomingEvent]);
+  }, [upcomingEvent, notifApproachingEvents]);
   
   
   return(

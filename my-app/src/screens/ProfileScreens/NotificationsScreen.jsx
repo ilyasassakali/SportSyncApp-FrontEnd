@@ -15,9 +15,9 @@ const ProfileScreen = ({navigation}) => {
       </View>
 
       <View style={styles.optionsContainer}>
-        <OptionItem title="Receive notification when guests Go or cancel" settingKey="notif_guests_go_cancel"/>
-        <OptionItem title="Receive notification for activity that involves me" settingKey="notif_activity_involved"/>
-        <OptionItem title="Receive notification about approaching events " settingKey="notif_approaching_events"/>
+        <OptionItem title="Receive notifications when guests Go or cancel" settingKey="notif_guests_go_cancel"/>
+        <OptionItem title="Receive notifications for activity that involves me" settingKey="notif_activity_involved"/>
+        <OptionItem title="Receive notifications about approaching events as reminders" settingKey="notif_approaching_events"/>
       </View>
     </View>
   );
