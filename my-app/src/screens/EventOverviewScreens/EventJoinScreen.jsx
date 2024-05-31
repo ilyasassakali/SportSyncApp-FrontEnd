@@ -101,7 +101,7 @@ function EventJoinScreen({route, navigation }) {
         }),
       });
       if (response.ok) {
-        Alert.alert('Success', 'You have successfully joined the event!', [
+        Alert.alert('Success', 'You have successfully joined the event! The host is notified', [
           { text: 'OK', onPress: () => navigation.navigate('EventOverview', { event: event }) }
         ]);
       } else {
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     fontSize: 24, 
   },
   guestsContainer: {
-  paddingBottom: 60,
+  paddingBottom: 140,
 },
 goingHeader: {
   flexDirection: 'row',

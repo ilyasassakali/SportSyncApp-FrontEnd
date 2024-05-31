@@ -44,7 +44,7 @@ const EventEnterCodeScreen = ({ navigation }) => {
 
       if (response.status === 200) {
         const { event } = await response.json();
-        Alert.alert('Valid Code', 'The code you entered is valid.');
+        Alert.alert('Valid Code', 'Sport Event found.');
         navigation.navigate('EventJoin', { event });
       } else {
         Alert.alert('Invalid Code', 'The code you entered is invalid. Please try again.');

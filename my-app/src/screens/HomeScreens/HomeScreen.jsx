@@ -164,7 +164,7 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (upcomingEvent && notifApproachingEvents) {
+    const scheduleNotifications = async () => {
       const eventDate = parseEventDateTime(upcomingEvent.date, upcomingEvent.time);
       const reminders = [
         { title: "24 Hours Reminder", body: `Your event "${upcomingEvent.title}" is starting in 24 hours.`, time: 24 * 60 * 60 * 1000 },
@@ -172,24 +172,24 @@ const HomeScreen = ({ navigation }) => {
         { title: "1 Hour Reminder", body: `Your event "${upcomingEvent.title}" is starting in 1 hour.`, time: 1 * 60 * 60 * 1000 },
         { title: "20 Minutes Reminder", body: `Your event "${upcomingEvent.title}" is starting in 20 minutes.`, time: 20 * 60 * 1000 },
       ];
-
-      const scheduleNotifications = async () => {
-        await Notifications.cancelAllScheduledNotificationsAsync();
-        reminders.forEach(async (reminder) => {
-          const reminderDate = new Date(eventDate.getTime() - reminder.time);
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: "Upcoming Event Reminder",
-              body: reminder.body,
-              sound: "default",
-            },
-            trigger: {
-              date: reminderDate,
-            },
-          });
+  
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      reminders.forEach(async (reminder) => {
+        const reminderDate = new Date(eventDate.getTime() - reminder.time);
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Upcoming Event Reminder",
+            body: reminder.body,
+            sound: "default",
+          },
+          trigger: {
+            date: reminderDate,
+          },
         });
-      };
-
+      });
+    };
+  
+    if (upcomingEvent && upcomingEvent.status === "active" && notifApproachingEvents) {
       scheduleNotifications();
     }
   }, [upcomingEvent, notifApproachingEvents]);
