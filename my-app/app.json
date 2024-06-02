@@ -4,6 +4,7 @@
     "slug": "sportsyncapp",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "sportsyncapp",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
