@@ -17,7 +17,7 @@ import * as Linking from "expo-linking";
 let prefix = Linking.createURL("/");
 
 function EventJoinScreen({ route, navigation }) {
-  const { event } = route.params;
+  const [event, setEvent] = useState(route.params?.event);
   const { userData } = useAuth();
   const [hostDetails, setHostDetails] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -28,7 +28,22 @@ function EventJoinScreen({ route, navigation }) {
     teamColor === "#ffffff" ? "#4CAF50" : "transparent";
 
   useEffect(() => {
-    const fetchEventDetails = async () => {
+    if (!event) {
+      const restoreEvent = async () => {
+        const eventDetails = await SecureStore.getItemAsync("eventDetails");
+        if (eventDetails) {
+          const restoredEvent = JSON.parse(eventDetails);
+          setEvent(restoredEvent);
+        }
+      };
+      restoreEvent();
+    } else {
+      fetchEventDetails();
+    }
+  }, [event]);
+
+  const fetchEventDetails = async () => {
+    if (event && event.id) {
       try {
         const eventResponse = await fetch(
           `http://192.168.129.29:3000/events/event/${event.id}`
@@ -44,20 +59,13 @@ function EventJoinScreen({ route, navigation }) {
       } catch (error) {
         console.error("Error fetching event details:", error);
       }
-    };
-
-    fetchEventDetails();
-  }, [event.id]);
-
-  const eventLocation = {
-    latitude: parseFloat(event.latitude),
-    longitude: parseFloat(event.longitude),
-    latitudeDelta: 0.003,
-    longitudeDelta: 0.003,
+    }
   };
 
   const handlePayPalPayment = async () => {
     if (hostDetails && hostDetails.email) {
+      await SecureStore.setItemAsync("eventDetails", JSON.stringify(event));
+
       const returnUrl = `${prefix}/eventjoin?`;
       const cancelUrl = `${prefix}/eventjoin?`;
       const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${
@@ -77,59 +85,63 @@ function EventJoinScreen({ route, navigation }) {
   };
 
   useEffect(() => {
-    const handleUrl = (event) => {
+    const handleUrl = async (event) => {
       const { url } = event;
       if (url.startsWith(`${prefix}/eventjoin`)) {
-        console.log("youre here");
+        const restoredEvent = JSON.parse(
+          await SecureStore.getItemAsync("eventDetails")
+        );
+        setEvent(restoredEvent);
         const urlParams = new URLSearchParams(url.split("?")[1]);
         const payerID = urlParams.get("PayerID");
         if (payerID) {
-          console.log("you're here with payer ID:", payerID);
           joinEvent("direct");
         }
       }
     };
-
-    Linking.addEventListener("url", handleUrl);
+    const subscription = Linking.addEventListener("url", handleUrl);
+    return () => subscription.remove();
   }, []);
 
   const joinEvent = async (paymentMethod) => {
-    try {
-      const userDataString = await SecureStore.getItemAsync("userData");
-      const userData = JSON.parse(userDataString);
-      const response = await fetch(
-        "http://192.168.129.29:3000/events/join-event",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            eventId: event.id,
-            userId: userData.id,
-            paymentMethod: paymentMethod,
-          }),
-        }
-      );
-      if (response.ok) {
-        Alert.alert(
-          "Success",
-          "You have successfully joined the event! The host is notified",
-          [
-            {
-              text: "OK",
-              onPress: () =>
-                navigation.navigate("EventOverview", { event: event }),
+    if (event && event.id) {
+      try {
+        const userDataString = await SecureStore.getItemAsync("userData");
+        const userData = JSON.parse(userDataString);
+        const response = await fetch(
+          `http://192.168.129.29:3000/events/join-event`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-          ]
+            body: JSON.stringify({
+              eventId: event.id,
+              userId: userData.id,
+              paymentMethod: paymentMethod,
+            }),
+          }
         );
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to join event");
+        if (response.ok) {
+          Alert.alert(
+            "Success",
+            "You have successfully joined the event! The host is notified",
+            [
+              {
+                text: "OK",
+                onPress: () =>
+                  navigation.navigate("EventOverview", { event: event }),
+              },
+            ]
+          );
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to join event");
+        }
+      } catch (error) {
+        console.error("Error joining event:", error);
+        Alert.alert("Error", error.message || "Failed to join event");
       }
-    } catch (error) {
-      console.error("Error joining event:", error);
-      Alert.alert("Error", error.message || "Failed to join event");
     }
   };
 
@@ -154,6 +166,13 @@ function EventJoinScreen({ route, navigation }) {
       ],
       { cancelable: true }
     );
+  };
+
+  const eventLocation = {
+    latitude: parseFloat(event.latitude),
+    longitude: parseFloat(event.longitude),
+    latitudeDelta: 0.003,
+    longitudeDelta: 0.003,
   };
 
   return (
