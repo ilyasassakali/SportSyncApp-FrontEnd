@@ -9,7 +9,6 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { AuthProvider, useAuth } from "./components/AuthContext";
 import { EventsProvider } from "./components/EventsContext";
-import { StripeProvider } from "@stripe/stripe-react-native";
 import * as Linking from "expo-linking";
 import HomeScreen from "./screens/HomeScreens/HomeScreen";
 import EventsScreen from "./screens/EventsScreens/EventsScreen";
@@ -216,10 +215,8 @@ function AppContainer() {
 
 export default function App() {
   return (
-    <StripeProvider publishableKey={process.env.PUBLISHABLE_KEY}>
       <AuthProvider>
         <AppContainer />
       </AuthProvider>
-    </StripeProvider>
   );
 }

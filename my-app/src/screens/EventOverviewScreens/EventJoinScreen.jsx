@@ -27,8 +27,6 @@ function EventJoinScreen({ route, navigation }) {
   const shirtBackgroundColor =
     teamColor === "#ffffff" ? "#4CAF50" : "transparent";
 
-  const eventMounted = useRef(false);
-
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
@@ -48,10 +46,7 @@ function EventJoinScreen({ route, navigation }) {
       }
     };
 
-    if (!eventMounted.current) {
-      fetchEventDetails();
-      eventMounted.current = true;
-    }
+    fetchEventDetails();
   }, [event.id]);
 
   const eventLocation = {
@@ -63,8 +58,8 @@ function EventJoinScreen({ route, navigation }) {
 
   const handlePayPalPayment = async () => {
     if (hostDetails && hostDetails.email) {
-      const returnUrl = `${prefix}/eventjoin?eventId=${event.id}&userId=${userData.id}`;
-      const cancelUrl = `${prefix}/eventjoin?eventId=${event.id}&userId=${userData.id}`;
+      const returnUrl = `${prefix}/eventjoin?`;
+      const cancelUrl = `${prefix}/eventjoin?`;
       const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${
         hostDetails.email
       }&amount=${event.price}&currency_code=EUR&item_name=${encodeURIComponent(
@@ -86,7 +81,12 @@ function EventJoinScreen({ route, navigation }) {
       const { url } = event;
       if (url.startsWith(`${prefix}/eventjoin`)) {
         console.log("youre here");
-        joinEvent("direct");
+        const urlParams = new URLSearchParams(url.split("?")[1]);
+        const payerID = urlParams.get("PayerID");
+        if (payerID) {
+          console.log("you're here with payer ID:", payerID);
+          joinEvent("direct");
+        }
       }
     };
 
