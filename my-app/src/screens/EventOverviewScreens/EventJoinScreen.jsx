@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import { useStripe } from "@stripe/stripe-react-native";
 import {
   View,
   Text,
@@ -6,18 +7,17 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 import { customMapStyle } from "../../components/MapStyles";
 import { useAuth } from "../../components/AuthContext";
 import * as SecureStore from "expo-secure-store";
-import * as Linking from "expo-linking";
-
-let prefix = Linking.createURL("/");
 
 function EventJoinScreen({ route, navigation }) {
-  const [event, setEvent] = useState(route.params?.event);
+  const { event } = route.params;
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userData } = useAuth();
   const [hostDetails, setHostDetails] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -28,22 +28,7 @@ function EventJoinScreen({ route, navigation }) {
     teamColor === "#ffffff" ? "#4CAF50" : "transparent";
 
   useEffect(() => {
-    if (!event) {
-      const restoreEvent = async () => {
-        const eventDetails = await SecureStore.getItemAsync("eventDetails");
-        if (eventDetails) {
-          const restoredEvent = JSON.parse(eventDetails);
-          setEvent(restoredEvent);
-        }
-      };
-      restoreEvent();
-    } else {
-      fetchEventDetails();
-    }
-  }, [event]);
-
-  const fetchEventDetails = async () => {
-    if (event && event.id) {
+    const fetchEventDetails = async () => {
       try {
         const eventResponse = await fetch(
           `http://192.168.129.29:3000/events/event/${event.id}`
@@ -59,89 +44,114 @@ function EventJoinScreen({ route, navigation }) {
       } catch (error) {
         console.error("Error fetching event details:", error);
       }
-    }
+    };
+
+    fetchEventDetails();
+  }, [event.id]);
+
+  const eventLocation = {
+    latitude: parseFloat(event.latitude),
+    longitude: parseFloat(event.longitude),
+    latitudeDelta: 0.003,
+    longitudeDelta: 0.003,
   };
 
-  const handlePayPalPayment = async () => {
-    if (hostDetails && hostDetails.email) {
-      await SecureStore.setItemAsync("eventDetails", JSON.stringify(event));
+  const handlePayment = async () => {
+    try {
+      const eventDetailsResponse = await fetch(
+        `http://192.168.129.29:3000/events/event/${event.id}`
+      );
+      const eventDetails = await eventDetailsResponse.json();
 
-      const returnUrl = `${prefix}/eventjoin?`;
-      const cancelUrl = `${prefix}/eventjoin?`;
-      const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${
-        hostDetails.email
-      }&amount=${event.price}&currency_code=EUR&item_name=${encodeURIComponent(
-        `Payment for event ${event.title}`
-      )}&return=${encodeURIComponent(
-        returnUrl
-      )}&cancel_return=${encodeURIComponent(cancelUrl)}`;
-      const supported = await Linking.canOpenURL(paypalUrl);
-      if (supported) {
-        Linking.openURL(paypalUrl);
-      } else {
-        Alert.alert("Error", "PayPal app is not installed");
-      }
-    }
-  };
-
-  useEffect(() => {
-    const handleUrl = async (event) => {
-      const { url } = event;
-      if (url.startsWith(`${prefix}/eventjoin`)) {
-        const restoredEvent = JSON.parse(
-          await SecureStore.getItemAsync("eventDetails")
+      if (eventDetails.participants.length >= event.numberOfPlayers) {
+        Alert.alert(
+          "Event Full",
+          "Sorry, this event no longer has available spots."
         );
-        setEvent(restoredEvent);
-        const urlParams = new URLSearchParams(url.split("?")[1]);
-        const payerID = urlParams.get("PayerID");
-        if (payerID) {
+        return;
+      }
+
+      const response = await fetch(
+        "http://192.168.129.29:3000/payments/payment-sheet",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventId: event.id,
+            userId: userData.id,
+            hostId: event.hostId,
+          }),
+        }
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        const { clientSecret } = data;
+        const { error } = await initPaymentSheet({
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: "sportsync",
+        });
+
+        if (error) {
+          console.error("Error initializing payment sheet:", error);
+          return;
+        }
+
+        const result = await presentPaymentSheet();
+        if (result.error) {
+          Alert.alert("Payment failed", result.error.message);
+        } else {
+          Alert.alert("Success", "Payment successful");
           joinEvent("direct");
         }
+      } else {
+        throw new Error(data.message || "Failed to initiate payment");
       }
-    };
-    const subscription = Linking.addEventListener("url", handleUrl);
-    return () => subscription.remove();
-  }, []);
+    } catch (error) {
+      console.error("Payment initiation failed:", error);
+      Alert.alert("Error", "Failed to initiate payment");
+    }
+  };
 
   const joinEvent = async (paymentMethod) => {
-    if (event && event.id) {
-      try {
-        const userDataString = await SecureStore.getItemAsync("userData");
-        const userData = JSON.parse(userDataString);
-        const response = await fetch(
-          `http://192.168.129.29:3000/events/join-event`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              eventId: event.id,
-              userId: userData.id,
-              paymentMethod: paymentMethod,
-            }),
-          }
-        );
-        if (response.ok) {
-          Alert.alert(
-            "Success",
-            "You have successfully joined the event! The host is notified",
-            [
-              {
-                text: "OK",
-                onPress: () =>
-                  navigation.navigate("EventOverview", { event: event }),
-              },
-            ]
-          );
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to join event");
+    try {
+      const userDataString = await SecureStore.getItemAsync("userData");
+      const userData = JSON.parse(userDataString);
+      const response = await fetch(
+        "http://192.168.129.29:3000/events/join-event",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventId: event.id,
+            userId: userData.id,
+            paymentMethod: paymentMethod,
+          }),
         }
-      } catch (error) {
-        console.error("Error joining event:", error);
-        Alert.alert("Error", error.message || "Failed to join event");
+      );
+      if (response.ok) {
+        Alert.alert(
+          "Success",
+          "You have successfully joined the event! The host is notified",
+          [
+            {
+              text: "OK",
+              onPress: () =>
+                navigation.navigate("EventOverview", { event: event }),
+            },
+          ]
+        );
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to join event");
       }
+    } catch (error) {
+      console.error("Error joining event:", error);
+      Alert.alert("Error", error.message || "Failed to join event");
     }
   };
 
@@ -166,13 +176,6 @@ function EventJoinScreen({ route, navigation }) {
       ],
       { cancelable: true }
     );
-  };
-
-  const eventLocation = {
-    latitude: parseFloat(event.latitude),
-    longitude: parseFloat(event.longitude),
-    latitudeDelta: 0.003,
-    longitudeDelta: 0.003,
   };
 
   return (
@@ -318,15 +321,13 @@ function EventJoinScreen({ route, navigation }) {
       </ScrollView>
 
       <View style={styles.buttonContainer}>
-        {hostDetails && hostDetails.email && (
-          <TouchableOpacity
-            style={[styles.button, styles.nowButton]}
-            activeOpacity={0.7}
-            onPress={() => handlePayPalPayment()}
-          >
-            <Text style={styles.buttonText}>Go, Pay now €{event.price}</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={[styles.button, styles.nowButton]}
+          activeOpacity={0.7}
+          onPress={() => handlePayment()}
+        >
+          <Text style={styles.buttonText}>Go, Pay now €{event.price}</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.button, styles.laterButton]}

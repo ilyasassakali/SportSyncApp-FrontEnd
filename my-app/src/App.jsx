@@ -35,7 +35,6 @@ import {
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-const prefix = Linking.createURL("/");
 
 function Tabs() {
   return (
@@ -93,18 +92,7 @@ function AppContainer() {
 
   return (
     <EventsProvider>
-      <NavigationContainer
-        linking={{
-          prefixes: [prefix],
-          config: {
-            screens: {
-              EventJoin: {
-                path: "eventjoin",
-              },
-            },
-          },
-        }}
-      >
+      <NavigationContainer>
         <Stack.Navigator>
           {isUserLoggedIn ? (
             <>
