@@ -14,6 +14,7 @@ import * as SecureStore from "expo-secure-store";
 import { usePushNotifications } from "../../components/PushNotificationManager";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CountdownTimer = ({ targetDate }) => {
   const [timeRemaining, setTimeRemaining] = useState(
@@ -228,75 +229,77 @@ const HomeScreen = ({ navigation }) => {
   }, [upcomingEvent, notifApproachingEvents]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>
-        Hello {userData ? userData.firstName : ""}!
-      </Text>
-      <Text style={styles.subTitle}>Up next</Text>
-      <View style={styles.textContainer}>
-        {upcomingEvent ? (
-          <View>
-            <CountdownTimer
-              targetDate={parseEventDateTime(
-                upcomingEvent.date,
-                upcomingEvent.time
-              )}
-            />
-            <TouchableOpacity
-              style={styles.cardContainer}
-              onPress={() =>
-                navigation.navigate("EventOverview", { event: upcomingEvent })
-              }
-            >
-              <View style={styles.dateContainer}>
-                <Text style={styles.dateDay}>
-                  {new Date(upcomingEvent.date).getDate()}
-                </Text>
-                <Text style={styles.dateMonth}>
-                  {new Date(upcomingEvent.date).toLocaleString("en-US", {
-                    month: "short",
-                  })}
-                </Text>
-              </View>
-              <View style={styles.detailContainer}>
-                <Text
-                  style={styles.eventTitle}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {upcomingEvent.title}
-                </Text>
-                <View style={styles.eventDetailItem}>
-                  <Text style={styles.eventDetailsText}>
-                    {upcomingEvent.time}
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "white" }}>
+      <View style={styles.container}>
+        <Text style={styles.header}>
+          Hello {userData ? userData.firstName : ""}!
+        </Text>
+        <Text style={styles.subTitle}>Up next</Text>
+        <View style={styles.textContainer}>
+          {upcomingEvent ? (
+            <View>
+              <CountdownTimer
+                targetDate={parseEventDateTime(
+                  upcomingEvent.date,
+                  upcomingEvent.time
+                )}
+              />
+              <TouchableOpacity
+                style={styles.cardContainer}
+                onPress={() =>
+                  navigation.navigate("EventOverview", { event: upcomingEvent })
+                }
+              >
+                <View style={styles.dateContainer}>
+                  <Text style={styles.dateDay}>
+                    {new Date(upcomingEvent.date).getDate()}
+                  </Text>
+                  <Text style={styles.dateMonth}>
+                    {new Date(upcomingEvent.date).toLocaleString("en-US", {
+                      month: "short",
+                    })}
                   </Text>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View>
-            <Text style={styles.subText}>
-              Your upcoming sport event{"\n"}
-              will appear here...{"\n"}
-            </Text>
+                <View style={styles.detailContainer}>
+                  <Text
+                    style={styles.eventTitle}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {upcomingEvent.title}
+                  </Text>
+                  <View style={styles.eventDetailItem}>
+                    <Text style={styles.eventDetailsText}>
+                      {upcomingEvent.time}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.subText}>
+                Your upcoming sport event{"\n"}
+                will appear here...{"\n"}
+              </Text>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: buttonColor }]}
-              onPressIn={() => setButtonColor("#449D48")}
-              onPressOut={() => setButtonColor("#4CAF50")}
-              onPress={() => navigation.navigate("EventName")}
-              activeOpacity={1}
-            >
-              <Text style={styles.buttonText}>Plan a Sport Event</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: buttonColor }]}
+                onPressIn={() => setButtonColor("#449D48")}
+                onPressOut={() => setButtonColor("#4CAF50")}
+                onPress={() => navigation.navigate("EventName")}
+                activeOpacity={1}
+              >
+                <Text style={styles.buttonText}>Plan a Sport Event</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+        {/*<Button title="Send push notification" onPress={sendNotification}/>*/}
+
+        <FabButton />
       </View>
-      {/*<Button title="Send push notification" onPress={sendNotification}/>*/}
-
-      <FabButton />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -307,7 +310,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     padding: 20,
-    paddingTop: 50,
   },
   textContainer: {
     padding: 20,

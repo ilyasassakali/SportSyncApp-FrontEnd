@@ -1,10 +1,17 @@
 import React, { useState, useCallback } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import * as SecureStore from 'expo-secure-store';
-import { useEvents } from '../../components/EventsContext'; 
-import FabButton from '../../components/FabButton';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import * as SecureStore from "expo-secure-store";
+import { useEvents } from "../../components/EventsContext";
+import FabButton from "../../components/FabButton";
+import { useFocusEffect } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -12,10 +19,14 @@ const EventCard = ({ event, onPress }) => (
   <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
     <View style={styles.dateContainer}>
       <Text style={styles.dateDay}>{new Date(event.date).getDate()}</Text>
-      <Text style={styles.dateMonth}>{new Date(event.date).toLocaleString('en-US', { month: 'short' })}</Text>
+      <Text style={styles.dateMonth}>
+        {new Date(event.date).toLocaleString("en-US", { month: "short" })}
+      </Text>
     </View>
     <View style={styles.detailContainer}>
-      <Text style={styles.eventTitle} numberOfLines={1} ellipsizeMode="tail">{event.title}</Text>
+      <Text style={styles.eventTitle} numberOfLines={1} ellipsizeMode="tail">
+        {event.title}
+      </Text>
       <View style={styles.eventDetailItem}>
         <Text style={styles.eventDetailsText}>{event.time}</Text>
       </View>
@@ -24,7 +35,7 @@ const EventCard = ({ event, onPress }) => (
 );
 
 const parseEventDateTime = (event) => {
-  const [startHour, startMinute] = event.time.split(' - ')[0].split(':');
+  const [startHour, startMinute] = event.time.split(" - ")[0].split(":");
   const eventDate = new Date(event.date);
   eventDate.setHours(startHour);
   eventDate.setMinutes(startMinute);
@@ -35,7 +46,9 @@ function UpNextEventsScreen({ navigation }) {
   const { events } = useEvents();
   const now = new Date();
   const upNextEvents = events
-    .filter(event => parseEventDateTime(event) >= now && event.status === "active")
+    .filter(
+      (event) => parseEventDateTime(event) >= now && event.status === "active"
+    )
     .sort((a, b) => parseEventDateTime(a) - parseEventDateTime(b));
 
   return (
@@ -45,8 +58,12 @@ function UpNextEventsScreen({ navigation }) {
           <Text style={styles.noEventsText}>No events here</Text>
         </View>
       ) : (
-        upNextEvents.map(event => (
-          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+        upNextEvents.map((event) => (
+          <EventCard
+            key={event.id}
+            event={event}
+            onPress={() => navigation.navigate("EventOverview", { event })}
+          />
         ))
       )}
     </ScrollView>
@@ -54,10 +71,12 @@ function UpNextEventsScreen({ navigation }) {
 }
 
 function PastEventsScreen({ navigation }) {
-  const { events } = useEvents(); 
+  const { events } = useEvents();
   const now = new Date();
   const pastEvents = events
-    .filter(event => parseEventDateTime(event) < now && event.status === "active")
+    .filter(
+      (event) => parseEventDateTime(event) < now && event.status === "active"
+    )
     .sort((a, b) => parseEventDateTime(b) - parseEventDateTime(a));
 
   return (
@@ -67,8 +86,12 @@ function PastEventsScreen({ navigation }) {
           <Text style={styles.noEventsText}>No events here</Text>
         </View>
       ) : (
-        pastEvents.map(event => (
-          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+        pastEvents.map((event) => (
+          <EventCard
+            key={event.id}
+            event={event}
+            onPress={() => navigation.navigate("EventOverview", { event })}
+          />
         ))
       )}
     </ScrollView>
@@ -76,8 +99,10 @@ function PastEventsScreen({ navigation }) {
 }
 
 function CancelledEventsScreen({ navigation }) {
-  const { events } = useEvents(); 
-  const cancelledEvents = events.filter(event => event.status === "cancelled");
+  const { events } = useEvents();
+  const cancelledEvents = events.filter(
+    (event) => event.status === "cancelled"
+  );
 
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -86,8 +111,12 @@ function CancelledEventsScreen({ navigation }) {
           <Text style={styles.noEventsText}>No events here</Text>
         </View>
       ) : (
-        cancelledEvents.map(event => (
-          <EventCard key={event.id} event={event} onPress={() => navigation.navigate('EventOverview', { event })} />
+        cancelledEvents.map((event) => (
+          <EventCard
+            key={event.id}
+            event={event}
+            onPress={() => navigation.navigate("EventOverview", { event })}
+          />
         ))
       )}
     </ScrollView>
@@ -101,12 +130,14 @@ const EventsScreen = ({ navigation }) => {
     useCallback(() => {
       const fetchEvents = async () => {
         try {
-          const userDataString = await SecureStore.getItemAsync('userData');
+          const userDataString = await SecureStore.getItemAsync("userData");
           const userData = JSON.parse(userDataString);
 
           if (userData && userData.id) {
             const userId = userData.id;
-            const response = await fetch(`http://192.168.129.29:3000/events/user-events/${userId}`);
+            const response = await fetch(
+              `http://192.168.129.29:3000/events/user-events/${userId}`
+            );
             const events = await response.json();
             setEvents(events);
           } else {
@@ -122,32 +153,32 @@ const EventsScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Events</Text>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "white" }}>
+      <View style={styles.container}>
+        <Text style={styles.header}>Events</Text>
 
         <Tab.Navigator
-        screenOptions={{
-          tabBarStyle: { backgroundColor: 'white' },
-          tabBarIndicatorStyle: { backgroundColor: '#4CAF50' },
-          tabBarActiveTintColor: '#4CAF50',
-          tabBarInactiveTintColor: 'gray',
-        }}
-        
+          screenOptions={{
+            tabBarStyle: { backgroundColor: "white" },
+            tabBarIndicatorStyle: { backgroundColor: "#4CAF50" },
+            tabBarActiveTintColor: "#4CAF50",
+            tabBarInactiveTintColor: "gray",
+          }}
         >
-        <Tab.Screen name="Up Next">
-          {() => <UpNextEventsScreen navigation={navigation} />}
-        </Tab.Screen>
-        <Tab.Screen name="Past">
-          {() => <PastEventsScreen navigation={navigation} />}
-        </Tab.Screen>
-        <Tab.Screen name="Cancelled">
-          {() => <CancelledEventsScreen navigation={navigation} />}
-        </Tab.Screen>
+          <Tab.Screen name="Up Next">
+            {() => <UpNextEventsScreen navigation={navigation} />}
+          </Tab.Screen>
+          <Tab.Screen name="Past">
+            {() => <PastEventsScreen navigation={navigation} />}
+          </Tab.Screen>
+          <Tab.Screen name="Cancelled">
+            {() => <CancelledEventsScreen navigation={navigation} />}
+          </Tab.Screen>
         </Tab.Navigator>
 
-
-        <FabButton/>
-    </View>
+        <FabButton />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -157,80 +188,77 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    justifyContent: 'flex-start',
-    paddingTop: 50
+    justifyContent: "flex-start",
+    paddingTop: 20,
   },
   scrollView: {
-    width: '100%',
+    width: "100%",
     backgroundColor: "#FFFFFF",
-
   },
   header: {
     paddingLeft: 20,
-    fontFamily: 'Poppins_Bold',
+    fontFamily: "Poppins_Bold",
     fontSize: 28,
   },
   cardContainer: {
-    flexDirection: 'row',
-    padding: 10,  
-    borderBottomWidth: 0.5, 
-    borderBottomColor: '#ccc',   
+    flexDirection: "row",
+    padding: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#ccc",
   },
   dateContainer: {
     marginRight: 30,
-    marginLeft:15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginLeft: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   dateDay: {
-    fontFamily: 'Poppins_SemiBold',
+    fontFamily: "Poppins_SemiBold",
     fontSize: 22,
     color: "#333",
     marginBottom: -11,
-    color: "#4CAF50"
+    color: "#4CAF50",
   },
   dateMonth: {
-    fontFamily: 'Poppins_Regular',
+    fontFamily: "Poppins_Regular",
     fontSize: 18,
     color: "#4CAF50",
     marginBottom: 0,
   },
   detailContainer: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   eventTitle: {
-    fontFamily: 'Poppins_SemiBold',
+    fontFamily: "Poppins_SemiBold",
     fontSize: 18,
     color: "#333",
     marginBottom: -1,
   },
   eventDetails: {
-    fontFamily: 'Poppins_Regular',
+    fontFamily: "Poppins_Regular",
     fontSize: 14,
     color: "#666",
   },
   eventDetailItem: {
-    flexDirection: 'row', 
-    alignItems: 'center',  
-    
+    flexDirection: "row",
+    alignItems: "center",
   },
   eventDetailsText: {
-    fontFamily: 'Poppins_Regular',
+    fontFamily: "Poppins_Regular",
     fontSize: 14,
     color: "#4CAF50",
-    color:"#333"
+    color: "#333",
   },
   noEventsContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 250,
   },
   noEventsText: {
-    fontFamily: 'Poppins_Regular',
+    fontFamily: "Poppins_Regular",
     fontSize: 18,
     color: "#666",
   },
 });
-
