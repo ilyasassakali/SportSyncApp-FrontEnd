@@ -2,31 +2,33 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProfileScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="chevron-back" size={30} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
-      </View>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "white" }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="chevron-back" size={30} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Notifications</Text>
+        </View>
 
-      <View style={styles.optionsContainer}>
-        {/*<OptionItem
+        <View style={styles.optionsContainer}>
+          {/*<OptionItem
           title="Receive practical notifications that involves me"
-          settingKey="notif_involves_me"
-  />*/}
-        <OptionItem
-          title="Receive reminder notifications about approaching events"
-          settingKey="notif_approaching_events"
-        />
+          settingKey="notif_involves_me"/>*/}
+          <OptionItem
+            title="Receive reminder notifications about approaching events"
+            settingKey="notif_approaching_events"
+          />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -79,7 +81,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     padding: 20,
-    paddingTop: 60,
   },
   header: {
     flexDirection: "row",
