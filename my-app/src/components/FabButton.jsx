@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FAB } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { Platform, StyleSheet } from "react-native";
 
 const FabButton = () => {
   const [state, setState] = useState({ open: false });
@@ -10,11 +9,6 @@ const FabButton = () => {
   const onStateChange = ({ open }) => setState({ open });
 
   const { open } = state;
-
-  const fabStyle = Platform.select({
-    ios: { marginBottom: -20 },
-    android: {},
-  });
 
   return (
     <FAB.Group
@@ -40,16 +34,11 @@ const FabButton = () => {
         },
       ]}
       onStateChange={onStateChange}
-      fabStyle={[styles.fab, fabStyle]}
+      fabStyle={{ backgroundColor: "#4CAF50" }}
       color="#FFFFFF"
+      style={{ paddingBottom: 0 }}
     />
   );
 };
 
 export default FabButton;
-
-const styles = StyleSheet.create({
-  fab: {
-    backgroundColor: "#4CAF50", 
-  },
-});

@@ -8,12 +8,14 @@ import {
   ScrollView,
   Alert,
   Linking,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 import { customMapStyle } from "../../components/MapStyles";
 import { useAuth } from "../../components/AuthContext";
 import * as SecureStore from "expo-secure-store";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function EventJoinScreen({ route, navigation }) {
   const { event } = route.params;
@@ -179,165 +181,175 @@ function EventJoinScreen({ route, navigation }) {
   };
 
   return (
-    <View style={styles.outerContainer}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
-            style={styles.checkButton}
-          >
-            <Ionicons name="close-outline" size={35} color="#000" />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.eventName}>{event.title}</Text>
-        <Text style={styles.hostedBy}>
-          Hosted by{" "}
-          <Text style={styles.hostName}>
-            {hostDetails
-              ? `${hostDetails.firstName} ${hostDetails.lastName}`
-              : "Loading..."}
-          </Text>
-        </Text>
-
-        <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            initialRegion={eventLocation}
-            customMapStyle={customMapStyle}
-            onPress={openMap}
-          >
-            <Marker
-              coordinate={eventLocation}
-              title={event.title}
-              description={event.location}
-              pinColor="#4caf50"
-            />
-          </MapView>
-        </View>
-
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailItem}>
-            <Ionicons name="location-outline" size={20} color="#4CAF50" />
-            <Text style={styles.detailText}>{event.location}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="calendar-outline" size={20} color="#4CAF50" />
-            <Text style={styles.detailText}>{formatDate(event.date)}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Ionicons name="time-outline" size={20} color="#4CAF50" />
-            <Text style={styles.detailText}>{event.time}</Text>
-          </View>
-        </View>
-
-        <View style={styles.statisticsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{event.numberOfPlayers}</Text>
-            <Text style={styles.statLabel}>Players</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <View style={styles.outerContainer}>
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              style={styles.checkButton}
+            >
+              <Ionicons name="close-outline" size={35} color="#000" />
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.statItem}>
-            {event.isTeamDistributionEnabled ? (
-              <Text style={styles.statNumber}>
-                {event.teamDistribution.teamOne}
-                <Text style={styles.smallUnit}>vs</Text>
-                {event.teamDistribution.teamTwo}
-              </Text>
-            ) : (
-              <Text style={styles.statNumber}>no</Text>
-            )}
-            <Text style={styles.statLabel}>Distribution</Text>
-          </View>
-
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>
-              <Text style={styles.smallUnit}>€</Text>
-              {event.price}
+          <Text style={styles.eventName}>{event.title}</Text>
+          <Text style={styles.hostedBy}>
+            Hosted by{" "}
+            <Text style={styles.hostName}>
+              {hostDetails
+                ? `${hostDetails.firstName} ${hostDetails.lastName}`
+                : "Loading..."}
             </Text>
-            <Text style={styles.statLabel}>Price</Text>
-          </View>
-        </View>
+          </Text>
 
-        <View style={styles.guestsContainer}>
-          <View style={styles.goingHeader}>
-            <Ionicons
-              name="radio-outline"
-              size={20}
-              color="#4CAF50"
-              style={styles.iconStyle}
-            />
-            <Text style={styles.guestsNumber}>{participants.length} going</Text>
+          <View style={styles.mapContainer}>
+            <MapView
+              style={styles.map}
+              initialRegion={eventLocation}
+              customMapStyle={customMapStyle}
+              onPress={openMap}
+            >
+              <Marker
+                coordinate={eventLocation}
+                title={event.title}
+                description={event.location}
+                pinColor="#4caf50"
+              />
+            </MapView>
           </View>
-          {participants.map((participant, index) => (
-            <View key={index} style={styles.profileHeader}>
-              <View style={styles.profileContent}>
-                <View style={styles.initialsContainer}>
-                  <Text style={styles.initialsText}>
-                    {participant.firstName.charAt(0)}
-                    {participant.lastName.charAt(0)}
-                  </Text>
-                </View>
-                <View style={styles.profileInfo}>
-                  <Text
-                    style={styles.nameText}
-                  >{`${participant.firstName} ${participant.lastName}`}</Text>
-                  <View style={styles.payStatusContainer}>
-                    {participant.paid ? (
-                      <Ionicons
-                        name="checkmark-done-circle-outline"
-                        size={20}
-                        color="#4CAF50"
-                        style={styles.iconStyle}
-                      />
-                    ) : (
-                      <Ionicons
-                        name="checkmark-circle-outline"
-                        size={20}
-                        color="#039BE5"
-                        style={styles.iconStyle}
-                      />
-                    )}
-                    <Text style={styles.payText}>
-                      {participant.paid ? "Paid" : "Pay Cash"}
+
+          <View style={styles.detailsContainer}>
+            <View style={styles.detailItem}>
+              <Ionicons name="location-outline" size={20} color="#4CAF50" />
+              <Text style={styles.detailText}>{event.location}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Ionicons name="calendar-outline" size={20} color="#4CAF50" />
+              <Text style={styles.detailText}>{formatDate(event.date)}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Ionicons name="time-outline" size={20} color="#4CAF50" />
+              <Text style={styles.detailText}>{event.time}</Text>
+            </View>
+          </View>
+
+          <View style={styles.statisticsContainer}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{event.numberOfPlayers}</Text>
+              <Text style={styles.statLabel}>Players</Text>
+            </View>
+
+            <View style={styles.statItem}>
+              {event.isTeamDistributionEnabled ? (
+                <Text style={styles.statNumber}>
+                  {event.teamDistribution.teamOne}
+                  <Text style={styles.smallUnit}>vs</Text>
+                  {event.teamDistribution.teamTwo}
+                </Text>
+              ) : (
+                <Text style={styles.statNumber}>no</Text>
+              )}
+              <Text style={styles.statLabel}>Distribution</Text>
+            </View>
+
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>
+                <Text style={styles.smallUnit}>€</Text>
+                {event.price}
+              </Text>
+              <Text style={styles.statLabel}>Price</Text>
+            </View>
+          </View>
+
+          <View style={styles.guestsContainer}>
+            <View style={styles.goingHeader}>
+              <Ionicons
+                name="radio-outline"
+                size={20}
+                color="#4CAF50"
+                style={styles.iconStyle}
+              />
+              <Text style={styles.guestsNumber}>
+                {participants.length} going
+              </Text>
+            </View>
+            {participants.map((participant, index) => (
+              <View key={index} style={styles.profileHeader}>
+                <View style={styles.profileContent}>
+                  <View style={styles.initialsContainer}>
+                    <Text style={styles.initialsText}>
+                      {participant.firstName.charAt(0)}
+                      {participant.lastName.charAt(0)}
                     </Text>
                   </View>
+                  <View style={styles.profileInfo}>
+                    <Text
+                      style={styles.nameText}
+                    >{`${participant.firstName} ${participant.lastName}`}</Text>
+                    <View style={styles.payStatusContainer}>
+                      {participant.paid ? (
+                        <Ionicons
+                          name="checkmark-done-circle-outline"
+                          size={20}
+                          color="#4CAF50"
+                          style={styles.iconStyle}
+                        />
+                      ) : (
+                        <Ionicons
+                          name="checkmark-circle-outline"
+                          size={20}
+                          color="#039BE5"
+                          style={styles.iconStyle}
+                        />
+                      )}
+                      <Text style={styles.payText}>
+                        {participant.paid ? "Paid" : "Pay Cash"}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
+                {event.isTeamDistributionEnabled && participant.shirtColor && (
+                  <Ionicons
+                    name="shirt"
+                    size={32}
+                    color={participant.shirtColor}
+                    style={[
+                      styles.shirtIcon,
+                      {
+                        backgroundColor: shirtBackgroundColor,
+                        borderRadius: 10,
+                      },
+                    ]}
+                  />
+                )}
               </View>
-              {event.isTeamDistributionEnabled && participant.shirtColor && (
-                <Ionicons
-                  name="shirt"
-                  size={32}
-                  color={participant.shirtColor}
-                  style={[
-                    styles.shirtIcon,
-                    { backgroundColor: shirtBackgroundColor, borderRadius: 10 },
-                  ]}
-                />
-              )}
-            </View>
-          ))}
+            ))}
+          </View>
+        </ScrollView>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.nowButton]}
+            activeOpacity={0.7}
+            onPress={() => handlePayment()}
+          >
+            <Text style={styles.buttonText}>Go, Pay now €{event.price}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.laterButton]}
+            activeOpacity={0.7}
+            onPress={() => joinEvent("cash")}
+          >
+            <Text style={styles.buttonText}>Go, Pay later Cash</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.nowButton]}
-          activeOpacity={0.7}
-          onPress={() => handlePayment()}
-        >
-          <Text style={styles.buttonText}>Go, Pay now €{event.price}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.laterButton]}
-          activeOpacity={0.7}
-          onPress={() => joinEvent("cash")}
-        >
-          <Text style={styles.buttonText}>Go, Pay later Cash</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -347,7 +359,6 @@ const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
     padding: 20,
-    paddingTop: 50,
     backgroundColor: "#fff",
   },
   container: {
@@ -424,6 +435,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_Regular",
     fontSize: 40,
     color: "#666",
+    marginBottom: Platform.OS === "ios" ? 10 : 0,
   },
   statLabel: {
     fontFamily: "Poppins_Regular",
