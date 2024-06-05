@@ -320,7 +320,10 @@ function EventJoinScreen({ route, navigation }) {
                     style={[
                       styles.shirtIcon,
                       {
-                        backgroundColor: shirtBackgroundColor,
+                        backgroundColor:
+                          participant.shirtColor === "#ffffff"
+                            ? "#4CAF50"
+                            : "transparent",
                         borderRadius: 10,
                       },
                     ]}
@@ -523,6 +526,7 @@ const styles = StyleSheet.create({
   },
   shirtIcon: {
     alignSelf: "center",
+    overflow: "hidden",
   },
   cancelButtonText: {
     color: "white",

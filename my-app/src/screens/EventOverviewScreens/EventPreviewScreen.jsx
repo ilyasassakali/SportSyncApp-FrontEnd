@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
   },
   shirtIcon: {
     alignSelf: "center",
+    overflow: "hidden",
   },
   cancelButton: {
     flexDirection: "row",

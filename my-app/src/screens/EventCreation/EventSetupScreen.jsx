@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Platform
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -345,7 +345,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     textAlign: "center",
-    borderRadius: 10,  
+    borderRadius: 10,
+    overflow: "hidden",
   },
   colorOption: {
     width: 30,
@@ -374,7 +375,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
-    marginTop: Platform.OS === 'ios' ? 10 : 0,
+    marginTop: Platform.OS === "ios" ? 10 : 0,
   },
   priceInput: {
     borderWidth: 1,
