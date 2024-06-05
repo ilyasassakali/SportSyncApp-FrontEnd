@@ -9,7 +9,7 @@ import {
   Share,
   Linking,
   BackHandler,
-  Platform
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
@@ -18,10 +18,9 @@ import * as Clipboard from "expo-clipboard";
 import { useAuth } from "../../components/AuthContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
 function EventOverviewScreen({ route, navigation }) {
   const { userData } = useAuth();
-  const { event } = route.params;
+  const { event, isPast } = route.params;
   const [hostDetails, setHostDetails] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [teamColor, setTeamColor] = useState(
@@ -276,7 +275,7 @@ Download SportSync: ${downloadLink}`;
   };
 
   return (
-    <SafeAreaView  style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.container}
@@ -289,7 +288,7 @@ Download SportSync: ${downloadLink}`;
             >
               <Ionicons name="checkmark-outline" size={30} color="#000" />
             </TouchableOpacity>
-            {isHost && event.status !== "cancelled" && (
+            {!isPast && isHost && event.status !== "cancelled" && (
               <View style={{ flexDirection: "row" }}>
                 <TouchableOpacity
                   onPress={cancelEvent}
@@ -306,6 +305,12 @@ Download SportSync: ${downloadLink}`;
               </View>
             )}
           </View>
+
+          {isPast && (
+            <View style={styles.cancelledContainer}>
+              <Text style={styles.cancelledText}>This event has passed.</Text>
+            </View>
+          )}
 
           {event.status === "cancelled" && (
             <View style={styles.cancelledContainer}>
@@ -485,7 +490,7 @@ Download SportSync: ${downloadLink}`;
           </View>
         </ScrollView>
 
-        {isHost && event.status === "active" ? (
+        {isHost && event.status === "active" && !isPast ? (
           <TouchableOpacity
             style={styles.button}
             activeOpacity={0.7}
@@ -501,7 +506,7 @@ Download SportSync: ${downloadLink}`;
           </TouchableOpacity>
         ) : null}
 
-        {!isHost && event.status === "active" ? (
+        {!isHost && event.status === "active" && !isPast ? (
           <TouchableOpacity
             style={[styles.button, { backgroundColor: "#F44336" }]}
             activeOpacity={0.7}
@@ -603,7 +608,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_Regular",
     fontSize: 40,
     color: "#666",
-    marginBottom: Platform.OS === 'ios' ? 10 : 0,
+    marginBottom: Platform.OS === "ios" ? 10 : 0,
   },
   statLabel: {
     fontFamily: "Poppins_Regular",

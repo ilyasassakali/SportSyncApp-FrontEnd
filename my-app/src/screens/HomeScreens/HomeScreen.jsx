@@ -359,8 +359,8 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_SemiBold",
     fontSize: 22,
     color: "#333",
-    marginBottom: -11,
     color: "#4CAF50",
+    marginBottom: Platform.OS === 'ios' ? -7 : -11,
   },
   dateMonth: {
     fontFamily: "Poppins_Regular",
