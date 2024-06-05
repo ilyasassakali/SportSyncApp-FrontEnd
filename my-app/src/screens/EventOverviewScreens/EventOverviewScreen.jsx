@@ -10,6 +10,7 @@ import {
   Linking,
   BackHandler,
   Platform,
+  Animated,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
@@ -30,6 +31,7 @@ function EventOverviewScreen({ route, navigation }) {
     teamColor === "#ffffff" ? "#4CAF50" : "transparent";
   const [selectedParticipant, setSelectedParticipant] = useState(null);
   const isHost = userData && userData.id === event.hostId;
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -62,6 +64,25 @@ function EventOverviewScreen({ route, navigation }) {
 
     return () => backHandler.remove();
   }, [event.id]);
+
+  useEffect(() => {
+    if (participants.length === event.numberOfPlayers) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
+  }, [participants.length, event.numberOfPlayers]);
 
   const eventLocation = {
     latitude: parseFloat(event.latitude),
@@ -416,8 +437,13 @@ Download SportSync: ${downloadLink}`;
                 style={styles.iconStyle}
               />
               <Text style={styles.guestsNumber}>
-                {participants.length} going
+                {participants.length} Going
               </Text>
+              {participants.length === event.numberOfPlayers && (
+                <Animated.Text style={[styles.fullText, { opacity: fadeAnim }]}>
+                  , It's full!
+                </Animated.Text>
+              )}
             </View>
             {participants.map((participant, index) => (
               <View key={index} style={styles.profileHeader}>
@@ -758,5 +784,10 @@ const styles = StyleSheet.create({
   },
   cancelledTitle: {
     textDecorationLine: "line-through",
+  },
+  fullText: {
+    color: "#4CAF50",
+    fontSize: 18,
+    fontFamily: "Poppins_SemiBold",
   },
 });

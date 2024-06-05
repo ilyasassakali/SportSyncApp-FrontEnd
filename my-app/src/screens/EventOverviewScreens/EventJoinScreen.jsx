@@ -9,6 +9,7 @@ import {
   Alert,
   Linking,
   Platform,
+  Animated,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
@@ -28,6 +29,7 @@ function EventJoinScreen({ route, navigation }) {
   );
   const shirtBackgroundColor =
     teamColor === "#ffffff" ? "#4CAF50" : "transparent";
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -50,6 +52,25 @@ function EventJoinScreen({ route, navigation }) {
 
     fetchEventDetails();
   }, [event.id]);
+
+  useEffect(() => {
+    if (participants.length === event.numberOfPlayers) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
+  }, [participants.length, event.numberOfPlayers]);
 
   const eventLocation = {
     latitude: parseFloat(event.latitude),
@@ -153,7 +174,7 @@ function EventJoinScreen({ route, navigation }) {
       }
     } catch (error) {
       console.error("Error joining event:", error);
-      Alert.alert("Error", error.message || "Failed to join event");
+      Alert.alert("Event Full", error.message || "Failed to join event");
     }
   };
 
@@ -274,8 +295,13 @@ function EventJoinScreen({ route, navigation }) {
                 style={styles.iconStyle}
               />
               <Text style={styles.guestsNumber}>
-                {participants.length} going
+                {participants.length} Going
               </Text>
+              {participants.length === event.numberOfPlayers && (
+                <Animated.Text style={[styles.fullText, { opacity: fadeAnim }]}>
+                  , It's full!
+                </Animated.Text>
+              )}
             </View>
             {participants.map((participant, index) => (
               <View key={index} style={styles.profileHeader}>
@@ -578,5 +604,10 @@ const styles = StyleSheet.create({
   },
   checkButton: {
     marginLeft: -7,
+  },
+  fullText: {
+    color: "#4CAF50",
+    fontSize: 18,
+    fontFamily: "Poppins_SemiBold",
   },
 });
