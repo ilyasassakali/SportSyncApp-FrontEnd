@@ -115,6 +115,7 @@ function EventJoinScreen({ route, navigation }) {
         const { error } = await initPaymentSheet({
           paymentIntentClientSecret: clientSecret,
           merchantDisplayName: "sportsync",
+          returnURL: "sportsyncapp://open",
         });
 
         if (error) {
