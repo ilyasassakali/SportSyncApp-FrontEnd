@@ -38,7 +38,7 @@ function EditProfileScreen({ navigation }) {
 
     try {
       const response = await fetch(
-        "http://192.168.129.29:3000/users/edit-profile",
+        "https://sportsyncapp-backend.onrender.com/users/edit-profile",
         {
           method: "PUT",
           headers: {

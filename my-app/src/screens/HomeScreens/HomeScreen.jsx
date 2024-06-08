@@ -124,7 +124,7 @@ const HomeScreen = ({ navigation }) => {
         if (userData && userData.id) {
           const userId = userData.id;
           const response = await fetch(
-            `http://192.168.129.29:3000/events/user-events/${userId}`
+            `https://sportsyncapp-backend.onrender.com/events/user-events/${userId}`
           );
           const eventsData = await response.json();
           setEvents(eventsData);
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "#333",
     color: "#4CAF50",
-    marginBottom: Platform.OS === 'ios' ? -7 : -11,
+    marginBottom: Platform.OS === "ios" ? -7 : -11,
   },
   dateMonth: {
     fontFamily: "Poppins_Regular",

@@ -25,16 +25,19 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://192.168.129.29:3000/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      const response = await fetch(
+        "https://sportsyncapp-backend.onrender.com/users/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
       const jsonData = await response.json();
       if (response.status === 200) {
@@ -47,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
         await SecureStore.setItemAsync("userData", JSON.stringify(userData));
         setUserData(userData);
         setIsUserLoggedIn(true);
-        Alert.alert("Succss", "You are connected !");
+        //Alert.alert("Succss", "You are connected !");
       } else {
         Alert.alert("Error", jsonData.message);
       }
@@ -81,6 +84,7 @@ const LoginScreen = ({ navigation }) => {
               keyboardType="email-address"
               value={email}
               onChangeText={setEmail}
+              autoCorrect={false}
             />
             <Text style={styles.sublabel}>Password</Text>
             <TextInput

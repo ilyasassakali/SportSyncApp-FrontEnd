@@ -25,7 +25,7 @@ function EventPreviewScreen({ route, navigation }) {
   const createEvent = async () => {
     try {
       const response = await fetch(
-        "http://192.168.129.29:3000/events/create-event",
+        "https://sportsyncapp-backend.onrender.com/events/create-event",
         {
           method: "POST",
           headers: {
@@ -118,6 +118,7 @@ function EventPreviewScreen({ route, navigation }) {
             >
               <Ionicons name="chevron-back" size={30} color="#000" />
             </TouchableOpacity>
+            <Text style={styles.headerTitle}>Preview</Text>
           </View>
 
           <Text style={styles.eventName}>{event.title}</Text>

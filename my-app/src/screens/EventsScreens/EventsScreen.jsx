@@ -14,7 +14,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Platform } from "react-native";
 
-
 const Tab = createMaterialTopTabNavigator();
 
 const EventCard = ({ event, onPress }) => (
@@ -92,7 +91,9 @@ function PastEventsScreen({ navigation }) {
           <EventCard
             key={event.id}
             event={event}
-            onPress={() => navigation.navigate("EventOverview", { event, isPast: true })}
+            onPress={() =>
+              navigation.navigate("EventOverview", { event, isPast: true })
+            }
           />
         ))
       )}
@@ -138,7 +139,7 @@ const EventsScreen = ({ navigation }) => {
           if (userData && userData.id) {
             const userId = userData.id;
             const response = await fetch(
-              `http://192.168.129.29:3000/events/user-events/${userId}`
+              `https://sportsyncapp-backend.onrender.com/events/user-events/${userId}`
             );
             const events = await response.json();
             setEvents(events);
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "#333",
     color: "#4CAF50",
-    marginBottom: Platform.OS === 'ios' ? -7 : -11,
+    marginBottom: Platform.OS === "ios" ? -7 : -11,
   },
   dateMonth: {
     fontFamily: "Poppins_Regular",

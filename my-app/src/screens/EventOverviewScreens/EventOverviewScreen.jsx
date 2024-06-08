@@ -37,13 +37,13 @@ function EventOverviewScreen({ route, navigation }) {
     const fetchEventDetails = async () => {
       try {
         const eventResponse = await fetch(
-          `http://192.168.129.29:3000/events/event/${event.id}`
+          `https://sportsyncapp-backend.onrender.com/events/event/${event.id}`
         );
         const eventData = await eventResponse.json();
         setParticipants(eventData.participants);
 
         const hostResponse = await fetch(
-          `http://192.168.129.29:3000/events/user/${event.hostId}`
+          `https://sportsyncapp-backend.onrender.com/events/user/${event.hostId}`
         );
         const hostData = await hostResponse.json();
         setHostDetails(hostData);
@@ -102,7 +102,7 @@ function EventOverviewScreen({ route, navigation }) {
         onPress: async () => {
           try {
             const response = await fetch(
-              `http://192.168.129.29:3000/events/cancel-event/${event.id}`,
+              `https://sportsyncapp-backend.onrender.com/events/cancel-event/${event.id}`,
               {
                 method: "PUT",
               }
@@ -132,7 +132,7 @@ function EventOverviewScreen({ route, navigation }) {
           text: "Yes",
           onPress: async () => {
             const response = await fetch(
-              `http://192.168.129.29:3000/events/leave-event`,
+              `https://sportsyncapp-backend.onrender.com/events/leave-event`,
               {
                 method: "POST",
                 headers: {
@@ -270,7 +270,7 @@ Download SportSync: ${downloadLink}`;
   ) => {
     try {
       const response = await fetch(
-        `http://192.168.129.29:3000/events/update-participant-color`,
+        `https://sportsyncapp-backend.onrender.com/events/update-participant-color`,
         {
           method: "POST",
           headers: {

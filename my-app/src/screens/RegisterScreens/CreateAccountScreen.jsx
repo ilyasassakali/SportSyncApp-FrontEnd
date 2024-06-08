@@ -24,7 +24,7 @@ const CreateAccountScreen = ({ navigation }) => {
   const handleCreateAccount = async () => {
     try {
       const response = await fetch(
-        "http://192.168.129.29:3000/users/create-account",
+        "https://sportsyncapp-backend.onrender.com/users/create-account",
         {
           method: "POST",
           headers: {
@@ -50,7 +50,7 @@ const CreateAccountScreen = ({ navigation }) => {
         await SecureStore.setItemAsync("userData", JSON.stringify(userData));
         setUserData(userData);
         setIsUserLoggedIn(true);
-        Alert.alert("Succes", jsonData.message);
+        //Alert.alert("Succes", jsonData.message);
       } else {
         Alert.alert("Error", jsonData.message);
       }
@@ -104,6 +104,7 @@ const CreateAccountScreen = ({ navigation }) => {
               keyboardType="email-address"
               value={email}
               onChangeText={setEmail}
+              autoCorrect={false}
             />
             <Text style={styles.sublabel}>Password</Text>
             <TextInput

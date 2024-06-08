@@ -35,13 +35,13 @@ function EventJoinScreen({ route, navigation }) {
     const fetchEventDetails = async () => {
       try {
         const eventResponse = await fetch(
-          `http://192.168.129.29:3000/events/event/${event.id}`
+          `https://sportsyncapp-backend.onrender.com/events/event/${event.id}`
         );
         const eventData = await eventResponse.json();
         setParticipants(eventData.participants);
 
         const hostResponse = await fetch(
-          `http://192.168.129.29:3000/events/user/${event.hostId}`
+          `https://sportsyncapp-backend.onrender.com/events/user/${event.hostId}`
         );
         const hostData = await hostResponse.json();
         setHostDetails(hostData);
@@ -82,7 +82,7 @@ function EventJoinScreen({ route, navigation }) {
   const handlePayment = async () => {
     try {
       const eventDetailsResponse = await fetch(
-        `http://192.168.129.29:3000/events/event/${event.id}`
+        `https://sportsyncapp-backend.onrender.com/events/event/${event.id}`
       );
       const eventDetails = await eventDetailsResponse.json();
 
@@ -95,7 +95,7 @@ function EventJoinScreen({ route, navigation }) {
       }
 
       const response = await fetch(
-        "http://192.168.129.29:3000/payments/payment-sheet",
+        "https://sportsyncapp-backend.onrender.com/payments/payment-sheet",
         {
           method: "POST",
           headers: {
@@ -144,7 +144,7 @@ function EventJoinScreen({ route, navigation }) {
       const userDataString = await SecureStore.getItemAsync("userData");
       const userData = JSON.parse(userDataString);
       const response = await fetch(
-        "http://192.168.129.29:3000/events/join-event",
+        "https://sportsyncapp-backend.onrender.com/events/join-event",
         {
           method: "POST",
           headers: {
