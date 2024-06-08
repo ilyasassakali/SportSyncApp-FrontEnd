@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   backButton: {
-    marginLeft: -10,
+    marginLeft: -6,
   },
   dateTimeContainer: {
     flexDirection: "row",

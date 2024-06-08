@@ -238,12 +238,6 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.textContainer}>
           {upcomingEvent ? (
             <View>
-              <CountdownTimer
-                targetDate={parseEventDateTime(
-                  upcomingEvent.date,
-                  upcomingEvent.time
-                )}
-              />
               <TouchableOpacity
                 style={styles.cardContainer}
                 onPress={() =>
@@ -275,6 +269,12 @@ const HomeScreen = ({ navigation }) => {
                   </View>
                 </View>
               </TouchableOpacity>
+              <CountdownTimer
+                targetDate={parseEventDateTime(
+                  upcomingEvent.date,
+                  upcomingEvent.time
+                )}
+              />
             </View>
           ) : (
             <View>
@@ -283,15 +283,25 @@ const HomeScreen = ({ navigation }) => {
                 will appear here...{"\n"}
               </Text>
 
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: buttonColor }]}
-                onPressIn={() => setButtonColor("#449D48")}
-                onPressOut={() => setButtonColor("#4CAF50")}
-                onPress={() => navigation.navigate("EventName")}
-                activeOpacity={1}
-              >
-                <Text style={styles.buttonText}>Plan a Sport Event</Text>
-              </TouchableOpacity>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: buttonColor }]}
+                  onPressIn={() => setButtonColor("#449D48")}
+                  onPressOut={() => setButtonColor("#4CAF50")}
+                  onPress={() => navigation.navigate("EventName")}
+                  activeOpacity={1}
+                >
+                  <Text style={styles.buttonText}>Plan a sport event</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("EventEnterCode")}
+                  style={styles.joinButton}
+                >
+                  <Text style={[styles.buttonText, { color: "#4CAF50" }]}>
+                    Or join with code
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
         </View>
@@ -326,8 +336,9 @@ const styles = StyleSheet.create({
   subTitle: {
     fontFamily: "Poppins_SemiBold",
     fontSize: 20,
-    marginBottom: 10,
     color: "#4CAF50",
+    marginBottom: 10,
+    marginTop: 25,
   },
   subText: {
     fontFamily: "Poppins_SemiBold",
@@ -348,7 +359,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: "row",
     paddingLeft: 10,
-    paddingTop: 10,
+    marginBottom: 20,
   },
   dateContainer: {
     marginRight: 30,
@@ -411,6 +422,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#FFFFFF",
     fontWeight: "bold",
+  },
+  buttonContainer: {
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  joinButton: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#4CAF50",
+    alignSelf: "flex-start",
+    marginTop: 10,
   },
 });
 

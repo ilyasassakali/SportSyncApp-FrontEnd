@@ -305,9 +305,9 @@ Download SportSync: ${downloadLink}`;
           <View style={styles.header}>
             <TouchableOpacity
               onPress={() => navigation.navigate("Events")}
-              style={styles.checkButton}
+              style={styles.backButton}
             >
-              <Ionicons name="checkmark-outline" size={30} color="#000" />
+              <Ionicons name="chevron-back" size={30} color="#000" />
             </TouchableOpacity>
             {!isPast && isHost && event.status !== "cancelled" && (
               <View style={{ flexDirection: "row" }}>
@@ -789,5 +789,8 @@ const styles = StyleSheet.create({
     color: "#4CAF50",
     fontSize: 18,
     fontFamily: "Poppins_SemiBold",
+  },
+  backButton: {
+    marginLeft: -6,
   },
 });
