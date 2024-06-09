@@ -15,6 +15,7 @@ import { usePushNotifications } from "../../components/PushNotificationManager";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LottieView from "lottie-react-native";
 
 const CountdownTimer = ({ targetDate }) => {
   const [timeRemaining, setTimeRemaining] = useState(
@@ -308,6 +309,12 @@ const HomeScreen = ({ navigation }) => {
         {/*<Button title="Send push notification" onPress={sendNotification}/>*/}
 
         <FabButton />
+        <LottieView
+          source={require("../../assets/home.json")}
+          autoPlay
+          loop
+          style={styles.lottieBottomLeft}
+        />
       </View>
     </SafeAreaView>
   );
@@ -435,6 +442,14 @@ const styles = StyleSheet.create({
     borderColor: "#4CAF50",
     alignSelf: "flex-start",
     marginTop: 10,
+  },
+  lottieBottomLeft: {
+    position: "absolute",
+    left: -100,
+    bottom: -80,
+    width: 350,
+    height: 350,
+    zIndex: -1,
   },
 });
 

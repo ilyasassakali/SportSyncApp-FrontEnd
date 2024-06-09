@@ -1,12 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LottieView from "lottie-react-native";
 
 const IntroScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
         <View style={styles.content}>
+          <LottieView
+            source={require("../../assets/intro.json")}
+            autoPlay
+            loop
+            style={styles.lottieStyle}
+          />
           <Text style={styles.title}>
             Welcome to <Text style={styles.ssTitle}>SportSync</Text>
           </Text>
@@ -98,6 +105,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     fontFamily: "Poppins_SemiBold",
+  },
+  lottieStyle: {
+    width: 300,
+    height: 300,
+    alignSelf: "center",
   },
 });
 
