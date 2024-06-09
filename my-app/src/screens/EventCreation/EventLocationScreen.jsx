@@ -117,6 +117,12 @@ const EventLocationScreen = () => {
               <Ionicons name="chevron-back" size={30} color="#000" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Where?</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={32} color="#000" />
+            </TouchableOpacity>
           </View>
           <View style={styles.searchArea}>
             <TextInput
@@ -206,6 +212,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginLeft: -6,
+  },
+  closeButton: {
+    marginRight: -6,
   },
   searchArea: {
     position: "absolute",

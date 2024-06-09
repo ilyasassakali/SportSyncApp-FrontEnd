@@ -125,11 +125,17 @@ function EventPreviewScreen({ route, navigation }) {
           <View style={styles.header}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
-              style={styles.checkButton}
+              style={styles.backButton}
             >
               <Ionicons name="chevron-back" size={30} color="#000" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Preview</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={32} color="#000" />
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.eventName}>{event.title}</Text>
@@ -267,8 +273,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 20,
   },
-  checkButton: {
-    marginLeft: -10,
+  backButton: {
+    marginLeft: -6,
+  },
+  closeButton: {
+    marginRight: -6,
   },
   headerTitle: {
     fontSize: 22,

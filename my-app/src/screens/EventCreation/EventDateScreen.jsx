@@ -109,6 +109,12 @@ const EventDateScreen = ({ route, navigation }) => {
               <Ionicons name="chevron-back" size={30} color="#000" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>When?</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={32} color="#000" />
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.label}>Time & Date</Text>
@@ -218,6 +224,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginLeft: -6,
+  },
+  closeButton: {
+    marginRight: -6,
   },
   dateTimeContainer: {
     flexDirection: "row",
