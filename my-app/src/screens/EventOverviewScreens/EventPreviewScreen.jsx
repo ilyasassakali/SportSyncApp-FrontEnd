@@ -14,6 +14,7 @@ import MapView, { Marker } from "react-native-maps";
 import { customMapStyle } from "../../components/MapStyles";
 import { useAuth } from "../../components/AuthContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LottieView from "lottie-react-native";
 
 function EventPreviewScreen({ route, navigation }) {
   const { event } = route.params;
@@ -21,6 +22,7 @@ function EventPreviewScreen({ route, navigation }) {
   const [teamColor, setTeamColor] = useState(event.teamColors.teamOneColor);
   const shirtBackgroundColor =
     teamColor === "#ffffff" ? "#4CAF50" : "transparent";
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
   const createEvent = async () => {
     try {
@@ -50,13 +52,11 @@ function EventPreviewScreen({ route, navigation }) {
 
       const result = await response.json();
       if (response.ok) {
-        Alert.alert("Success", "Event created successfully!", [
-          {
-            text: "OK",
-            onPress: () =>
-              navigation.navigate("EventOverview", { event: result.event }),
-          },
-        ]);
+        setShowSuccessAnimation(true);
+        setTimeout(() => {
+          setShowSuccessAnimation(false);
+          navigation.navigate("EventOverview", { event: result.event });
+        }, 2500);
       } else {
         Alert.alert("Error", result.message || "Failed to create event");
       }
@@ -106,6 +106,17 @@ function EventPreviewScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      {showSuccessAnimation && (
+        <View style={styles.overlayStyle}>
+          <LottieView
+            source={require("../../assets/success.json")}
+            autoPlay
+            loop={false}
+            onAnimationFinish={() => setShowSuccessAnimation(false)}
+            style={styles.animationContainer}
+          />
+        </View>
+      )}
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.container}
@@ -447,5 +458,25 @@ const styles = StyleSheet.create({
   linkIcon2: {
     marginRight: 5,
     marginBottom: 5,
+  },
+  animationContainer: {
+    position: "absolute",
+    width: 300,
+    height: 300,
+    alignSelf: "center",
+    top: "50%",
+    marginTop: -150,
+    zIndex: 1000,
+  },
+  overlayStyle: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 999,
   },
 });

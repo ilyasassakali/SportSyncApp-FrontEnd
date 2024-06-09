@@ -17,6 +17,7 @@ import { customMapStyle } from "../../components/MapStyles";
 import { useAuth } from "../../components/AuthContext";
 import * as SecureStore from "expo-secure-store";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LottieView from "lottie-react-native";
 
 function EventJoinScreen({ route, navigation }) {
   const { event } = route.params;
@@ -30,6 +31,7 @@ function EventJoinScreen({ route, navigation }) {
   const shirtBackgroundColor =
     teamColor === "#ffffff" ? "#4CAF50" : "transparent";
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -158,17 +160,11 @@ function EventJoinScreen({ route, navigation }) {
         }
       );
       if (response.ok) {
-        Alert.alert(
-          "Success",
-          "You have successfully joined the event! The host is notified",
-          [
-            {
-              text: "OK",
-              onPress: () =>
-                navigation.navigate("EventOverview", { event: event }),
-            },
-          ]
-        );
+        setShowSuccessAnimation(true);
+        setTimeout(() => {
+          setShowSuccessAnimation(false);
+          navigation.navigate("EventOverview", { event: event });
+        }, 2500);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to join event");
@@ -204,6 +200,17 @@ function EventJoinScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      {showSuccessAnimation && (
+        <View style={styles.overlayStyle}>
+          <LottieView
+            source={require("../../assets/success.json")}
+            autoPlay
+            loop={false}
+            onAnimationFinish={() => setShowSuccessAnimation(false)}
+            style={styles.animationContainer}
+          />
+        </View>
+      )}
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.container}
@@ -610,5 +617,25 @@ const styles = StyleSheet.create({
     color: "#4CAF50",
     fontSize: 18,
     fontFamily: "Poppins_SemiBold",
+  },
+  animationContainer: {
+    position: "absolute",
+    width: 300,
+    height: 300,
+    alignSelf: "center",
+    top: "50%",
+    marginTop: -150,
+    zIndex: 1000,
+  },
+  overlayStyle: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 999,
   },
 });

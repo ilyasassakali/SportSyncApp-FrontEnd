@@ -18,6 +18,7 @@ import { customMapStyle } from "../../components/MapStyles";
 import * as Clipboard from "expo-clipboard";
 import { useAuth } from "../../components/AuthContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LottieView from "lottie-react-native";
 
 function EventOverviewScreen({ route, navigation }) {
   const { userData } = useAuth();
@@ -32,6 +33,7 @@ function EventOverviewScreen({ route, navigation }) {
   const [selectedParticipant, setSelectedParticipant] = useState(null);
   const isHost = userData && userData.id === event.hostId;
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [showDeleteAnimation, setShowDeleteAnimation] = useState(false);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -100,25 +102,31 @@ function EventOverviewScreen({ route, navigation }) {
       {
         text: "Yes",
         onPress: async () => {
-          try {
-            const response = await fetch(
-              `https://sportsyncapp-backend.onrender.com/events/cancel-event/${event.id}`,
-              {
-                method: "PUT",
+          setShowDeleteAnimation(true);
+          setTimeout(async () => {
+            try {
+              const response = await fetch(
+                `https://sportsyncapp-backend.onrender.com/events/cancel-event/${event.id}`,
+                {
+                  method: "PUT",
+                }
+              );
+
+              if (!response.ok) {
+                throw new Error("Failed to cancel event");
               }
-            );
 
-            if (!response.ok) {
-              throw new Error("Failed to cancel event");
+              const result = await response.json();
+              Alert.alert("Cancelled", result.message, [
+                { text: "OK", onPress: () => navigation.navigate("Events") },
+              ]);
+              setShowDeleteAnimation(false);
+            } catch (error) {
+              console.error("Error cancelling event:", error);
+              Alert.alert("Error", "Failed to cancel event");
+              setShowDeleteAnimation(false);
             }
-
-            const result = await response.json();
-            Alert.alert(result.message);
-            navigation.navigate("Events");
-          } catch (error) {
-            console.error("Error cancelling event:", error);
-            Alert.alert("Error", "Failed to cancel event");
-          }
+          }, 2000);
         },
       },
     ]);
@@ -297,6 +305,17 @@ Download SportSync: ${downloadLink}`;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      {showDeleteAnimation && (
+        <View style={styles.overlayStyle}>
+          <LottieView
+            source={require("../../assets/deleted.json")}
+            autoPlay
+            loop={false}
+            onAnimationFinish={() => setShowDeleteAnimation(false)}
+            style={styles.animationContainer}
+          />
+        </View>
+      )}
       <View style={styles.outerContainer}>
         <ScrollView
           style={styles.container}
@@ -792,5 +811,25 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginLeft: -6,
+  },
+  animationContainer: {
+    position: "absolute",
+    width: 400,
+    height: 400,
+    alignSelf: "center",
+    top: "50%",
+    marginTop: -250,
+    zIndex: 1000,
+  },
+  overlayStyle: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 999,
   },
 });
