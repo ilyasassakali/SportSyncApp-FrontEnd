@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
@@ -101,66 +103,71 @@ const EventLocationScreen = () => {
   };
 
   return (
-    <SafeAreaView  style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={30} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Where?</Text>
-        </View>
-        <View style={styles.searchArea}>
-          <TextInput
-            placeholder="Enter Event Location"
-            style={styles.input}
-            value={location}
-            onChangeText={setLocation}
-          />
-          <TouchableOpacity
-            onPress={handleLocationSearch}
-            style={styles.searchButton}
-          >
-            <Ionicons name="search-outline" size={20} color="#fff" />
-          </TouchableOpacity>
-        </View>
-        <MapView
-          style={styles.map}
-          region={region}
-          showsMyLocationButton={true}
-          showsUserLocation={true}
-          customMapStyle={customMapStyle}
-        >
-          {marker && <Marker coordinate={marker} pinColor="#4caf50" />}
-        </MapView>
-
-        {isLoading && (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#4CAF50" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Ionicons name="chevron-back" size={30} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Where?</Text>
           </View>
-        )}
+          <View style={styles.searchArea}>
+            <TextInput
+              placeholder="Enter Event Location"
+              style={styles.input}
+              value={location}
+              onChangeText={setLocation}
+            />
+            <TouchableOpacity
+              onPress={handleLocationSearch}
+              style={styles.searchButton}
+            >
+              <Ionicons name="search-outline" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          <MapView
+            style={styles.map}
+            region={region}
+            showsMyLocationButton={true}
+            showsUserLocation={true}
+            customMapStyle={customMapStyle}
+          >
+            {marker && <Marker coordinate={marker} pinColor="#4caf50" />}
+          </MapView>
 
-        <TouchableOpacity
-          onPress={() => {
-            if (location && marker) {
-              navigation.navigate("EventSetup", {
-                event: {
-                  ...eventData,
-                  location: location,
-                  latitude: region.latitude,
-                  longitude: region.longitude,
-                },
-              });
-            }
-          }}
-          style={location && marker ? styles.button : styles.buttonDisabled}
-          activeOpacity={0.9}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+          {isLoading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#4CAF50" />
+            </View>
+          )}
+
+          <TouchableOpacity
+            onPress={() => {
+              if (location && marker) {
+                navigation.navigate("EventSetup", {
+                  event: {
+                    ...eventData,
+                    location: location,
+                    latitude: region.latitude,
+                    longitude: region.longitude,
+                  },
+                });
+              }
+            }}
+            style={location && marker ? styles.button : styles.buttonDisabled}
+            activeOpacity={0.9}
+          >
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

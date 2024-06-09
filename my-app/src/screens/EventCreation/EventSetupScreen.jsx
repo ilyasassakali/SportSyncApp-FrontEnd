@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,7 +30,7 @@ function EventSetupScreen({ route, navigation }) {
   ];
   const [price, setPrice] = useState("0");
   const [isTeamDistributionEnabled, setIsTeamDistributionEnabled] =
-    useState(false);
+    useState(true);
 
   const handleIncrease = () => {
     setNumberOfPlayers((prev) => prev + 1);
@@ -52,200 +53,205 @@ function EventSetupScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={30} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Setup</Text>
-        </View>
-
-        <Text style={styles.label}>Number of Players</Text>
-        <View style={styles.numberInputContainer}>
-          <TouchableOpacity
-            onPress={handleDecrease}
-            style={styles.changeNumberButton}
-          >
-            <Ionicons name="remove-outline" size={30} color="#fff" />
-          </TouchableOpacity>
-          <TextInput
-            placeholder="10"
-            style={styles.numberInput}
-            value={numberOfPlayers.toString()}
-            keyboardType="numeric"
-            onChangeText={(text) => setNumberOfPlayers(Number(text))}
-          />
-          <TouchableOpacity
-            onPress={handleIncrease}
-            style={styles.changeNumberButton}
-          >
-            <Ionicons name="add-outline" size={30} color="#fff" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.checkboxContainer}>
-          <TouchableOpacity
-            onPress={() => setIsTeamDistributionEnabled((prev) => !prev)}
-            style={styles.checkbox}
-          >
-            {isTeamDistributionEnabled ? (
-              <Ionicons name="checkbox" size={30} color="#4CAF50" />
-            ) : (
-              <Ionicons name="square-outline" size={30} color="#4CAF50" />
-            )}
-            <Text style={styles.checkboxText}>Enable Team Distribution</Text>
-          </TouchableOpacity>
-        </View>
-
-        {isTeamDistributionEnabled && (
-          <View style={styles.teamDistributionContainer}>
-            <Ionicons
-              name="shirt"
-              size={40}
-              style={[
-                styles.shirtIcon,
-                {
-                  color: teamOneColor,
-                  backgroundColor:
-                    teamOneColor === "#ffffff" ? "#4CAF50" : "transparent",
-                  padding: teamOneColor === "#ffffff" ? 1 : 0,
-                },
-              ]}
-            />
-            <TextInput
-              placeholder="5"
-              style={styles.teamInput}
-              value={teamOne}
-              onChangeText={setTeamOne}
-              keyboardType="numeric"
-            />
-            <Text style={styles.vsText}>VS</Text>
-            <TextInput
-              placeholder="5"
-              style={styles.teamInput}
-              value={teamTwo}
-              onChangeText={setTeamTwo}
-              keyboardType="numeric"
-            />
-            <Ionicons
-              name="shirt"
-              size={40}
-              style={[
-                styles.shirtIcon,
-                {
-                  color: teamTwoColor,
-                  backgroundColor:
-                    teamTwoColor === "#ffffff" ? "#4CAF50" : "transparent",
-                  padding: teamTwoColor === "#ffffff" ? 1 : 0,
-                },
-              ]}
-            />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Ionicons name="chevron-back" size={30} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Add Setup</Text>
           </View>
-        )}
 
-        {isTeamDistributionEnabled && (
-          <View style={styles.colorPickerContainer}>
-            <View style={styles.colorPickerContainerLeft}>
-              <View style={styles.colorRow}>
-                {colors.slice(0, 4).map((color, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.colorOption, { backgroundColor: color }]}
-                    onPress={() => setTeamOneColor(color)}
-                  />
-                ))}
+          <Text style={styles.label}>Number of Players</Text>
+          <View style={styles.numberInputContainer}>
+            <TouchableOpacity
+              onPress={handleDecrease}
+              style={styles.changeNumberButton}
+            >
+              <Ionicons name="remove-outline" size={30} color="#fff" />
+            </TouchableOpacity>
+            <TextInput
+              placeholder="10"
+              style={styles.numberInput}
+              value={numberOfPlayers.toString()}
+              keyboardType="numeric"
+              onChangeText={(text) => setNumberOfPlayers(Number(text))}
+            />
+            <TouchableOpacity
+              onPress={handleIncrease}
+              style={styles.changeNumberButton}
+            >
+              <Ionicons name="add-outline" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.checkboxContainer}>
+            <TouchableOpacity
+              onPress={() => setIsTeamDistributionEnabled((prev) => !prev)}
+              style={styles.checkbox}
+            >
+              {isTeamDistributionEnabled ? (
+                <Ionicons name="checkbox" size={30} color="#4CAF50" />
+              ) : (
+                <Ionicons name="square-outline" size={30} color="#4CAF50" />
+              )}
+              <Text style={styles.checkboxText}>Enable Team Distribution</Text>
+            </TouchableOpacity>
+          </View>
+
+          {isTeamDistributionEnabled && (
+            <View style={styles.teamDistributionContainer}>
+              <Ionicons
+                name="shirt"
+                size={40}
+                style={[
+                  styles.shirtIcon,
+                  {
+                    color: teamOneColor,
+                    backgroundColor:
+                      teamOneColor === "#ffffff" ? "#4CAF50" : "transparent",
+                    padding: teamOneColor === "#ffffff" ? 1 : 0,
+                  },
+                ]}
+              />
+              <TextInput
+                placeholder="5"
+                style={styles.teamInput}
+                value={teamOne}
+                onChangeText={setTeamOne}
+                keyboardType="numeric"
+              />
+              <Text style={styles.vsText}>VS</Text>
+              <TextInput
+                placeholder="5"
+                style={styles.teamInput}
+                value={teamTwo}
+                onChangeText={setTeamTwo}
+                keyboardType="numeric"
+              />
+              <Ionicons
+                name="shirt"
+                size={40}
+                style={[
+                  styles.shirtIcon,
+                  {
+                    color: teamTwoColor,
+                    backgroundColor:
+                      teamTwoColor === "#ffffff" ? "#4CAF50" : "transparent",
+                    padding: teamTwoColor === "#ffffff" ? 1 : 0,
+                  },
+                ]}
+              />
+            </View>
+          )}
+
+          {isTeamDistributionEnabled && (
+            <View style={styles.colorPickerContainer}>
+              <View style={styles.colorPickerContainerLeft}>
+                <View style={styles.colorRow}>
+                  {colors.slice(0, 4).map((color, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[styles.colorOption, { backgroundColor: color }]}
+                      onPress={() => setTeamOneColor(color)}
+                    />
+                  ))}
+                </View>
+                <View style={styles.colorRow}>
+                  {colors.slice(4, 8).map((color, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[styles.colorOption, { backgroundColor: color }]}
+                      onPress={() => setTeamOneColor(color)}
+                    />
+                  ))}
+                </View>
               </View>
-              <View style={styles.colorRow}>
-                {colors.slice(4, 8).map((color, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.colorOption, { backgroundColor: color }]}
-                    onPress={() => setTeamOneColor(color)}
-                  />
-                ))}
+              <View style={styles.colorPickerContainerRight}>
+                <View style={styles.colorRow}>
+                  {colors.slice(0, 4).map((color, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[styles.colorOption, { backgroundColor: color }]}
+                      onPress={() => setTeamTwoColor(color)}
+                    />
+                  ))}
+                </View>
+                <View style={styles.colorRow}>
+                  {colors.slice(4, 8).map((color, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[styles.colorOption, { backgroundColor: color }]}
+                      onPress={() => setTeamTwoColor(color)}
+                    />
+                  ))}
+                </View>
               </View>
             </View>
-            <View style={styles.colorPickerContainerRight}>
-              <View style={styles.colorRow}>
-                {colors.slice(0, 4).map((color, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.colorOption, { backgroundColor: color }]}
-                    onPress={() => setTeamTwoColor(color)}
-                  />
-                ))}
-              </View>
-              <View style={styles.colorRow}>
-                {colors.slice(4, 8).map((color, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.colorOption, { backgroundColor: color }]}
-                    onPress={() => setTeamTwoColor(color)}
-                  />
-                ))}
-              </View>
-            </View>
+          )}
+
+          <Text style={styles.label}>Price per Person</Text>
+          <View style={styles.priceContainer}>
+            <Ionicons
+              name="logo-euro"
+              size={35}
+              color="#4CAF50"
+              style={{ marginRight: 10 }}
+            />
+            <TextInput
+              placeholder="1"
+              style={styles.priceInput}
+              value={price}
+              onChangeText={handlePriceChange}
+              keyboardType="decimal-pad"
+            />
           </View>
-        )}
 
-        <Text style={styles.label}>Price per Person</Text>
-        <View style={styles.priceContainer}>
-          <Ionicons
-            name="logo-euro"
-            size={35}
-            color="#4CAF50"
-            style={{ marginRight: 10 }}
-          />
-          <TextInput
-            placeholder="1"
-            style={styles.priceInput}
-            value={price}
-            onChangeText={handlePriceChange}
-            keyboardType="decimal-pad"
-          />
-        </View>
-
-        <TouchableOpacity
-          onPress={() => {
-            if (
+          <TouchableOpacity
+            onPress={() => {
+              if (
+                (!isTeamDistributionEnabled ||
+                  (isTeamDistributionEnabled &&
+                    parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
+                    teamOneColor !== teamTwoColor)) &&
+                numberOfPlayers > 0 &&
+                isValidPrice(price)
+              ) {
+                navigation.navigate("EventPreview", {
+                  event: {
+                    ...event,
+                    numberOfPlayers,
+                    teamDistribution: { teamOne, teamTwo },
+                    teamColors: { teamOneColor, teamTwoColor },
+                    price,
+                    isTeamDistributionEnabled,
+                  },
+                });
+              }
+            }}
+            style={
               (!isTeamDistributionEnabled ||
                 (isTeamDistributionEnabled &&
                   parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
                   teamOneColor !== teamTwoColor)) &&
               numberOfPlayers > 0 &&
               isValidPrice(price)
-            ) {
-              navigation.navigate("EventPreview", {
-                event: {
-                  ...event,
-                  numberOfPlayers,
-                  teamDistribution: { teamOne, teamTwo },
-                  teamColors: { teamOneColor, teamTwoColor },
-                  price,
-                  isTeamDistributionEnabled,
-                },
-              });
+                ? styles.button
+                : styles.buttonDisabled
             }
-          }}
-          style={
-            (!isTeamDistributionEnabled ||
-              (isTeamDistributionEnabled &&
-                parseInt(teamOne) + parseInt(teamTwo) === numberOfPlayers &&
-                teamOneColor !== teamTwoColor)) &&
-            numberOfPlayers > 0 &&
-            isValidPrice(price)
-              ? styles.button
-              : styles.buttonDisabled
-          }
-          activeOpacity={0.9}
-          disabled={numberOfPlayers <= 0 || !isValidPrice(price)}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+            activeOpacity={0.9}
+            disabled={numberOfPlayers <= 0 || !isValidPrice(price)}
+          >
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

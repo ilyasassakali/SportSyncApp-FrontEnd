@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
   LogBox,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,52 +21,60 @@ function EventNameScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Ionicons name="chevron-back" size={30} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>What's the plan?</Text>
+          </View>
+
+          <Text style={styles.label}>Event Name</Text>
+          <TextInput
+            placeholder="Enter Event Name"
+            style={styles.input}
+            value={eventName}
+            onChangeText={setEventName}
+          />
+          <Text style={styles.presetLabel}>Quick Presets:</Text>
+          <View style={styles.presetContainer}>
+            <EventPresetButton
+              name="Indoor Soccer ⚽"
+              setEventName={setEventName}
+            />
+            <EventPresetButton
+              name="Street Basketball 4V4 🏀"
+              setEventName={setEventName}
+            />
+            <EventPresetButton
+              name="Tennis 2V2 🎾"
+              setEventName={setEventName}
+            />
+            <EventPresetButton
+              name="Running Race 🏃"
+              setEventName={setEventName}
+            />
+          </View>
+
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
+            onPress={() =>
+              eventName.trim() &&
+              navigation.navigate("EventDate", { event: { title: eventName } })
+            }
+            style={eventName.trim() ? styles.button : styles.buttonDisabled}
+            activeOpacity={0.9}
           >
-            <Ionicons name="chevron-back" size={30} color="#000" />
+            <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>What's the plan?</Text>
         </View>
-
-        <Text style={styles.label}>Event Name</Text>
-        <TextInput
-          placeholder="Enter Event Name"
-          style={styles.input}
-          value={eventName}
-          onChangeText={setEventName}
-        />
-        <Text style={styles.presetLabel}>Quick Presets:</Text>
-        <View style={styles.presetContainer}>
-          <EventPresetButton
-            name="Indoor Soccer ⚽"
-            setEventName={setEventName}
-          />
-          <EventPresetButton
-            name="Street Basketball 4V4 🏀"
-            setEventName={setEventName}
-          />
-          <EventPresetButton name="Tennis 2V2 🎾" setEventName={setEventName} />
-          <EventPresetButton
-            name="Running Race 🏃"
-            setEventName={setEventName}
-          />
-        </View>
-
-        <TouchableOpacity
-          onPress={() =>
-            eventName.trim() &&
-            navigation.navigate("EventDate", { event: { title: eventName } })
-          }
-          style={eventName.trim() ? styles.button : styles.buttonDisabled}
-          activeOpacity={0.9}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

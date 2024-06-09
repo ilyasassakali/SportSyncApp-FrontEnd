@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#4CAF50",
     marginBottom: 10,
-    marginTop: 25,
+    marginTop: 20,
   },
   subText: {
     fontFamily: "Poppins_SemiBold",

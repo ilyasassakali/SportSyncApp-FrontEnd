@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Calendar } from "react-native-calendars";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -89,97 +96,103 @@ const EventDateScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={30} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>When?</Text>
-        </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Ionicons name="chevron-back" size={30} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>When?</Text>
+          </View>
 
-        <Text style={styles.label}>Time & Date</Text>
-        <View style={styles.timeContainer}>
-          <View style={styles.timeWrapper}>
-            <Text style={styles.sublabel}>
-              Start Time
-              <Ionicons name="time-outline" size={15} color="#333" />
-            </Text>
-            <TouchableOpacity
-              onPress={() => showTimePicker("start")}
-              style={styles.timeDisplay}
-            >
-              <Text style={styles.timeText}>{formatTime(startTime)}</Text>
-            </TouchableOpacity>
+          <Text style={styles.label}>Time & Date</Text>
+          <View style={styles.timeContainer}>
+            <View style={styles.timeWrapper}>
+              <Text style={styles.sublabel}>
+                Start Time
+                <Ionicons name="time-outline" size={15} color="#333" />
+              </Text>
+              <TouchableOpacity
+                onPress={() => showTimePicker("start")}
+                style={styles.timeDisplay}
+              >
+                <Text style={styles.timeText}>{formatTime(startTime)}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.timeWrapper}>
+              <Text style={styles.sublabel}>
+                End Time
+                <Ionicons name="time-outline" size={15} color="#333" />
+              </Text>
+              <TouchableOpacity
+                onPress={() => showTimePicker("end")}
+                style={styles.timeDisplay}
+              >
+                <Text style={styles.timeText}>{formatTime(endTime)}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.timeWrapper}>
-            <Text style={styles.sublabel}>
-              End Time
-              <Ionicons name="time-outline" size={15} color="#333" />
-            </Text>
-            <TouchableOpacity
-              onPress={() => showTimePicker("end")}
-              style={styles.timeDisplay}
-            >
-              <Text style={styles.timeText}>{formatTime(endTime)}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <DateTimePickerModal
-          isVisible={isTimePickerVisible}
-          mode="time"
-          onConfirm={handleConfirm}
-          onCancel={hideTimePicker}
-          is24Hour={true}
-          date={timePickerMode === "start" ? startTime : endTime}
-        />
-        <Calendar
-          onDayPress={onDayPress}
-          markedDates={markedDates}
-          style={styles.calendar}
-          theme={{
-            backgroundColor: "#ffffff",
-            calendarBackground: "#ffffff",
-            textSectionTitleColor: "#b6c1cd",
-            todayTextColor: "#4CAF50",
-            todayBackgroundColor: "transparent",
-            selectedDayBackgroundColor: "transparent",
-            selectedDayTextColor: "#ffffff",
-            dayTextColor: "#2d4150",
-            arrowColor: "#2d4150",
-            monthTextColor: "#2d4150",
-            textDayFontFamily: "Poppins_Regular",
-            textMonthFontFamily: "Poppins_Regular",
-            textDayHeaderFontFamily: "Poppins_Regular",
-            textDayFontSize: 17,
-            textMonthFontSize: 18,
-            textDayHeaderFontSize: 16,
-          }}
-        />
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedDate && startTime && endTime) {
-              navigation.navigate("EventLocation", {
-                event: {
-                  ...event,
-                  date: selectedDate,
-                  time: `${formatTime(startTime)} - ${formatTime(endTime)}`,
-                },
-              });
+          <DateTimePickerModal
+            isVisible={isTimePickerVisible}
+            mode="time"
+            onConfirm={handleConfirm}
+            onCancel={hideTimePicker}
+            is24Hour={true}
+            date={timePickerMode === "start" ? startTime : endTime}
+            textColor="#000"
+          />
+          <Calendar
+            onDayPress={onDayPress}
+            markedDates={markedDates}
+            style={styles.calendar}
+            theme={{
+              backgroundColor: "#ffffff",
+              calendarBackground: "#ffffff",
+              textSectionTitleColor: "#b6c1cd",
+              todayTextColor: "#4CAF50",
+              todayBackgroundColor: "transparent",
+              selectedDayBackgroundColor: "transparent",
+              selectedDayTextColor: "#ffffff",
+              dayTextColor: "#2d4150",
+              arrowColor: "#2d4150",
+              monthTextColor: "#2d4150",
+              textDayFontFamily: "Poppins_Regular",
+              textMonthFontFamily: "Poppins_Regular",
+              textDayHeaderFontFamily: "Poppins_Regular",
+              textDayFontSize: 17,
+              textMonthFontSize: 18,
+              textDayHeaderFontSize: 16,
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              if (selectedDate && startTime && endTime) {
+                navigation.navigate("EventLocation", {
+                  event: {
+                    ...event,
+                    date: selectedDate,
+                    time: `${formatTime(startTime)} - ${formatTime(endTime)}`,
+                  },
+                });
+              }
+            }}
+            style={
+              selectedDate && startTime && endTime
+                ? styles.button
+                : styles.buttonDisabled
             }
-          }}
-          style={
-            selectedDate && startTime && endTime
-              ? styles.button
-              : styles.buttonDisabled
-          }
-          activeOpacity={0.9}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+            activeOpacity={0.9}
+          >
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
