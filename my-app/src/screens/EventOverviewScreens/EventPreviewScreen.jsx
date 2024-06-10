@@ -221,12 +221,12 @@ function EventPreviewScreen({ route, navigation }) {
                   >{`${userData.firstName} ${userData.lastName}`}</Text>
                   <View style={styles.payStatusContainer}>
                     <Ionicons
-                      name="checkmark-done-circle-outline"
-                      size={20}
-                      color="#4CAF50"
+                      name="star"
+                      size={16}
+                      color="#FFD700"
                       style={styles.iconStyle}
                     />
-                    <Text style={styles.payText}>Paid</Text>
+                    <Text style={styles.payText}>Host</Text>
                   </View>
                 </View>
               </View>
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: "#666",
     marginBottom: 15,
-    marginTop: -5,
+    marginTop: Platform.OS === "ios" ? 0 : -5,
   },
   hostName: {
     color: "#4CAF50",
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   iconStyle: {
-    marginTop: -2,
+    marginTop: Platform.OS === "android" ? -5 : -2,
   },
   shirtIcon: {
     alignSelf: "center",

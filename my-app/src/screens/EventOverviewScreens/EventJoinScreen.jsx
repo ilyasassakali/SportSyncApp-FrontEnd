@@ -325,24 +325,38 @@ function EventJoinScreen({ route, navigation }) {
                       style={styles.nameText}
                     >{`${participant.firstName} ${participant.lastName}`}</Text>
                     <View style={styles.payStatusContainer}>
-                      {participant.paid ? (
-                        <Ionicons
-                          name="checkmark-done-circle-outline"
-                          size={20}
-                          color="#4CAF50"
-                          style={styles.iconStyle}
-                        />
+                      {participant.id === event.hostId ? (
+                        <>
+                          <Ionicons
+                            name="star"
+                            size={16}
+                            color="#FFD700"
+                            style={styles.iconStyle}
+                          />
+                          <Text style={styles.payText}>Host</Text>
+                        </>
                       ) : (
-                        <Ionicons
-                          name="checkmark-circle-outline"
-                          size={20}
-                          color="#039BE5"
-                          style={styles.iconStyle}
-                        />
+                        <>
+                          {participant.paid ? (
+                            <Ionicons
+                              name="checkmark-done-circle-outline"
+                              size={20}
+                              color="#4CAF50"
+                              style={styles.iconStyle}
+                            />
+                          ) : (
+                            <Ionicons
+                              name="checkmark-circle-outline"
+                              size={20}
+                              color="#039BE5"
+                              style={styles.iconStyle}
+                            />
+                          )}
+                          <Text style={styles.payText}>
+                            {participant.paid ? "Paid" : "Pay Cash"}
+                          </Text>
+                        </>
                       )}
-                      <Text style={styles.payText}>
-                        {participant.paid ? "Paid" : "Pay Cash"}
-                      </Text>
                     </View>
                   </View>
                 </View>
@@ -424,7 +438,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: "#666",
     marginBottom: 15,
-    marginTop: -5,
+    marginTop: Platform.OS === "ios" ? 0 : -5,
   },
   hostName: {
     color: "#4CAF50",
@@ -556,7 +570,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   iconStyle: {
-    marginTop: -2,
+    marginTop: Platform.OS === "android" ? -5 : -2,
   },
   shirtIcon: {
     alignSelf: "center",
