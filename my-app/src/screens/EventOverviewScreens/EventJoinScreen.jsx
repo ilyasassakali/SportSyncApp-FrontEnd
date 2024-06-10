@@ -129,7 +129,6 @@ function EventJoinScreen({ route, navigation }) {
         if (result.error) {
           Alert.alert("Payment failed", result.error.message);
         } else {
-          Alert.alert("Success", "Payment successful");
           joinEvent("direct");
         }
       } else {

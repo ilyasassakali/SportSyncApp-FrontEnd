@@ -21,7 +21,9 @@ const EventEnterCodeScreen = ({ navigation }) => {
 
       if (text && index < 5) {
         inputs.current[index + 1].focus();
-      } else if (index === 5) {
+      }
+
+      if (newCode.every((digit) => digit !== "") && index === 5) {
         validateCode(newCode.join(""));
       }
     }
@@ -53,7 +55,7 @@ const EventEnterCodeScreen = ({ navigation }) => {
 
       if (response.status === 200) {
         const { event } = await response.json();
-        Alert.alert("Valid Code", "Sport Event found.");
+        //Alert.alert("Valid Code", "Sport Event found.");
         navigation.navigate("EventJoin", { event });
       } else {
         Alert.alert(

@@ -144,7 +144,7 @@ function AppContainer() {
               <Stack.Screen
                 name="EventOverview"
                 component={EventOverviewScreen}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
               />
 
               <Stack.Screen
